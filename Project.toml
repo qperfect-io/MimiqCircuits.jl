@@ -1,0 +1,12 @@
+name = "MimiqCircuits"
+uuid = "281e006c-9395-434b-8b58-3065901f9db3"
+authors = ["Guido Masella <guido.masella@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+BSON = "fbb218c0-5317-5bc6-957e-2ee96dd4b1f0"
+Circuits = "0891af99-d974-44fe-bb1f-8df04484ce9a"
+JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
+MimiqLink = "75412a89-3e23-4d98-b652-ed58604dd601"
+Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
+SHA = "ea8e919c-243c-51af-8825-aaa63cd721ce"
