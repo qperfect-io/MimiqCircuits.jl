@@ -94,7 +94,7 @@ function _simulate(
     c::Circuit,
     label::AbstractString;
     nsamples=1000,
-    bs::Vector{BitVector}=[],
+    bs::Vector{BitVector}=BitVector[],
     timelimit=30 * 60,
     bonddim::Union{Nothing, Int64}=Nothing,
 )
