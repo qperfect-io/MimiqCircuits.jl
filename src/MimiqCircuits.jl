@@ -28,7 +28,11 @@ struct Results
     bitstrings::Dict{BitVector, Float64}
 end
 
-function Base.show(io, r::Results)
+# FIX: this is a workaround for a bug in BSON
+Results(ex, results, sampled, ::Vector{Any}) =
+    Results(ex, results, sampled, Dict{BitVector, Float64}())
+
+function Base.show(io::IO, r::Results)
     println(io, "Results of execution $(r.ex):")
     println("├── fidelity: ", r.results["fidelity"])
     println("├── sampled $(length(r.sampled)) bitstrings")
@@ -39,7 +43,7 @@ function _to_iobuffer(s::AbstractString)
     io = IOBuffer()
     write(io, s)
     seekstart(io)
-    hash = sha2_256(io)
+    hash = bytes2hex(sha2_256(io))
     seekstart(io)
 
     return io, hash
@@ -47,8 +51,64 @@ end
 
 function _gethash(f::AbstractString)
     open(f, "r") do io
-        sha2_256(io)
+        bytes2hex(sha2_256(io))
     end
+end
+
+function _simulate(
+    emulator::String,
+    conn::Connection,
+    c::Circuit,
+    label::AbstractString;
+    nsamples=1000,
+    bs::Vector{BitVector}=BitVector[],
+    timelimit=30 * 60,
+    bonddim::Union{Nothing, Int64}=nothing,
+)
+    tempdir = mktempdir(; prefix="mimiq_")
+
+    # write the circuit to a file
+    circuitfile = joinpath(tempdir, "circuit.json")
+
+    open(circuitfile, "w") do io
+        write(io, Circuits.tojson(c))
+    end
+
+    circuitsha = _gethash(circuitfile)
+
+    # prepare the parameters 
+    if nsamples > 2^16
+        error("Number of samples should be less than 2^16")
+    end
+
+    pars = Dict("emulator" => emulator, "bitstrings" => bs, "samples" => nsamples)
+
+    if timelimit > 30 * 60
+        error("Time limit should be less than 30 minutes")
+    end
+
+    if !isnothing(bonddim)
+        if bonddim < 0 || bonddim > 2^12
+            error("Bond dimension should be positive and maximum 4096")
+        end
+        pars["bondDimension"] = bonddim
+    end
+
+    req = Dict(
+        "executor" => "Circuits",
+        "timelimit" => timelimit,
+        "files" => [Dict("name" => "circuit.json", "hash" => circuitsha)],
+        "parameters" => pars,
+    )
+
+    # write the parameters to a file
+    reqfile = joinpath(tempdir, "parameters.json")
+
+    open(reqfile, "w") do io
+        write(io, JSON.json(req))
+    end
+
+    MimiqLink.request(conn, emulator, label, reqfile, circuitfile)
 end
 
 """
@@ -88,62 +148,6 @@ function simulate_clam(
     _simulate("CLAM", conn, c, label; bonddim=bonddim, kwargs...)
 end
 
-function _simulate(
-    emulator::String,
-    conn::Connection,
-    c::Circuit,
-    label::AbstractString;
-    nsamples=1000,
-    bs::Vector{BitVector}=BitVector[],
-    timelimit=30 * 60,
-    bonddim::Union{Nothing, Int64}=Nothing,
-)
-    tempdir = mktempdir(; prefix="mimiq_")
-
-    # write the circuit to a file
-    circuitfile = joinpath(tempdir, "circuit.json")
-
-    open(circuitfile, "w") do io
-        write(io, Circuits.tojson(c))
-    end
-
-    circuitsha = _gethash(circuitfile)
-
-    # prepare the parameters 
-    if nsamples > 2^16
-        error("Number of samples should be less than 2^16")
-    end
-
-    pars = Dict("emulator" => emulator, "bitstrings" => bs, "samples" => nsamples)
-
-    if timelimit > 30 * 60
-        error("Time limit should be less than 30 minutes")
-    end
-
-    req = Dict(
-        "executor" => "Circuits",
-        "timelimit" => timelimit,
-        "files" => [Dict("name" => "circuit.json", "hash" => circuitsha)],
-        "parameters" => pars,
-    )
-
-    if !isnothing(bonddim)
-        if bonddim < 0 || bonddim > 2^12
-            error("Bond dimension should be positive and maximum 4096")
-        end
-        req["bondDimension"] = bonddim
-    end
-
-    # write the parameters to a file
-    reqfile = joinpath(tempdir, "parameters.json")
-
-    open(reqfile) do io
-        write(io, JSON.json(req))
-    end
-
-    MimiqLink.request(conn, emulator, label, reqfile, circuitfile)
-end
-
 """
     getinputs(connection, execution)
 
@@ -174,7 +178,7 @@ Block until the given execution is finished and return the results.
 """
 function getresults(conn::Connection, ex::Execution; interval=10)
     # wait for the job to finish
-    while !isjobdone(ex)
+    while !isjobdone(conn, ex)
         sleep(interval)
     end
 
@@ -188,9 +192,9 @@ function getresults(conn::Connection, ex::Execution; interval=10)
 
     names = MimiqLink.downloadresults(conn, ex, tmpdir)
 
-    if !("results.json" in names) ||
-       !("sampled.bson" in names) ||
-       !("bitstrings.json" in names)
+    basenames = basename.(names)
+
+    if ["results.json", "sampled.bson", "bitstrings.bson"] ⊈ basenames
         error("$ex is not a valid execution for MimiqCircuits: missing files")
     end
 
@@ -198,7 +202,7 @@ function getresults(conn::Connection, ex::Execution; interval=10)
     sampled = BSON.load(joinpath(tmpdir, "sampled.bson"))
     bitstrings = BSON.load(joinpath(tmpdir, "bitstrings.bson"))
 
-    Results(ex, results, sampled, bitstrings)
+    Results(ex, results, sampled[:sampled], bitstrings[:bitstrings])
 end
 
 end # module MimiqCircuits
