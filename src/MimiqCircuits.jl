@@ -58,8 +58,8 @@ end
 function _simulate(
     emulator::String,
     conn::Connection,
-    c::Circuit,
-    label::AbstractString;
+    c::Circuit;
+    label::AbstractString = "circuitsimu",
     nsamples=1000,
     bs::Vector{BitVector}=BitVector[],
     timelimit=30 * 60,
@@ -120,12 +120,12 @@ end
 * `bs`: bitstrings for which we want to know the amplitudes (default: none)
 * `timelimit` : time limit in seconds (default: 30 minutes)
 """
-function simulate_csx(conn::Connection, c::Circuit, label::AbstractString; kwargs...)
+function simulate_csx(conn::Connection, c::Circuit; kwargs...)
     if haskey(kwargs, :bonddim)
         @warn "Bond dimension `bonddim` is not used for CSX"
     end
 
-    _simulate("CSX", conn, c, label; kwargs...)
+    _simulate("CSX", conn, c; kwargs...)
 end
 
 """
@@ -140,12 +140,11 @@ end
 """
 function simulate_clam(
     conn::Connection,
-    c::Circuit,
-    label::AbstractString;
+    c::Circuit;
     bonddim::Union{Nothing, Int64}=256,
     kwargs...,
 )
-    _simulate("CLAM", conn, c, label; bonddim=bonddim, kwargs...)
+    _simulate("CLAM", conn, c; bonddim=bonddim, kwargs...)
 end
 
 """
@@ -157,7 +156,7 @@ function getinputs(conn::Connection, ex::Execution)
     tmpdir = mktempdir(; prefix="mimiq_in_")
     names = MimiqLink.downloadjobfiles(conn, ex, tmpdir)
 
-    if !("parameters.json" in names) || !("circuit.json" in names)
+    if ["parameters.json", "circuit.json"] ⊈ basename.(names)
         error("$ex is not a valid execution for MimiqCircuits: missing files")
     end
 
@@ -192,9 +191,7 @@ function getresults(conn::Connection, ex::Execution; interval=10)
 
     names = MimiqLink.downloadresults(conn, ex, tmpdir)
 
-    basenames = basename.(names)
-
-    if ["results.json", "sampled.bson", "bitstrings.bson"] ⊈ basenames
+    if ["results.json", "sampled.bson", "bitstrings.bson"] ⊈ basename.(names)
         error("$ex is not a valid execution for MimiqCircuits: missing files")
     end
 
@@ -202,7 +199,7 @@ function getresults(conn::Connection, ex::Execution; interval=10)
     sampled = BSON.load(joinpath(tmpdir, "sampled.bson"))
     bitstrings = BSON.load(joinpath(tmpdir, "bitstrings.bson"))
 
-    Results(ex, results, sampled[:sampled], bitstrings[:bitstrings])
+    Results(ex, results, sampled, bitstrings)
 end
 
 end # module MimiqCircuits
