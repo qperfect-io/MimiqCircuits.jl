@@ -3,6 +3,10 @@ uuid = "281e006c-9395-434b-8b58-3065901f9db3"
 authors = ["Guido Masella <guido.masella@gmail.com>"]
 version = "0.1.3"
 
+[compat]
+julia = "1.6"
+Circuits = "0.4"
+
 [deps]
 BSON = "fbb218c0-5317-5bc6-957e-2ee96dd4b1f0"
 Circuits = "0891af99-d974-44fe-bb1f-8df04484ce9a"

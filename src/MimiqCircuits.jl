@@ -18,25 +18,20 @@ using MimiqLink
     Execution
 
 export Results
-export simulate_clam
-export simulate_csx
+export execute
 
 struct Results
     ex::Execution
     results::Dict
-    sampled::Dict{BitVector, Int64}
-    bitstrings::Dict{BitVector, Float64}
+    samples::Dict{BitState, Int64}
+    amplitudes::Dict{BitState, Float64}
 end
-
-# FIX: this is a workaround for a bug in BSON
-Results(ex, results, sampled, ::Vector{Any}) =
-    Results(ex, results, sampled, Dict{BitVector, Float64}())
 
 function Base.show(io::IO, r::Results)
     println(io, "Results of execution $(r.ex):")
     println("├── fidelity: ", r.results["fidelity"])
-    println("├── sampled $(length(r.sampled)) bitstrings")
-    print("└── returned amplitudes of $(length(r.bitstrings)) bitstrings")
+    println("├── sampled $(length(r.samples)) bitstrings")
+    print("└── returned $(length(r.amplitudes)) amplitudes")
 end
 
 function _to_iobuffer(s::AbstractString)
@@ -55,14 +50,30 @@ function _gethash(f::AbstractString)
     end
 end
 
-function _simulate(
-    emulator::String,
+"""
+    execute(connection, circuit[; kwargs...])
+
+Execute a quantum circuit on the MIMIQ remote services.
+
+The circuit is applied to the zero state and the resulting state is measured via sampling.
+Optionally amplitudes corresponding to few selected bitstrings (or bit states) can be returned from the computation.
+
+## Keyword Arguments
+
+* `label`: mnemonic name to give to the simulation, will be visible on the [web interface](https://mimiq.qperfect.io)
+* `algorithm`: algorithm to use by the compuation. By default `"automode"` will select the fastest algorithm between `"statevector"` or `"mps"`.
+* `nsamples`: number of times to sample the circuit (default: 1000)
+* `timelimit`: number of seconds before the computation is stopped (default: 300 seconds or 5 minutes)
+* `bonddim`: bond dimension for the MPS algorithm (default: 256)
+"""
+function execute(
     conn::Connection,
     c::Circuit;
-    label::AbstractString = "circuitsimu",
+    label::AbstractString="circuitsimu",
+    algorithm::String="automode",
     nsamples=1000,
-    bs::Vector{BitVector}=BitVector[],
-    timelimit=30 * 60,
+    bs::Vector{BitState}=BitState[],
+    timelimit=5 * 60,
     bonddim::Union{Nothing, Int64}=nothing,
 )
     tempdir = mktempdir(; prefix="mimiq_")
@@ -81,7 +92,7 @@ function _simulate(
         error("Number of samples should be less than 2^16")
     end
 
-    pars = Dict("emulator" => emulator, "bitstrings" => bs, "samples" => nsamples)
+    pars = Dict("algorithm" => algorithm, "bitstrings" => bs, "samples" => nsamples)
 
     if timelimit > 30 * 60
         error("Time limit should be less than 30 minutes")
@@ -108,43 +119,7 @@ function _simulate(
         write(io, JSON.json(req))
     end
 
-    MimiqLink.request(conn, emulator, label, reqfile, circuitfile)
-end
-
-"""
-    simulate_csx(circuit; kwargs...)
-
-# Keyword Arguments
-
-* `nsamples`: Number of samples to take (default: 1000)
-* `bs`: bitstrings for which we want to know the amplitudes (default: none)
-* `timelimit` : time limit in seconds (default: 30 minutes)
-"""
-function simulate_csx(conn::Connection, c::Circuit; kwargs...)
-    if haskey(kwargs, :bonddim)
-        @warn "Bond dimension `bonddim` is not used for CSX"
-    end
-
-    _simulate("CSX", conn, c; kwargs...)
-end
-
-"""
-    simulate_clam(circuit; kwargs...)
-
-# Keyword Arguments
-
-* `nsamples`: Number of samples to take (default: 1000)
-* `bs`: bitstrings for which we want to know the amplitudes (default: none)
-* `timelimit` : time limit in seconds (default: 30 minutes)
-* `bonddim` : bond dimension (default: 256)
-"""
-function simulate_clam(
-    conn::Connection,
-    c::Circuit;
-    bonddim::Union{Nothing, Int64}=256,
-    kwargs...,
-)
-    _simulate("CLAM", conn, c; bonddim=bonddim, kwargs...)
+    MimiqLink.request(conn, algorithm, label, reqfile, circuitfile)
 end
 
 """
@@ -191,15 +166,15 @@ function getresults(conn::Connection, ex::Execution; interval=10)
 
     names = MimiqLink.downloadresults(conn, ex, tmpdir)
 
-    if ["results.json", "sampled.bson", "bitstrings.bson"] ⊈ basename.(names)
+    if ["results.json", "samples.bson", "amplitudes.bson"] ⊈ basename.(names)
         error("$ex is not a valid execution for MimiqCircuits: missing files")
     end
 
     results = JSON.parsefile(joinpath(tmpdir, "results.json"))
-    sampled = BSON.load(joinpath(tmpdir, "sampled.bson"))
-    bitstrings = BSON.load(joinpath(tmpdir, "bitstrings.bson"))
+    samples = BSON.load(joinpath(tmpdir, "samples.bson"))
+    amplitudes = BSON.load(joinpath(tmpdir, "amplitudes.bson"))
 
-    Results(ex, results, sampled, bitstrings)
+    Results(ex, results, samples, amplitudes)
 end
 
 end # module MimiqCircuits
