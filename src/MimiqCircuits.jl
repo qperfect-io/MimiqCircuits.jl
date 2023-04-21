@@ -56,12 +56,12 @@ end
 Execute a quantum circuit on the MIMIQ remote services.
 
 The circuit is applied to the zero state and the resulting state is measured via sampling.
-Optionally amplitudes corresponding to few selected bitstrings (or bit states) can be returned from the computation.
+Optionally amplitudes corresponding to few selected bit states (or bitstrings) can be returned from the computation.
 
 ## Keyword Arguments
 
 * `label`: mnemonic name to give to the simulation, will be visible on the [web interface](https://mimiq.qperfect.io)
-* `algorithm`: algorithm to use by the compuation. By default `"automode"` will select the fastest algorithm between `"statevector"` or `"mps"`.
+* `algorithm`: algorithm to use by the compuation. By default `"auto"` will select the fastest algorithm between `"statevector"` or `"mps"`.
 * `nsamples`: number of times to sample the circuit (default: 1000)
 * `timelimit`: number of seconds before the computation is stopped (default: 300 seconds or 5 minutes)
 * `bonddim`: bond dimension for the MPS algorithm (default: 256)
@@ -70,7 +70,7 @@ function execute(
     conn::Connection,
     c::Circuit;
     label::AbstractString="circuitsimu",
-    algorithm::String="automode",
+    algorithm::String="auto",
     nsamples=1000,
     bs::Vector{BitState}=BitState[],
     timelimit=5 * 60,
@@ -92,7 +92,7 @@ function execute(
         error("Number of samples should be less than 2^16")
     end
 
-    pars = Dict("algorithm" => algorithm, "bitstrings" => bs, "samples" => nsamples)
+    pars = Dict("algorithm" => algorithm, "bitstates" => bs, "samples" => nsamples)
 
     if timelimit > 30 * 60
         error("Time limit should be less than 30 minutes")
