@@ -15,7 +15,7 @@ Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
 SHA = "ea8e919c-243c-51af-8825-aaa63cd721ce"
 
 [compat]
-MimiqCircuitsBase = "0.1"
+MimiqCircuitsBase = "0.2"
 MimiqLink = "0.3"
 QCSR = "0.4"
 julia = "1.6"

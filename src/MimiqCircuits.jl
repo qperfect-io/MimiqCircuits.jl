@@ -118,12 +118,13 @@ Optionally amplitudes corresponding to few selected bit states (or bitstrings) c
 
 ## Keyword Arguments
 
-* `label`: mnemonic name to give to the simulation, will be visible on the [web interface](https://mimiq.qperfect.io)
+* `label::String`: mnemonic name to give to the simulation, will be visible on the [web interface](https://mimiq.qperfect.io)
 * `algorithm`: algorithm to use by the compuation. By default `"auto"` will select the fastest algorithm between `"statevector"` or `"mps"`.
-* `nsamples`: number of times to sample the circuit (default: 1000)
-* `bitstates`: list of bit states to compute the amplitudes for (default: `[]`)
+* `nsamples::Integer`: number of times to sample the circuit (default: 1000, maximum: 2^16)
+* `bitstates::Vector{BitState}`: list of bit states to compute the amplitudes for (default: `BitState[]`)
 * `timelimit`: number of seconds before the computation is stopped (default: 300 seconds or 5 minutes)
-* `bonddim`: bond dimension for the MPS algorithm (default: 256)
+* `bonddim::Int64`: bond dimension for the MPS algorithm (default: 256, maximum: 4096)
+* `seed::Int64`: a seed for running the simulation (default: random seed)
 """
 function execute(
     conn::Connection,
@@ -133,7 +134,8 @@ function execute(
     nsamples=DEFAULT_SAMPLES,
     bitstates::Vector{BitState}=BitState[],
     timelimit=DEFAULT_TIME_LIMIT,
-    bonddim::Union{Nothing, Int64}=nothing,
+    bonddim::Union{Nothing, Integer}=nothing,
+    seed::Int64=rand(0:typemax(Int64)),
 )
     if nsamples > MAX_SAMPLES
         throw(ArgumentError("Number of samples should be less than 2^16"))
@@ -162,7 +164,12 @@ function execute(
 
     # prepare the parameters 
 
-    pars = Dict("algorithm" => algorithm, "bitstates" => bitstates, "samples" => nsamples)
+    pars = Dict(
+        "algorithm" => algorithm,
+        "bitstates" => bitstates,
+        "samples" => nsamples,
+        "seed" => seed,
+    )
 
     if algorithm == "auto" || algorithm == "mps"
         if isnothing(bonddim)
