@@ -34,6 +34,7 @@ import Measures
     isjobdone,
     isjobfailed,
     isjobstarted,
+    requestinfo,
     Connection,
     Execution
 
