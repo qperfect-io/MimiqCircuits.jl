@@ -1,6 +1,6 @@
 name = "MimiqCircuits"
 uuid = "281e006c-9395-434b-8b58-3065901f9db3"
-version = "0.3.1"
+version = "0.3.2"
 
 [deps]
 JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
