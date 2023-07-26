@@ -35,6 +35,7 @@ import Measures
     isjobfailed,
     isjobstarted,
     requestinfo,
+    stopexecution,
     Connection,
     Execution
 
@@ -202,7 +203,8 @@ function execute(
         write(io, JSON.json(req))
     end
 
-    MimiqLink.request(conn, algorithm, label, reqfile, circuitfile)
+    type = "example-type-1"
+    MimiqLink.request(conn, type, algorithm, label, timelimit, reqfile, circuitfile)
 end
 
 """
