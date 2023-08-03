@@ -1,0 +1,51 @@
+name: Public Register
+
+on: 
+  push:
+    #branches:
+    #  - devel
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+-public'
+  pull_request:
+
+jobs:
+  register:
+    runs-on: ${{ matrix.os }}
+    if: github.repository == 'qperfect-io/MimiqCircuits.jl'
+    strategy:
+      matrix:
+        julia-version:
+          - '1' # latest stable
+        julia-arch:
+          - x64
+        os:
+          - ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - run: git config --global user.email "technical@qperfect.io"
+      - run: git config --global user.name "QPerfect"
+
+      - uses: julia-actions/setup-julia@v1
+        with:
+          version: ${{ matrix.julia-version }}
+          arch: ${{ matrix.julia-arch }}
+
+      - name: QPerfect Registry
+        run: |
+          julia -e 'import Pkg; Pkg.update()'
+          julia -e 'import Pkg; Pkg.Registry.add(Pkg.RegistrySpec(url = "https://github.com/qperfect-io/QPerfectRegistry.git"))'
+        env:
+          JULIA_PKG_USE_CLI_GIT: true
+
+      - name: Register repository
+        run: |
+          import Pkg
+          Pkg.add("LocalRegistry")
+          Pkg.develop(path="./")
+          using LocalRegistry
+          register("MimiqCircuits", registry = "QPerfectRegistry", repo = "https://github.com/qperfect-io/MimiqCircuits.jl.git")
+        shell: julia --color=yes {0}
+        env:
+          JULIA_PKG_USE_CLI_GIT: true
