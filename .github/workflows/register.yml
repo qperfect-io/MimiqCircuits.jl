@@ -32,10 +32,15 @@ jobs:
           version: ${{ matrix.julia-version }}
           arch: ${{ matrix.julia-arch }}
 
+      - uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: |
+            ${{ secrets.REGISTRY_KEY }}
+
       - name: QPerfect Registry
         run: |
           julia -e 'import Pkg; Pkg.update()'
-          julia -e 'import Pkg; Pkg.Registry.add(Pkg.RegistrySpec(url = "https://github.com/qperfect-io/QPerfectRegistry.git"))'
+          julia -e 'import Pkg; Pkg.Registry.add(Pkg.RegistrySpec(url = "git@github.com:qperfect-io/QPerfectRegistry.git"))'
         env:
           JULIA_PKG_USE_CLI_GIT: true
 
