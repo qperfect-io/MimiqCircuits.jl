@@ -1,0 +1,41 @@
+name: Documenter
+on:
+  push:
+    branches: [main]
+    tags: [v*-public]
+  pull_request:
+
+jobs:
+  Documenter:
+    permissions:
+      contents: write
+    name: Documentation
+    if: github.repository == 'qperfect-io/MimiqCircuits.jl'
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        julia-version:
+          - '1' # latest stable
+        julia-arch:
+          - x64
+        os:
+          - ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: julia-actions/setup-julia@v1
+        with:
+          version: ${{ matrix.julia-version }}
+          arch: ${{ matrix.julia-arch }}
+
+      - name: QPerfect Registry
+        run: |
+          julia -e 'import Pkg; Pkg.update()'
+          julia -e 'import Pkg; Pkg.Registry.add(Pkg.RegistrySpec(url = "https://github.com/qperfect-io/QPerfectRegistry.git"))'
+
+      - uses: julia-actions/julia-buildpkg@v1
+
+      - uses: julia-actions/julia-docdeploy@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

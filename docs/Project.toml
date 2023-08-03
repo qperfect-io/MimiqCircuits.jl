@@ -1,0 +1,5 @@
+[deps]
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+MimiqCircuits = "281e006c-9395-434b-8b58-3065901f9db3"
+MimiqCircuitsBase = "3a95eabf-73f4-453e-aae8-8a11a27ac032"
+MimiqLink = "75412a89-3e23-4d98-b652-ed58604dd601"
