@@ -25,6 +25,7 @@ using RecipesBase
 using PrettyTables
 using Printf
 import Measures
+import Pkg
 
 @reexport using MimiqCircuitsBase
 @reexport using MimiqLink:
@@ -169,6 +170,18 @@ function execute(
         end
     end
 
+    if VERSION >= v"1.9"
+        apiversion = pkgversion(@__MODULE__)
+        circuitsapiversion = pkgversion(MimiqCircuitsBase)
+    else
+        apiversion = VersionNumber(
+            Pkg.TOML.parsefile(joinpath(pkgdir(@__MODULE__), "Project.toml"))["version"],
+        )
+        circuitsapiversion = VersionNumber(
+            Pkg.TOML.parsefile(joinpath(pkgdir(MimiqCircuitsBase), "Project.toml"))["version"],
+        )
+    end
+
     # prepare the request
     req = Dict(
         "executor" => "Circuits",
@@ -176,8 +189,8 @@ function execute(
         "files" => [Dict("name" => CIRCUITPB_FILE, "hash" => circuitsha)],
         "parameters" => pars,
         "apilang" => "julia",
-        "apiversion" => pkgversion(@__MODULE__),
-        "circuitsapiversion" => pkgversion(MimiqCircuitsBase),
+        "apiversion" => apiversion,
+        "circuitsapiversion" => circuitsapiversion,
     )
 
     # write the request to a file
