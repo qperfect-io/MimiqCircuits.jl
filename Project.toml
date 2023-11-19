@@ -1,23 +1,18 @@
 name = "MimiqCircuits"
 uuid = "281e006c-9395-434b-8b58-3065901f9db3"
-version = "0.6.2"
+version = "0.7.1"
 
 [deps]
 JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
-Measures = "442fdcdd-2543-5da2-b0f3-8c86c306513e"
 MimiqCircuitsBase = "3a95eabf-73f4-453e-aae8-8a11a27ac032"
 MimiqLink = "75412a89-3e23-4d98-b652-ed58604dd601"
 Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
-PrettyTables = "08abe8d2-0d0c-5749-adfa-8a2ac140af0d"
-Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
-RecipesBase = "3cdcf5f2-1ef4-517c-9805-6587b60abb01"
 Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
 SHA = "ea8e919c-243c-51af-8825-aaa63cd721ce"
-Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 
 [compat]
-MimiqCircuitsBase = "0.4"
-MimiqLink = "0.4"
+MimiqCircuitsBase = "0.5"
+MimiqLink = "0.5"
 julia = "1.6"
 
 [extras]

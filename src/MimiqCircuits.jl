@@ -19,12 +19,7 @@ module MimiqCircuits
 using Reexport
 using SHA
 using JSON
-using Statistics
 using MimiqLink
-using RecipesBase
-using PrettyTables
-using Printf
-import Measures
 import Pkg
 
 @reexport using MimiqCircuitsBase
@@ -38,11 +33,12 @@ import Pkg
     requestinfo,
     stopexecution,
     Connection,
-    Execution
+    Execution,
+    QPERFECT_CLOUD,
+    QPERFECT_CLOUD2
 
 export execute
 export executeqasm
-export printreport
 export getinputs
 export getresults
 
@@ -66,33 +62,6 @@ const RESULTSPB_FILE = "results.pb"
 const CIRCUITPB_FILE = "circuit.pb"
 const CIRCUITQASM_FILE = "circuit.qasm"
 
-function _ptime(time::Number)
-    if time < 1e-6
-        return @sprintf "%.3gns" time * 1e9
-    elseif time < 1e-3
-        return @sprintf "%.3gµs" time * 1e6
-    elseif time < 1e0
-        return @sprintf "%.3gms" time * 1e3
-    elseif time < 60
-        return @sprintf "%.3gs" time
-    else
-        hours = floor(time / 3600)
-        minutes = floor((time - hours * 3600) / 60)
-        seconds = time - hours * 3600 - minutes * 60
-        return @sprintf "%02ih %02im %.3gs" hours minutes seconds
-    end
-end
-
-function _to_iobuffer(s::AbstractString)
-    io = IOBuffer()
-    write(io, s)
-    seekstart(io)
-    hash = bytes2hex(sha2_256(io))
-    seekstart(io)
-
-    return io, hash
-end
-
 function _gethash(f::AbstractString)
     open(f, "r") do io
         bytes2hex(sha2_256(io))
@@ -112,7 +81,7 @@ Optionally amplitudes corresponding to few selected bit states (or bitstrings) c
 * `label::String`: mnemonic name to give to the simulation, will be visible on the [web interface](https://mimiq.qperfect.io)
 * `algorithm`: algorithm to use by the compuation. By default `"auto"` will select the fastest algorithm between `"statevector"` or `"mps"`.
 * `nsamples::Integer`: number of times to sample the circuit (default: 1000, maximum: 2^16)
-* `bitstates::Vector{BitState}`: list of bit states to compute the amplitudes for (default: `BitState[]`)
+* `bitstrings::Vector{BitString}`: list of bit states to compute the amplitudes for (default: `BitString[]`)
 * `timelimit`: number of seconds before the computation is stopped (default: 300 seconds or 5 minutes)
 * `bonddim::Int64`: bond dimension for the MPS algorithm (default: 256, maximum: 4096)
 * `seed::Int64`: a seed for running the simulation (default: random seed)
@@ -123,7 +92,7 @@ function execute(
     label::AbstractString="circuitsimu",
     algorithm::String="auto",
     nsamples=DEFAULT_SAMPLES,
-    bitstates::Vector{BitState}=BitState[],
+    bitstrings::Vector{BitString}=BitString[],
     timelimit=DEFAULT_TIME_LIMIT,
     bonddim::Union{Nothing, Integer}=nothing,
     seed::Int64=rand(0:typemax(Int64)),
@@ -142,10 +111,10 @@ function execute(
 
     nq = numqubits(c)
 
-    if any(b -> numqubits(b) != nq, bitstates)
+    if any(b -> numbits(b) != nq, bitstrings)
         throw(
             ArgumentError(
-                "Bitstates should have the same number of qubits of the circuit.",
+                "bitstrings should have the same number of qubits of the circuit.",
             ),
         )
     end
@@ -154,7 +123,7 @@ function execute(
 
     pars = Dict(
         "algorithm" => algorithm,
-        "bitstates" => bitstates,
+        "bitstrings" => string.(bitstrings),
         "samples" => nsamples,
         "seed" => seed,
     )
@@ -239,7 +208,7 @@ Optionally amplitudes corresponding to few selected bit states (or bitstrings) c
 * `label::String`: mnemonic name to give to the simulation, will be visible on the [web interface](https://mimiq.qperfect.io)
 * `algorithm`: algorithm to use by the compuation. By default `"auto"` will select the fastest algorithm between `"statevector"` or `"mps"`.
 * `nsamples::Integer`: number of times to sample the circuit (default: 1000, maximum: 2^16)
-* `bitstates::Vector{BitState}`: list of bit states to compute the amplitudes for (default: `BitState[]`)
+* `bitstrings::Vector{BitString}`: list of bit states to compute the amplitudes for (default: `BitString[]`)
 * `timelimit`: number of seconds before the computation is stopped (default: 300 seconds or 5 minutes)
 * `bonddim::Int64`: bond dimension for the MPS algorithm (default: 256, maximum: 4096)
 * `seed::Int64`: a seed for running the simulation (default: random seed)
@@ -250,7 +219,7 @@ function executeqasm(
     label::AbstractString="circuitsimu",
     algorithm::String="auto",
     nsamples=DEFAULT_SAMPLES,
-    bitstates::Vector{BitState}=BitState[],
+    bitstrings::Vector{BitString}=BitString[],
     timelimit=DEFAULT_TIME_LIMIT,
     bonddim::Union{Nothing, Integer}=nothing,
     seed::Int64=rand(0:typemax(Int64)),
@@ -274,14 +243,14 @@ function executeqasm(
     cp(qasmfilepath, circuitfile)
     circuitsha = _gethash(circuitfile)
 
-    if any(b -> numqubits(b) != numqubits(first(bitstates)), bitstates)
-        throw(ArgumentError("Inconsistent bitstates length."))
+    if any(b -> numbits(b) != numbits(first(bitstrings)), bitstrings)
+        throw(ArgumentError("Inconsistent bitstrings length."))
     end
 
     # prepare the parameters
     pars = Dict(
         "algorithm" => algorithm,
-        "bitstates" => bitstates,
+        "bitstrings" => bitstrings,
         "samples" => nsamples,
         "seed" => seed,
     )
@@ -379,76 +348,6 @@ function getresults(conn::Connection, ex::Execution; interval=10)
     res = loadproto(joinpath(tmpdir, RESULTSPB_FILE), QCSResults)
 
     return res
-end
-
-"""
-    printreport(res::Results; kwargs...)
-
-Print a report on the MIMIQ simulation results `res`
-
-## Keyword Arguments
-* `max_outcomes`: the maximum number of unique measurement outcomes to display (default 8)
-"""
-function printreport(res::QCSResults; max_outcomes::Int=8)
-    # pretty_table format
-    tf = TextFormat(
-        up_right_corner='=',
-        up_left_corner='=',
-        bottom_left_corner='=',
-        bottom_right_corner='=',
-        up_intersection=' ',
-        left_intersection='=',
-        right_intersection='=',
-        middle_intersection=' ',
-        bottom_intersection=' ',
-        column=' ',
-        row='=',
-        hlines=[:begin, :header],
-    )
-
-    @printf "===========================\n"
-    @printf "Simulation report\n"
-    @printf "===========================\n"
-    if !isnothing(res.simulator) && !isnothing(res.version)
-        @printf "Simulator: %s %s\n" res.simulator ress.version
-    end
-
-    for (k, v) in res.timings
-        @printf "%s time: %s\n" k _ptime(v)
-    end
-
-    if !isempty(res.fidelities)
-        fidelity = extrema(res.fidelities)
-        @printf "Fidelity estimate (min, max): %.3f %.3f" fidelity[1] fidelity[2]
-    end
-
-    if !isempty(res.avggateerrors)
-        avggateerrors = extrema(res.avggateerrors)
-        @printf "Average ≥2-qubit gate error (min, max) %.4f %.4f\n" avggateerrors[1] avggateerrors[2]
-    end
-
-    if !isempty(res.samples)
-        samples = MimiqCircuitsBase.sampleshistrogram(res)
-        outcomes =
-            sort(collect(samples), by=x -> x.second, rev=true)[1:min(end, max_outcomes)]
-
-        @printf "\n"
-        @printf "Measurement results (classical registers)\n"
-
-        table = permutedims(hcat([[join(Int.(k), ""), v] for (k, v) in outcomes]...))
-        pretty_table(table, header=["state", "samples"], tf=tf)
-        if length(outcomes) >= max_outcomes
-            @printf "results limited to %i items, see `res.cstates` for a full list\n" max_outcomes
-        end
-    end
-
-    if !isempty(res.amplitudes)
-        @printf "\n"
-        @printf "Statevector amplitudes\n"
-
-        table = permutedims(hcat([[string(k), v] for (k, v) in res.simres.amplitudes]...))
-        pretty_table(table, header=["state", "amplitude"], tf=tf)
-    end
 end
 
 end # module MimiqCircuits
