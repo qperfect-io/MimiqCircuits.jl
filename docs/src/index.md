@@ -1,18 +1,32 @@
-# MimiqCircuits.jl Documentation
+# Introduction
 
 MIMIQ Circuits is a quantum computing framework and high performance simulator
 developed by QPerfect that allows you to develop and run your quantum
 algorithms beyond the limits of today's noisy intermediate scale quantum (NISQ)
 computers.
 
-## Alpha Release
+# Quick Start
 
+`MimiqCircuits.jl` is a [Julia Language](https://julialang.org) package containing all the utilities and programming interfaces (APIs) to build quantum systems, connect and execute simulation on [QPerfect's MIMIQ-CIRC](https://qperfect.io) large scale quantum circuit simulator.
 
-MIMIQ Circuits is currently in the alpha stage and open to test for early
-adopters. We are continuously refining and enhance our tools so we value any
-feedback you may have to ensure that MIMIQ Circuits meets and exceeds your
-expectations. If you want access to MIMIQ Circuits, we encourage you register
-on [our website](https://qperfect.io/index.php/mimiq-circuits>).
+To install `MimiqCircuits`, please [open Julia's interactive session (REPL)](https://docs.julialang.org/en/v1/manual/getting-started/), then press the `]` to start using the package manager mode, then type the following commands.
 
-Embark on this quantum computing journey with us during the beta stage of MIMIQ
-Circuits, and take part in the large scale quantum revolution!
+If it is the first time opening julia update the list of packages
+
+```julia
+update
+```
+
+Then add QPerfect's registry of Julia packages:
+
+```julia
+registry add https://github.com/qperfect-io/QPerfectRegistry.git
+```
+
+To install `MimiqCircuits`, to its last **stable** release,
+
+```julia
+add MimiqCircuits
+```
+
+Check the [installation](installation.md) page, for more details, and our first [tutorial](tutorial.md) for sample usage.

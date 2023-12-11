@@ -1,6 +1,4 @@
-Private types and functions
-
-Documentation for `MimiqCircuits.jl`'s internal interface.
+# Private types and functions
 
 ```@autodocs
 Modules = [MimiqCircuits]

@@ -181,7 +181,8 @@ function _check_file_qasm2(f::AbstractString)
 
             line = readline(io)
 
-            if startswith(line, "//")
+            # if line starts with // or if the line has only spaces
+            if startswith(line, "//") || isempty(line) || all(isspace, line)
                 continue
             end
 
@@ -301,11 +302,13 @@ function getinputs(conn::Connection, ex::Execution)
 
     parameters = JSON.parsefile(joinpath(tmpdir, "parameters.json"))
 
-    if "cirucit.pb" in basename.(names)
+    if CIRCUITPB_FILE in basename.(names)
         circuit = loadproto(joinpath(tmpdir, CIRCUITPB_FILE), Circuit)
     elseif CIRCUITQASM_FILE in basename.(names)
-        circuit = joinpath(tmpdir, CIRCUITPB_FILE)
+        circuit = joinpath(tmpdir, CIRCUITQASM_FILE)
         @info "Downloaded QASM input as $circuit"
+    else
+        error("No valid circuit file found. Input parameters not valid.")
     end
 
     return circuit, parameters

@@ -39,3 +39,5 @@ jobs:
       - uses: julia-actions/julia-docdeploy@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MIMIQUSER: ${{secrets.MIMIQUSER}}
+          MIMIQPASS: ${{secrets.MIMIQPASS}}
