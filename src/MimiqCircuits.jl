@@ -55,8 +55,8 @@ const MAX_BONDDIM = 2^12
 # default bond dimension
 const DEFAULT_BONDDIM = 256
 
-# default time limit
-const DEFAULT_TIME_LIMIT = 5 * 60
+# default time limit (in minutes)
+const DEFAULT_TIME_LIMIT = 5
 
 const RESULTSPB_FILE = "results.pb"
 const CIRCUITPB_FILE = "circuit.pb"
@@ -82,7 +82,7 @@ Optionally amplitudes corresponding to few selected bit states (or bitstrings) c
 * `algorithm`: algorithm to use by the compuation. By default `"auto"` will select the fastest algorithm between `"statevector"` or `"mps"`.
 * `nsamples::Integer`: number of times to sample the circuit (default: 1000, maximum: 2^16)
 * `bitstrings::Vector{BitString}`: list of bit states to compute the amplitudes for (default: `BitString[]`)
-* `timelimit`: number of seconds before the computation is stopped (default: 300 seconds or 5 minutes)
+* `timelimit`: number of minutes before the computation is stopped (default: 5 minutes)
 * `bonddim::Int64`: bond dimension for the MPS algorithm (default: 256, maximum: 4096)
 * `seed::Int64`: a seed for running the simulation (default: random seed)
 """
@@ -210,7 +210,7 @@ Optionally amplitudes corresponding to few selected bit states (or bitstrings) c
 * `algorithm`: algorithm to use by the compuation. By default `"auto"` will select the fastest algorithm between `"statevector"` or `"mps"`.
 * `nsamples::Integer`: number of times to sample the circuit (default: 1000, maximum: 2^16)
 * `bitstrings::Vector{BitString}`: list of bit states to compute the amplitudes for (default: `BitString[]`)
-* `timelimit`: number of seconds before the computation is stopped (default: 300 seconds or 5 minutes)
+* `timelimit`: number of minutes before the computation is stopped (default: 5 minutes)
 * `bonddim::Int64`: bond dimension for the MPS algorithm (default: 256, maximum: 4096)
 * `seed::Int64`: a seed for running the simulation (default: random seed)
 """
@@ -321,9 +321,9 @@ Block until the given execution is finished and return the results.
 
 #  Keyword Arguments
 
-* `interval`: time interval in seconds to check for job completion (default: 10)
+* `interval`: time interval in seconds to check for job completion (default: 1)
 """
-function getresults(conn::Connection, ex::Execution; interval=10)
+function getresults(conn::Connection, ex::Execution; interval=1)
     # wait for the job to finish
     while !isjobdone(conn, ex)
         sleep(interval)
