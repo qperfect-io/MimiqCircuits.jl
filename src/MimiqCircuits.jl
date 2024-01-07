@@ -42,6 +42,9 @@ export executeqasm
 export getinputs
 export getresults
 
+export saveresults
+export loadresults
+
 # maximum number of samples allowed
 const MAX_SAMPLES = 2^16
 
@@ -319,7 +322,7 @@ end
 
 Block until the given execution is finished and return the results.
 
-#  Keyword Arguments
+##  Keyword Arguments
 
 * `interval`: time interval in seconds to check for job completion (default: 1)
 """
@@ -332,12 +335,14 @@ function getresults(conn::Connection, ex::Execution; interval=1)
     infos = MimiqLink.requestinfo(conn, ex)
 
     if infos["status"] == "ERROR"
-        msg = get(infos, "message", nothing)
-        if isnothing(msg)
-            error("Remote job errored.")
+        if haskey(infos, "errorMessage")
+            msg = infos["errorMessage"]
+            error("Remote job errored: $msg")
         else
-            error("Remote job errored: $msg.")
+            error("Remote job errored. If the error persists, please contact support.")
         end
+    elseif infos["status"] == "CANCELED"
+        error("Remote job canceled.")
     end
 
     tmpdir = mktempdir(; prefix="mimiq_res_")
@@ -352,5 +357,19 @@ function getresults(conn::Connection, ex::Execution; interval=1)
 
     return res
 end
+
+"""
+    saveresults(file, results)
+
+Save results to a given file.
+"""
+saveresults(f::AbstractString, res::QCSResults) = saveproto(f, res)
+
+"""
+    loadresults(file)
+
+Load results from a given file.
+"""
+loadresults(f::AbstractString) = loadproto(f, QCSResults)
 
 end # module MimiqCircuits
