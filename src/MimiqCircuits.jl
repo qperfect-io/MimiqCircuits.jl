@@ -54,9 +54,12 @@ const DEFAULT_SAMPLES = 1000
 # minimum and maximum bond dimension allowed
 const MIN_BONDDIM = 1
 const MAX_BONDDIM = 2^12
+const MIN_ENTDIM = 4
+const MAX_ENTDIM = 64
 
 # default bond dimension
 const DEFAULT_BONDDIM = 256
+const DEFAULT_ENTDIM = 16
 
 # default time limit (in minutes)
 const DEFAULT_TIME_LIMIT = 5
@@ -87,6 +90,7 @@ Optionally amplitudes corresponding to few selected bit states (or bitstrings) c
 * `bitstrings::Vector{BitString}`: list of bit states to compute the amplitudes for (default: `BitString[]`)
 * `timelimit`: number of minutes before the computation is stopped (default: 5 minutes)
 * `bonddim::Int64`: bond dimension for the MPS algorithm (default: 256, maximum: 4096)
+* `entdim::Int64`: parameter to control pre compression of the circuit. Higher value makes simulations slower. (default: 16, minimum:4, maximum: 64)
 * `seed::Int64`: a seed for running the simulation (default: random seed)
 """
 function execute(
@@ -98,6 +102,7 @@ function execute(
     bitstrings::Vector{BitString}=BitString[],
     timelimit=DEFAULT_TIME_LIMIT,
     bonddim::Union{Nothing, Integer}=nothing,
+    entdim::Union{Nothing, Integer}=nothing,
     seed::Int64=rand(0:typemax(Int64)),
 )
     if nsamples > MAX_SAMPLES
@@ -139,6 +144,15 @@ function execute(
                 throw(ArgumentError(("Bond dimension should be ∈[1,4096]")))
             end
             pars["bondDimension"] = bonddim
+        end
+
+        if isnothing(entdim)
+            pars["entDimension"] = DEFAULT_ENTDIM
+        else
+            if entdim < MIN_ENTDIM || entdim > MAX_ENTDIM
+                throw(ArgumentError(("entangling dimension should be ∈[4,64]")))
+            end
+            pars["entDimension"] = entdim
         end
     end
 
@@ -226,6 +240,7 @@ function executeqasm(
     bitstrings::Vector{BitString}=BitString[],
     timelimit=DEFAULT_TIME_LIMIT,
     bonddim::Union{Nothing, Integer}=nothing,
+    entdim::Union{Nothing, Integer}=nothing,
     seed::Int64=rand(0:typemax(Int64)),
 )
     if nsamples > MAX_SAMPLES
@@ -267,6 +282,15 @@ function executeqasm(
                 throw(ArgumentError(("Bond dimension should be ∈[1,4096]")))
             end
             pars["bondDimension"] = bonddim
+        end
+
+        if isnothing(entdim)
+            pars["entDimension"] = DEFAULT_ENTDIM
+        else
+            if entdim < MIN_ENTDIM || entdim > MAX_ENTDIM
+                throw(ArgumentError(("entangling dimension should be ∈[4,64]")))
+            end
+            pars["entDimension"] = entdim
         end
     end
 

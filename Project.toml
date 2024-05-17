@@ -1,6 +1,6 @@
 name = "MimiqCircuits"
 uuid = "281e006c-9395-434b-8b58-3065901f9db3"
-version = "0.9.0"
+version = "0.10.1"
 
 [deps]
 JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
@@ -11,7 +11,7 @@ Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
 SHA = "ea8e919c-243c-51af-8825-aaa63cd721ce"
 
 [compat]
-MimiqCircuitsBase = "0.7"
+MimiqCircuitsBase = "0.8"
 MimiqLink = "0.6"
 julia = "1.6"
 
