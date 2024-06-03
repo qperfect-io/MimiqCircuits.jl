@@ -8,6 +8,7 @@ Pages   = [
     "circuit.jl",
     "circuit_extras.jl",
     "circuit_macro.jl",
-    "emplace.jl"
+    "emplace.jl",
+    "draw.jl"
 ]
 ```

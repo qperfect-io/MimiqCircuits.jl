@@ -7,7 +7,7 @@ Here is a simple comprehensive example of executing a QASM file on MIMIQ.
 ```@example qasm
 using MimiqCircuits # hide
 using Plots # hide
-conn = connect(ENV["MIMIQUSER"], ENV["MIMIQPASS"]; url=QPERFECT_CLOUD2) # hide
+conn = connect(ENV["MIMIQUSER"], ENV["MIMIQPASS"]) # hide
 # after connecting to MIMIQ
 #
 # ...
