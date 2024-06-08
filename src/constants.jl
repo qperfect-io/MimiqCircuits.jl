@@ -31,7 +31,7 @@ const DEFAULT_BONDDIM = 256
 const DEFAULT_ENTDIM = 16
 
 # default time limit (in minutes)
-const DEFAULT_TIME_LIMIT = 5
+const DEFAULT_TIME_LIMIT = 30
 
 # default algorithm
 const DEFAULT_ALGORITHM = "auto"
