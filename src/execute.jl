@@ -28,7 +28,7 @@ Optionally amplitudes corresponding to few selected bit states (or bitstrings) c
 * `algorithm`: algorithm to use by the compuation. By default `"auto"` will select the fastest algorithm between `"statevector"` or `"mps"`.
 * `nsamples::Integer`: number of times to sample the circuit (default: 1000, maximum: 2^16)
 * `bitstrings::Vector{BitString}`: list of bit states to compute the amplitudes for (default: `BitString[]`)
-* `timelimit`: number of minutes before the computation is stopped (default: 5 minutes)
+* `timelimit`: number of minutes before the computation is stopped (default: maximum allowed or 30 minutes)
 * `bonddim::Int`: bond dimension for the MPS algorithm (default: 256, maximum: 4096)
 * `entdim::Int`: parameter to control pre compression of the circuit. Higher value makes simulations slower. (default: 16, minimum:4, maximum: 64)
 * `seed::Int`: a seed for running the simulation (default: random seed)
@@ -40,7 +40,7 @@ function execute(
     algorithm::String=DEFAULT_ALGORITHM,
     nsamples=DEFAULT_SAMPLES,
     bitstrings::Vector{BitString}=BitString[],
-    timelimit=DEFAULT_TIME_LIMIT,
+    timelimit=_gettimelimit(conn),
     bonddim::Union{Nothing, Integer}=nothing,
     entdim::Union{Nothing, Integer}=nothing,
     seed::Int=rand(0:typemax(Int)),

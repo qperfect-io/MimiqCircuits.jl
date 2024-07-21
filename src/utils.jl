@@ -72,3 +72,14 @@ function _setmpsdims!(pars, algorithm, bonddim, entdim)
 
     return pars
 end
+
+function _gettimelimit(conn::Connection)
+    limits = fetch(conn.userlimits_channel)
+
+    if haskey(limits, "enabledMaxTimeout") && limits["enabledMaxTimeout"]
+        return limits["maxTimeout"]
+    end
+
+    return DEFAULT_TIME_LIMIT
+end
+
