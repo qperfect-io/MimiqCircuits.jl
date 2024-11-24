@@ -50,7 +50,7 @@ using MimiqCircuits
 
 # Define symbols
 @variables θ φ
-if get(ENV, "MIMIQOUTPUTFORMAT") == "PDF" # hide
+if get(ENV, "MIMIQOUTPUTFORMAT", nothing) == "PDF" # hide
     "[θ, φ]" # hide
 else # hide
     @variables θ φ # hide
