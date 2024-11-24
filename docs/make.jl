@@ -15,20 +15,47 @@ DocMeta.setdocmeta!(
 )
 DocMeta.setdocmeta!(MimiqLink, :DocTestSetup, :(using MimiqLink); recursive=true)
 
-format = Documenter.HTML(
-    collapselevel=2,
-    prettyurls=get(ENV, "CI", nothing) == "true",
-    footer="Copyright 2021-$(year(now())) QPerfect. All rights reserved.",
-)
+if !haskey(ENV, "MIMIQUSER")
+    error("Please define the MIMIQUSER environment with your MIMIQ username.")
+end
+
+if !haskey(ENV, "MIMIQPASS")
+    error("Please define the MIMIQUSER environment with your MIMIQ password.")
+end
+
+if !haskey(ENV, "MIMIQOUTPUTFORMAT") || ENV["MIMIQOUTPUTFORMAT"] == "HTML"
+    format = Documenter.HTML(
+        collapselevel=1,
+        prettyurls=get(ENV, "CI", nothing) == "true",
+        footer="Copyright 2021-$(year(now())) QPerfect. All rights reserved.",
+    )
+elseif ENV["MIMIQOUTPUTFORMAT"] == "PDF"
+    using tectonic_jll: tectonic
+    format = Documenter.LaTeX(platform="tectonic", tectonic=tectonic())
+else
+    error("Unrecognized output format $(ENV["MIMIQOUTPUTFORMAT"])")
+end
 
 pages = Any[
-    "Introduction"=>"index.md",
-    "Installation"=>"installation.md",
-    "Tutorial"=>"tutorial.md",
+    "MIMIQ Documentation"=>"index.md",
+    "Quick start"=>"quick_start.md",
     "Manual"=>[
-        "Circuit execution" => "manual/execution.md",
-        "OpenQASM" => "manual/openqasm.md",
+        "Installation" => "manual/installation.md",
+        #"Quick Examples" => "manual/quick_examples.md",
+        "Overview" => "manual/overview.md",
+        "Circuits" => "manual/circuits.md",
+        "Unitary Gates" => "manual/unitary_gates.md",
+        "Non-unitary Operations" => "manual/non_unitary_ops.md",
+        "Noise" => "manual/noise.md",
+        "Symbolic Operations" => "manual/symbolic_ops.md",
+        "Statistical Operations" => "manual/statistical_ops.md",
+        "Special Operations" => "manual/special_ops.md",
+        "Simulating Circuits" => "manual/simulation.md",
+        "Cloud Execution" => "manual/remote_execution.md",
+        "Import & Export Circuits" => "manual/import_export.md",
+        "Special Topics" => "manual/special_topics.md",
     ],
+    # "Use cases" => ["VQE" => "usecases/vqe.md"],
     "Library"=>[
         "Outline" => "library/outline.md",
         "MimiqCircuits" => "library/mimiqcircuits.md",
@@ -40,6 +67,8 @@ pages = Any[
             "library/mimiqcircuitsbase/standard.md",
             "library/mimiqcircuitsbase/generalized.md",
             "library/mimiqcircuitsbase/other.md",
+            "library/mimiqcircuitsbase/noise.md",
+            "library/mimiqcircuitsbase/operators.md",
             "library/mimiqcircuitsbase/bitstrings.md",
             "library/mimiqcircuitsbase/results.md",
         ],

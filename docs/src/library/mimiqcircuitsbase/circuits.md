@@ -1,14 +1,16 @@
 # Quantum Circuits and Instructions
 
 ```@autodocs
-Modules = [MimiqCircuitsBase]
+Modules = [MimiqCircuitsBase, Base]
 Private = false
 Pages   = [
     "instruction.jl",
     "circuit.jl",
     "circuit_extras.jl",
     "circuit_macro.jl",
-    "emplace.jl",
-    "draw.jl"
+    "circuit/push.jl",
+    "circuit/insert.jl",
+    "circuit/emplace.jl",
+    "circuit/draw.jl",
 ]
 ```

@@ -1,32 +1,53 @@
-# Introduction
+# MIMIQ Documentation
 
-MIMIQ Circuits is a quantum computing framework and high performance simulator
-developed by QPerfect that allows you to develop and run your quantum
-algorithms beyond the limits of today's noisy intermediate scale quantum (NISQ)
-computers.
+Welcome to the documentation of MIMIQ, a quantum emulation platform developed by QPerfect.
 
-# Quick Start
+## Important Links
 
-`MimiqCircuits.jl` is a [Julia Language](https://julialang.org) package containing all the utilities and programming interfaces (APIs) to build quantum systems, connect and execute simulation on [QPerfect's MIMIQ-CIRC](https://qperfect.io) large scale quantum circuit simulator.
+-   [MIMIQ product page](https://qperfect.io/index.php/mimiq/)
+-   [Install MIMIQ](manual/installation.md)
+-   [Quick start](quick_start.md)
+-   [Contact QPerfect](https://qperfect.io/#contact)
 
-To install `MimiqCircuits`, please [open Julia's interactive session (REPL)](https://docs.julialang.org/en/v1/manual/getting-started/), then press the `]` to start using the package manager mode, then type the following commands.
 
-If it is the first time opening julia update the list of packages
+## What is MIMIQ 
 
-```julia
-update
-```
+MIMIQ is a feature-rich quantum computing framework that allows users to design quantum circuits and execute them on MIMIQ's remote service.
 
-Then add QPerfect's registry of Julia packages:
+With MIMIQ you can test new quantum algorithms fast and at scale, emulate their implementation on noisy quantum hardware, and grow your understanding of quantum computing by peeking into the properties of the state during emulation. From variational quantum algorithms to quantum error correction, MIMIQ is a universal emulator well-equipped to handle most quantum circuits of interest.
 
-```julia
-registry add https://github.com/qperfect-io/QPerfectRegistry.git
-```
+### MIMIQ's advantage
 
-To install `MimiqCircuits`, to its last **stable** release,
+We developed MIMIQ as a tool for quantum computing researchers and application developers. 
+Therefore, it has been built for speed, scale and accuracy, as well as ease of use. We achieve this by providing:
 
-```julia
-add MimiqCircuits
-```
+- Efficient implementations of state-of-the-art simulation and compression techniques, which allows to emulate small circuits fast, and large circuits (up to 100s-1000s of qubits) accurately and with fewer resources.
 
-Check the [installation](installation.md) page, for more details, and our first [tutorial](tutorial.md) for sample usage.
+- A cloud interface that gives you greater power for large-scale emulation at your fingertips and allows to parallel execute multiple jobs without disturbing the workflow.
+
+- Simple interface and customizable functionality that facilitates the process of designing and executing quantum circuits.
+
+- Access to a professional set of advanced features for circuit composition (noise, conditional logic, mid-circuit measurements...), access to full quantum state properties (state amplitudes, expectation values, entanglement measures...), and workflow integration (parsers).
+
+### Simulation Methods
+
+MIMIQ gives access to efficient implementations of state-of-the-art emulation methods.
+This includes a State Vector simulator for perfectly accurate simulations on small-scale circuits and a Matrix Product State simulator for larger-scale simulations with a controlled and transparent fidelity metric.
+To see more about the simulators available on the platform head to the [Simulators](manual/simulation.md) page.
+
+## How to use the Documentation
+
+### Exploring the Documentation
+
+On the left panel is located the tree of the different pages that can be found in this documentation. You can click on each part to access the pages of your interest.
+Alternatively if you need to look for something more specific (e.g. a specific function) you can use the search bar above the tree.
+From Julia's REPL you can also type `?` followed by the function you're interested in to get some information.
+
+### Documentation Content
+
+If you are using MIMIQ for the first time it is highly recommended to head to the [installation](manual/installation.md) and [quick start](quick_start.md) pages to install MIMIQ and understand its basic functionalities.
+The core of documentation can be found in the "Manual" where every feature offered by MIMIQ will be covered with explanations and examples.
+For more complete examples of use cases and their implementation take a look at the "Use cases" Section.
+If you encounter any issues using MIMIQ take a look at the "Performance Tips and Common Issues" section, or contact us at [QPerfect](https://qperfect.io/#contact).
+Finally for more in depth explanation of the different functions available you can head to the API section.
+

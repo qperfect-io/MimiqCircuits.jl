@@ -11,7 +11,11 @@ Pages   = ["operation.jl", "list.jl"]
 ```@autodocs
 Modules = [MimiqCircuitsBase]
 Private = false
-Pages   = ["gate.jl"]
+Pages   = [
+    "gate.jl",
+    "operations/gates/standard/sy.jl",
+    "operations/pairmeasure.jl"
+]
 ```
 
 ## Wrappers
@@ -35,3 +39,12 @@ Modules = [MimiqCircuitsBase]
 Private = false
 Pages   = ["decompose.jl"]
 ```
+
+## Classical operations
+
+```@autodocs
+Modules = [MimiqCircuitsBase]
+Private = false
+Pages = ["operations/classical/not.jl"]
+```
+

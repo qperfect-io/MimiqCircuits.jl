@@ -1,5 +1,6 @@
 #
-# Copyright © 2022-2023 University of Strasbourg. All Rights Reserved.
+# Copyright © 2022-2024 University of Strasbourg. All Rights Reserved.
+# Copyright © 2023-2024 QPerfect. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,41 +15,81 @@
 # limitations under the License.
 #
 
+struct QCSError <: Exception
+    msg::String
+end
+
 """
     getinputs(connection, execution)
 
-Returns the circuit and parameters for the given execution.
+Returns the circuits and parameters for the given execution.
+
+See also [`getinput`](@ref), [`getresults`](@ref), [`getresult`](@ref).
 """
 function getinputs(conn::Connection, ex::Execution)
     tmpdir = mktempdir(; prefix="mimiq_in_")
     names = MimiqLink.downloadjobfiles(conn, ex, tmpdir)
 
-    if "parameters.json" ∉ basename.(names)
-        error("$ex is not a valid execution for MimiqCircuits: missing files")
+    if "circuits.json" ∉ basename.(names)
+        error(
+            "$ex is not a valid execution for MimiqCircuits: missing 'circuits.json'. Downloaded files: $(basename.(names))",
+        )
+    end
+    @info "Downloaded files: $(basename.(names))"
+
+    parameters = JSON.parsefile(joinpath(tmpdir, "circuits.json"))
+
+    circuits = []
+
+    for circuit_info in parameters["circuits"]
+        file = circuit_info["file"]
+        file_path = joinpath(tmpdir, file)
+
+        if endswith(file, EXTENSION_PROTO)
+            push!(circuits, loadproto(file_path, Circuit))
+        elseif endswith(file, EXTENSION_QASM)
+            push!(circuits, file_path)
+        elseif endswith(file, EXTENSION_STIM)
+            push!(circuits, file_path)
+        else
+            error("Unsupported circuit file type for file: $file")
+        end
     end
 
-    parameters = JSON.parsefile(joinpath(tmpdir, "parameters.json"))
-
-    if CIRCUITPB_FILE in basename.(names)
-        circuit = loadproto(joinpath(tmpdir, CIRCUITPB_FILE), Circuit)
-    elseif CIRCUITQASM_FILE in basename.(names)
-        circuit = joinpath(tmpdir, CIRCUITQASM_FILE)
-        @info "Downloaded QASM input as $circuit"
-    else
-        error("No valid circuit file found. Input parameters not valid.")
-    end
-
-    return circuit, parameters
+    return circuits, parameters
 end
 
+getinputs(conn::Connection, ex::String) = getinputs(conn, Execution(ex))
+
 """
-    getresults(connection, execution; kwargs...)
+    getinput(connection, execution)
+
+Returns the first circuit and parameters for the given execution.
+
+See also [`getinputs`](@ref), [`getresults`](@ref), [`getresult`](@ref).
+"""
+function getinput(conn::Connection, ex::Execution)
+    circuits, parameters = getinputs(conn, ex)
+
+    if length(circuits) > 1
+        @warn "Multiple circuits found. Returning the first one."
+    end
+
+    return circuits[1], parameters
+end
+
+getinput(conn::Connection, ex::String) = getinput(conn, Execution(ex))
+
+"""
+    getresults(connection, execution[; interval=1])
 
 Block until the given execution is finished and return the results.
 
 ##  Keyword Arguments
 
 * `interval`: time interval in seconds to check for job completion (default: 1)
+
+See also [`getinputs`](@ref), [`getinput`](@ref), [`getresult`](@ref).
 """
 function getresults(conn::Connection, ex::Execution; interval=1)
     # wait for the job to finish
@@ -71,13 +112,46 @@ function getresults(conn::Connection, ex::Execution; interval=1)
 
     tmpdir = mktempdir(; prefix="mimiq_res_")
 
+    # Download results and parse them
     names = MimiqLink.downloadresults(conn, ex, tmpdir)
 
-    if RESULTSPB_FILE ∉ basename.(names)
-        error("$ex is not a valid execution for MimiqCircuits: missing files")
+    if RESULTS_FNAME ∉ basename.(names)
+        error("No results found in $ex.")
     end
 
-    res = loadproto(joinpath(tmpdir, RESULTSPB_FILE), QCSResults)
+    results = JSON.parsefile(joinpath(tmpdir, RESULTS_FNAME))
 
-    return res
+    return map(results) do r
+        if haskey(r, "error")
+            return QCSError(r["error"])
+        end
+
+        fname = joinpath(tmpdir, r["file"])
+
+        if !isfile(fname)
+            error("Missing result file $fname")
+        end
+        return loadproto(joinpath(tmpdir, fname), QCSResults)
+    end
 end
+
+getresults(conn::Connection, ex::String; kwargs...) =
+    getresults(conn, Execution(ex); kwargs...)
+
+"""
+    getresult(connection, execution)
+
+Returns the first circuit and parameters for the given execution.
+
+See also [`getinputs`](@ref), [`getinput`](@ref), [`getresults`](@ref).
+"""
+function getresult(conn::Connection, ex::Execution; kwargs...)
+    results = getresults(conn, ex; kwargs...)
+    if length(results) > 1
+        @warn "Multiple results found. Returning the first one."
+    end
+    return first(results)
+end
+
+getresult(conn::Connection, ex::String; kwargs...) =
+    getresult(conn, Execution(ex); kwargs...)

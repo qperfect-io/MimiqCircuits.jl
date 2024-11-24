@@ -1,5 +1,6 @@
 #
-# Copyright © 2022-2023 University of Strasbourg. All Rights Reserved.
+# Copyright © 2022-2024 University of Strasbourg. All Rights Reserved.
+# Copyright © 2023-2024 QPerfect. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,12 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-function _gethash(f::AbstractString)
-    open(f, "r") do io
-        bytes2hex(sha2_256(io))
-    end
-end
 
 function _pkgversion(mod)
     if VERSION < v"1.9"
@@ -49,25 +44,41 @@ function _check_file_qasm2(f::AbstractString)
     end
 end
 
-function _setmpsdims!(pars, algorithm, bonddim, entdim)
-    if algorithm == "auto" || algorithm == "mps"
-        if isnothing(bonddim)
-            pars["bondDimension"] = DEFAULT_BONDDIM
-        else
-            if bonddim < MIN_BONDDIM || bonddim > MAX_BONDDIM
-                throw(ArgumentError(("Bond dimension should be ∈[1,4096]")))
-            end
-            pars["bondDimension"] = bonddim
-        end
+function _setmpsdims!(pars, algorithm, bonddim, entdim; force=false)
+    if algorithm != "auto" && algorithm != "mps"
+        return pars
+    end
 
-        if isnothing(entdim)
-            pars["entDimension"] = DEFAULT_ENTDIM
-        else
-            if entdim < MIN_ENTDIM || entdim > MAX_ENTDIM
-                throw(ArgumentError(("entangling dimension should be ∈[4,64]")))
-            end
-            pars["entDimension"] = entdim
+    if isnothing(bonddim)
+        pars["bondDimension"] = DEFAULT_BONDDIM
+    else
+        if bonddim < MIN_BONDDIM || bonddim > MAX_BONDDIM
+            throw(ArgumentError(("Bond dimension should be ∈[1,4096]")))
         end
+        pars["bondDimension"] = bonddim
+    end
+
+    if isnothing(entdim)
+        pars["entDimension"] = DEFAULT_ENTDIM
+    else
+        if entdim < MIN_ENTDIM
+            if !force
+                throw(ArgumentError("Entangling dimension should be ∈[4,64]"))
+            else
+                @warn "Running simulation with entdim=$(entdim). Results may be misleading."
+            end
+        elseif entdim > MAX_ENTDIM
+            throw(ArgumentError("Entangling dimension should be ∈[4,64]"))
+        end
+        pars["entDimension"] = entdim
+    end
+
+    return pars
+end
+
+function _setextraargs!(pars, kwargs...)
+    for (key, val) in kwargs
+        pars[string(key)] = val
     end
 
     return pars

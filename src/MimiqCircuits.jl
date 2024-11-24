@@ -1,5 +1,6 @@
 #
-# Copyright © 2022-2023 University of Strasbourg. All Rights Reserved.
+# Copyright © 2022-2024 University of Strasbourg. All Rights Reserved.
+# Copyright © 2023-2024 QPerfect. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -41,18 +42,21 @@ import Pkg
     QPERFECT_CLOUD2
 
 export execute
-export executeqasm
 export getinputs
+export getinput
 export getresults
+export getresult
 
 export saveresults
 export loadresults
 
+export QCSError
+
 include("constants.jl")
 include("utils.jl")
 include("execute.jl")
-include("executeqasm.jl")
 include("get.jl")
+include("deprecated.jl")
 
 """
     saveresults(file, results)

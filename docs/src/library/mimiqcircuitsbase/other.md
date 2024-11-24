@@ -5,7 +5,7 @@
 ```@autodocs
 Modules = [MimiqCircuitsBase]
 Private = false
-Pages   = ["custom.jl"]
+Pages   = ["custom.jl", "operations/operator.jl"]
 ```
 
 ## Gate definitions
@@ -21,7 +21,7 @@ Pages   = ["gatedecl.jl"]
 ```@autodocs
 Modules = [MimiqCircuitsBase]
 Private = false
-Pages   = ["reset.jl", "measure.jl"]
+Pages   = ["reset.jl"]
 ```
 
 ## No-ops
@@ -30,4 +30,12 @@ Pages   = ["reset.jl", "measure.jl"]
 Modules = [MimiqCircuitsBase]
 Private = false
 Pages   = ["barrier.jl"]
+```
+
+## Others
+
+```@autodocs
+Modules = [MimiqCircuitsBase]
+Private = false
+Pages = ["annotations.jl"]
 ```

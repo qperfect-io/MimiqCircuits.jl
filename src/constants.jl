@@ -1,5 +1,6 @@
 #
-# Copyright © 2022-2023 University of Strasbourg. All Rights Reserved.
+# Copyright © 2022-2024 University of Strasbourg. All Rights Reserved.
+# Copyright © 2023-2024 QPerfect. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -36,7 +37,12 @@ const DEFAULT_TIME_LIMIT = 30
 # default algorithm
 const DEFAULT_ALGORITHM = "auto"
 
-const RESULTSPB_FILE = "results.pb"
-const CIRCUITPB_FILE = "circuit.pb"
-const CIRCUITQASM_FILE = "circuit.qasm"
+const CIRCUIT_FNAME = "circuit"
+const EXTENSION_PROTO = "pb"
+const TYPE_PROTO = "proto"
+const TYPE_QASM = "qasm"
+const TYPE_STIM = "stim"
+const EXTENSION_QASM = "qasm"
+const EXTENSION_STIM = "stim"
 
+const RESULTS_FNAME = "results.json"
