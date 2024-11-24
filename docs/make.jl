@@ -93,7 +93,6 @@ makedocs(;
 
 deploydocs(
     repo="github.com/qperfect-io/MimiqCircuits.jl.git",
-    inventory_version=pkgversion(MimiqCircuits),
     forcepush=true,
     push_preview=true,
     devbranch="main",
