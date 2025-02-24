@@ -1,9 +1,9 @@
 name: Private Register
 
-on: 
+on:
   push:
     tags:
-      - 'v[0-9]+.[0-9]+.[0-9]+-dev'
+      - "v[0-9]+.[0-9]+.[0-9]+-private"
 
 jobs:
   register:
@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         julia-version:
-          - '1' # latest stable
+          - "1" # latest stable
         julia-arch:
           - x64
         os:

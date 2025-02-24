@@ -37,8 +37,8 @@ Optionally amplitudes corresponding to few selected bit states (or bitstrings) c
 """
 function execute end
 
-execute(conn::Connection, c::Circuit; kwargs...) = execute(conn, [c]; kwargs...)
-execute(conn::Connection, c::String; kwargs...) = execute(conn, [c]; kwargs...)
+execute(conn, c::Circuit; kwargs...) = execute(conn, [c]; kwargs...)
+execute(conn, c::String; kwargs...) = execute(conn, [c]; kwargs...)
 
 function _file_is_openqasm2(f::AbstractString)
     open(f, "r") do io
@@ -164,7 +164,7 @@ function _file_may_be_stim(f::AbstractString)
 end
 
 function execute(
-    conn::Connection,
+    conn,
     circuits::Vector;
     label::AbstractString="jlapi_$(_pkgversion(@__MODULE__))",
     algorithm::String=DEFAULT_ALGORITHM,
@@ -187,6 +187,15 @@ function execute(
             throw(ArgumentError("Empty circuit element is not allowed"))
         end
     end
+
+    if length(circuits) > 1 && algorithm == "auto"
+        throw(
+            ArgumentError(
+                "The 'auto' algorithm is not supported in batch mode. Please specify 'mps' or 'statevector' for batch executions.",
+            ),
+        )
+    end
+
 
     if nsamples > MAX_SAMPLES
         throw(ArgumentError("Number of samples should be less than 2^16"))
@@ -292,6 +301,8 @@ function execute(
     end
 
     type = "CIRC"
+
+    sleep(0.1)
 
     return MimiqLink.request(
         conn,

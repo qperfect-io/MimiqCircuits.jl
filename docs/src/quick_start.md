@@ -51,7 +51,7 @@ conn = connect()
 
 ```@example quick_start
 using MimiqCircuits # hide
-conn = connect(ENV["MIMIQUSER"], ENV["MIMIQPASS"]; url=QPERFECT_CLOUD2) # hide
+conn = connect(ENV["MIMIQUSER"], ENV["MIMIQPASS"]; url=QPERFECT_DEV) # hide
 ```
 
 For more details see [`cloud execution page`](manual/remote_execution.md) or see the documentation of [`connect`](@ref). If executed without supplemental arguments, `connect()` will start a local webpage and will try to open it with your default browser. As an alternative, `connect("john.smith@example.com", "jonspassword")` allows to insert directly the username and password of the user.
@@ -150,9 +150,9 @@ job = execute(conn, circuit)
 
 This will execute a simulation of the given circuit with default parameters. The default choice of algorithm is `"auto"`.  Generally, there are three available options:
 
-* `"auto"` for the automatically selecting the best algorithm according to circuit size and complexity,
-* `"statevector"` for a highly optimized state vector engine, and
-* `"mps"` for the large-scale Matrix Product States (MPS) method.
+- `"auto"` for the automatically selecting the best algorithm according to circuit size and complexity,
+- `"statevector"` for a highly optimized state vector engine, and
+- `"mps"` for the large-scale Matrix Product States (MPS) method.
 
 Check out the documentation of the [`execute`](@ref) function for details.
 
@@ -177,10 +177,7 @@ plot(res)
 
 Check the [`cloud execution`](manual/remote_execution.md) page for more details on job handling.
 
-
-
 #### OpenQASM and Stim
 
 OpenQASM and Stim files, defining quantum algorithms can be executed on MIMIQ in the same way native circuits can, simply use [`execute`](@ref) and provide the path of the file to upload.
 See the [import-export](manual/import_export.md) page for more details on how include files are handled.
-

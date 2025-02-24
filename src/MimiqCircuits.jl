@@ -36,10 +36,11 @@ import Pkg
     deletefiles,
     requests,
     printrequests,
-    Connection,
     Execution,
     QPERFECT_CLOUD,
-    QPERFECT_CLOUD2
+    QPERFECT_DEV,
+    MimiqConnection,
+    PlanqkConnection
 
 export execute
 export getinputs

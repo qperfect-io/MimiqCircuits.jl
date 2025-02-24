@@ -26,7 +26,7 @@ Returns the circuits and parameters for the given execution.
 
 See also [`getinput`](@ref), [`getresults`](@ref), [`getresult`](@ref).
 """
-function getinputs(conn::Connection, ex::Execution)
+function getinputs(conn, ex::Execution)
     tmpdir = mktempdir(; prefix="mimiq_in_")
     names = MimiqLink.downloadjobfiles(conn, ex, tmpdir)
 
@@ -59,7 +59,7 @@ function getinputs(conn::Connection, ex::Execution)
     return circuits, parameters
 end
 
-getinputs(conn::Connection, ex::String) = getinputs(conn, Execution(ex))
+getinputs(conn, ex::String) = getinputs(conn, Execution(ex))
 
 """
     getinput(connection, execution)
@@ -68,7 +68,7 @@ Returns the first circuit and parameters for the given execution.
 
 See also [`getinputs`](@ref), [`getresults`](@ref), [`getresult`](@ref).
 """
-function getinput(conn::Connection, ex::Execution)
+function getinput(conn, ex::Execution)
     circuits, parameters = getinputs(conn, ex)
 
     if length(circuits) > 1
@@ -78,7 +78,7 @@ function getinput(conn::Connection, ex::Execution)
     return circuits[1], parameters
 end
 
-getinput(conn::Connection, ex::String) = getinput(conn, Execution(ex))
+getinput(conn, ex::String) = getinput(conn, Execution(ex))
 
 """
     getresults(connection, execution[; interval=1])
@@ -91,7 +91,7 @@ Block until the given execution is finished and return the results.
 
 See also [`getinputs`](@ref), [`getinput`](@ref), [`getresult`](@ref).
 """
-function getresults(conn::Connection, ex::Execution; interval=1)
+function getresults(conn, ex::Execution; interval=1)
     # wait for the job to finish
     while !isjobdone(conn, ex)
         sleep(interval)
@@ -135,8 +135,7 @@ function getresults(conn::Connection, ex::Execution; interval=1)
     end
 end
 
-getresults(conn::Connection, ex::String; kwargs...) =
-    getresults(conn, Execution(ex); kwargs...)
+getresults(conn, ex::String; kwargs...) = getresults(conn, Execution(ex); kwargs...)
 
 """
     getresult(connection, execution)
@@ -145,7 +144,7 @@ Returns the first circuit and parameters for the given execution.
 
 See also [`getinputs`](@ref), [`getinput`](@ref), [`getresults`](@ref).
 """
-function getresult(conn::Connection, ex::Execution; kwargs...)
+function getresult(conn, ex::Execution; kwargs...)
     results = getresults(conn, ex; kwargs...)
     if length(results) > 1
         @warn "Multiple results found. Returning the first one."
@@ -153,5 +152,4 @@ function getresult(conn::Connection, ex::Execution; kwargs...)
     return first(results)
 end
 
-getresult(conn::Connection, ex::String; kwargs...) =
-    getresult(conn, Execution(ex); kwargs...)
+getresult(conn, ex::String; kwargs...) = getresult(conn, Execution(ex); kwargs...)

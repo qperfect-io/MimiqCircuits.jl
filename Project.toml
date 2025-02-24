@@ -1,7 +1,7 @@
 name = "MimiqCircuits"
 uuid = "281e006c-9395-434b-8b58-3065901f9db3"
 authors = ["Guido Masella <guido.masella@qperfect.io>"]
-version = "0.17.4"
+version = "0.18.0"
 
 [deps]
 JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
@@ -13,7 +13,7 @@ SHA = "ea8e919c-243c-51af-8825-aaa63cd721ce"
 
 [compat]
 MimiqCircuitsBase = "0.13"
-MimiqLink = "0.9"
+MimiqLink = "0.10"
 julia = "1.6"
 
 [extras]

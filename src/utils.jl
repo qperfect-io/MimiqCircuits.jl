@@ -84,7 +84,7 @@ function _setextraargs!(pars, kwargs...)
     return pars
 end
 
-function _gettimelimit(conn::Connection)
+function _gettimelimit(conn::MimiqConnection)
     limits = fetch(conn.userlimits_channel)
 
     if haskey(limits, "enabledMaxTimeout") && limits["enabledMaxTimeout"]
@@ -94,3 +94,4 @@ function _gettimelimit(conn::Connection)
     return DEFAULT_TIME_LIMIT
 end
 
+_gettimelimit(::PlanqkConnection) = DEFAULT_TIME_LIMIT

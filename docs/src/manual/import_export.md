@@ -19,11 +19,13 @@ In particular, MIMIQ allows to import circuits in well-known languages such as O
 ### Export ProtoBuf files from MIMIQ
 
 After building a circuit in MIMIQ you can export it into a ProtoBuf format using the [saveproto](@ref) function. You need to give it two arguments, the name of the file to create (`.pb` format) and the circuit to save.
+
 ```julia
 saveproto("my_circuit.pb", circuit)
 ```
 
 The same method allows you to save your simulation results in a ProtoBuf file.
+
 ```julia
 # get the results
 results = getresults(conn, job)
@@ -36,7 +38,6 @@ saveproto("my_results.pb", results)
 
 !!! note
     You can only export a circuit into ProtoBuf format and cannot export an OpenQASM or Stim file in the current version of MIMIQ.
-
 
 ### Import ProtoBuf file to MIMIQ
 
@@ -73,7 +74,7 @@ using Plots # hide
 str_name = get(ENV, "MIMIQCLOUD", nothing) # hide
 new_url = # hide
     str_name == "QPERFECT_CLOUD" ? QPERFECT_CLOUD : # hide
-    str_name == "QPERFECT_CLOUD2" ? QPERFECT_CLOUD2 : # hide
+    str_name == "QPERFECT_DEV" ? QPERFECT_DEV : # hide
     isnothing(str_name) ? QPERFECT_CLOUD : # hide
     str_name # hide
 conn = connect(ENV["MIMIQUSER"], ENV["MIMIQPASS"]; url=new_url) # hide
@@ -130,9 +131,9 @@ Another alternative is to use the `mimiqlib.inc` directly in your file. For now 
 During the parsing of the QASM file, we will assign a unique index to each qubit and classical bit. This index will be used to identify the qubit or bit in the MIMIQ service.
 The indices are assigned in the following way:
 
-* The first qubit is assigned index `1` (Julia), the second `2`, and so on.
-* All registers retain the same ordering as in the QASM file.
-* Qubits and classical bits behave similarly but each has its own sequence of indices, starting from `1`.
+- The first qubit is assigned index `1` (Julia), the second `2`, and so on.
+- All registers retain the same ordering as in the QASM file.
+- Qubits and classical bits behave similarly but each has its own sequence of indices, starting from `1`.
 
 A simple example will clarify this behaviour:
 
@@ -161,7 +162,6 @@ Will be parsed as:
 | `g[0]` | | `11` |
 | `g[1]` | | `12` |
 
-
 ## Stim
 
 ### Execute Stim file on MIMIQ
@@ -177,6 +177,3 @@ job = execute(conn, "my_stim_circuit.stim")
     The support of Stim is still in progress and some of the most specific Stim features are not supported. For instance, detectors will be completely ignored by MIMIQ at exectution time.
 
 The results of the simulation can be accessed as usual on MIMIQ, see [remote execution](remote_execution.md) page.
-
-
-

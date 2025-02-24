@@ -24,7 +24,6 @@ Use the following links to navigate through the sections:
     - [List all jobs](#list-all-jobs)
     - [Get inputs](#get-inputs)
 
-
 ## Cloud Service
 
 MIMIQ provides remote execution of quantum circuits via its cloud services, allowing users to run quantum jobs on high-performance infrastructure. You can connect to the cloud server by providing your credentials and accessing the MIMIQ cloud URL at [https://mimiq.qperfect.io/sign-in].
@@ -50,13 +49,13 @@ The Status tab allows you to filter jobs based on their status. By clicking on t
 
 When a job is submitted to the MIMIQ cloud services, it goes through various status stages:
 
-  - `NEW`: When a job is initially submitted, its status is marked as NEW, indicating that it has entered the queue but has not started executing yet. In this stage, the job is waiting for previous jobs in the queue to complete, whether they finish successfully or encounter errors.
+- `NEW`: When a job is initially submitted, its status is marked as NEW, indicating that it has entered the queue but has not started executing yet. In this stage, the job is waiting for previous jobs in the queue to complete, whether they finish successfully or encounter errors.
 
-  - `RUNNING`: Once all prior jobs are completed, your job will begin execution, and its status will change to RUNNING. At this point, the job is actively being processed by the MIMIQ engine, either by the statevector simulator or MPS algorithm, depending on the job configuration.
+- `RUNNING`: Once all prior jobs are completed, your job will begin execution, and its status will change to RUNNING. At this point, the job is actively being processed by the MIMIQ engine, either by the statevector simulator or MPS algorithm, depending on the job configuration.
 
-  - `DONE`: Upon successful completion, the job status changes to DONE, indicating that the quantum circuit has finished executing and the results are available for retrieval.
+- `DONE`: Upon successful completion, the job status changes to DONE, indicating that the quantum circuit has finished executing and the results are available for retrieval.
 
-  - `ERROR`: If the job encounters an issue during execution, such as exceeding the time limit or encountering hardware or software errors, its status will change to ERROR. Users can then review the error logs to diagnose the problem. You can also hover your mouse over the word `ERROR` and a short error message will appear.
+- `ERROR`: If the job encounters an issue during execution, such as exceeding the time limit or encountering hardware or software errors, its status will change to ERROR. Users can then review the error logs to diagnose the problem. You can also hover your mouse over the word `ERROR` and a short error message will appear.
 
 **Job ID**
 
@@ -74,7 +73,6 @@ Key features of user management include:
 
 - Adding New Users: Organization managers can invite new users to join their organization, enabling them to submit jobs. However, there is a limit to how many users can be added based on the organization’s plan.
 - Role Management: Organization managers can assign roles and manage permissions within their team, ensuring that the right users have the necessary access to cloud resources.
-
 
 ## Connecting to server for sending jobs
 
@@ -124,9 +122,8 @@ catch
 end
 ```
 
-!!! note
-    Tokens stay valid only for one day.
-
+!!! Note
+      Tokens stay valid only for one day.
 
 ## Execution
 
@@ -159,7 +156,6 @@ job = Execution("job-id")
 
 Here, `"job-id"` is the unique identifier of the job, which you can find in the dashboard of the web interface, see [cloud service](#cloud-service) section.
 
-
 **Example**:
 
 ```@example Execute
@@ -167,7 +163,7 @@ using MimiqCircuits # hide
 str_name = get(ENV, "MIMIQCLOUD", nothing) # hide
 new_url = # hide
     str_name == "QPERFECT_CLOUD" ? QPERFECT_CLOUD : # hide
-    str_name == "QPERFECT_CLOUD2" ? QPERFECT_CLOUD2 : # hide
+    str_name == "QPERFECT_DEV" ? QPERFECT_DEV : # hide
     isnothing(str_name) ? QPERFECT_CLOUD : # hide
     str_name # hide
 conn = connect(ENV["MIMIQUSER"], ENV["MIMIQPASS"]; url=new_url) # hide
@@ -188,7 +184,6 @@ job_single = execute(conn, c1; nsamples=1000, label="Single_run")
 job_batch = execute(conn, [c1, c2]; nsamples=1000, label="batch_run")
 ```
 
-
 ## Results
 
 After submitting executions, you can retrieve your simulation results in two different ways: through the cloud server, or from your Julia session.
@@ -198,7 +193,7 @@ After submitting executions, you can retrieve your simulation results in two dif
 
 ### Getting results (Cloud server)
 
-You can download results directly from the cloud server web interface by clicking the box under the *Resulted files* tab, see [cloud server](#cloud-service) section. This will download a Protobuf file (`.pb`) and save it locally. The results can then be loaded to your Julia session using the [`loadproto`](@ref) function. 
+You can download results directly from the cloud server web interface by clicking the box under the *Resulted files* tab, see [cloud server](#cloud-service) section. This will download a Protobuf file (`.pb`) and save it locally. The results can then be loaded to your Julia session using the [`loadproto`](@ref) function.
 
 To learn more about Protobuf and how to save/load results, check out the [import & export](import_export.md) page, and the [saving and loading results](#saving-and-loading-results) section.
 
@@ -212,9 +207,9 @@ They are both called in a similar way as `getresults(connection, execution; kwar
 
 **Parameters:**
 
-  - `connection (Connection)`: The active connection to the MIMIQ services, see [connection](#connecting-to-server-for-sending-jobs) section.
-  - `execution (Execution)`: The execution object representing the job whose results are to be fetched, see [execution](#execution) section. If you saved the output of `execute` then you can pass it to `getresults` (see example below). If you didn't save it, then you can copy the job ID from the Cloud server (see [cloud service](#cloud-service) section) and pass it to `getresults` as `Execution("job-id")`.
-  - `interval (Int)`: Time interval in seconds between calls to the remote to check for job completion (default: 1 second). A shorter interval results in more frequent checks, while a longer interval reduces the frequency of status checks, saving computational resources.
+- `connection (Connection)`: The active connection to the MIMIQ services, see [connection](#connecting-to-server-for-sending-jobs) section.
+- `execution (Execution)`: The execution object representing the job whose results are to be fetched, see [execution](#execution) section. If you saved the output of `execute` then you can pass it to `getresults` (see example below). If you didn't save it, then you can copy the job ID from the Cloud server (see [cloud service](#cloud-service) section) and pass it to `getresults` as `Execution("job-id")`.
+- `interval (Int)`: Time interval in seconds between calls to the remote to check for job completion (default: 1 second). A shorter interval results in more frequent checks, while a longer interval reduces the frequency of status checks, saving computational resources.
 
 !!! warning
     Both `getresults` and `getresult` block further code execution until the job requested has finished. If you want to check the status of the job before attempting to retrieve results, we recommend using [`isjobdone`](@ref), see [job management](#useful-job-management-features) section.
@@ -229,7 +224,7 @@ using MimiqCircuits # hide
 str_name = get(ENV, "MIMIQCLOUD", nothing) # hide
 new_url = # hide
     str_name == "QPERFECT_CLOUD" ? QPERFECT_CLOUD : # hide
-    str_name == "QPERFECT_CLOUD2" ? QPERFECT_CLOUD2 : # hide
+    str_name == "QPERFECT_DEV" ? QPERFECT_DEV : # hide
     isnothing(str_name) ? QPERFECT_CLOUD : # hide
     str_name # hide
 conn = connect(ENV["MIMIQUSER"], ENV["MIMIQPASS"]; url=new_url) # hide
@@ -253,7 +248,6 @@ job_batch = execute(conn, [c1, c2]; nsamples=1000, label="batch_run") # hide
 res_single = getresult(conn, job_single)
 res_batch = getresults(conn, job_batch)
 ```
-
 
 ### Format of Results
 
@@ -307,7 +301,7 @@ using MimiqCircuits # hide
 str_name = get(ENV, "MIMIQCLOUD", nothing) # hide
 new_url = # hide
     str_name == "QPERFECT_CLOUD" ? QPERFECT_CLOUD : # hide
-    str_name == "QPERFECT_CLOUD2" ? QPERFECT_CLOUD2 : # hide
+    str_name == "QPERFECT_DEV" ? QPERFECT_DEV : # hide
     isnothing(str_name) ? QPERFECT_CLOUD : # hide
     str_name # hide
 conn = connect(ENV["MIMIQUSER"], ENV["MIMIQPASS"]; url=new_url) # hide
@@ -352,7 +346,7 @@ using MimiqCircuits # hide
 str_name = get(ENV, "MIMIQCLOUD", nothing) # hide
 new_url = # hide
     str_name == "QPERFECT_CLOUD" ? QPERFECT_CLOUD : # hide
-    str_name == "QPERFECT_CLOUD2" ? QPERFECT_CLOUD2 : # hide
+    str_name == "QPERFECT_DEV" ? QPERFECT_DEV : # hide
     isnothing(str_name) ? QPERFECT_CLOUD : # hide
     str_name # hide
 conn = connect(ENV["MIMIQUSER"], ENV["MIMIQPASS"]; url=new_url) # hide
@@ -391,7 +385,7 @@ using MimiqCircuits # hide
 str_name = get(ENV, "MIMIQCLOUD", nothing) # hide
 new_url = # hide
     str_name == "QPERFECT_CLOUD" ? QPERFECT_CLOUD : # hide
-    str_name == "QPERFECT_CLOUD2" ? QPERFECT_CLOUD2 : # hide
+    str_name == "QPERFECT_DEV" ? QPERFECT_DEV : # hide
     isnothing(str_name) ? QPERFECT_CLOUD : # hide
     str_name # hide
 conn = connect(ENV["MIMIQUSER"], ENV["MIMIQPASS"]; url=new_url) # hide
@@ -425,7 +419,6 @@ saveproto("res_batch_1.pb", res_batch[1])
 loadproto("res_single.pb", QCSResults)
 loadproto("res_batch_1.pb", QCSResults)
 ```
-
 
 ## Useful Job Management Features
 

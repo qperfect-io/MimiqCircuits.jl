@@ -7,7 +7,7 @@ Some parts of the documentation will require access to a remote service for MIMI
 ```
 export MIMIQUSER="youruser@yourdomanin.com"
 export MIMIQPASS="yourpassword"
-export MIMIQCLOUD="QPERFECT_CLOUD2"
+export MIMIQCLOUD="QPERFECT_DEV"
 ```
 
 Once the credentials have been set, the documentation can be built with the following commands:
@@ -23,4 +23,3 @@ julia --project=. -e 'import Pkg; Pkg.develop(path="..")'
 
 julia --project=. make.jl
 ```
-
