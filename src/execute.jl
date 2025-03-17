@@ -33,6 +33,8 @@ Optionally amplitudes corresponding to few selected bit states (or bitstrings) c
 * `timelimit`: number of minutes before the computation is stopped (default: maximum allowed or 30 minutes)
 * `bonddim::Int`: bond dimension for the MPS algorithm (default: 256, maximum: 4096)
 * `entdim::Int`: parameter to control pre compression of the circuit. Higher value makes simulations slower. (default: 16, minimum:4, maximum: 64)
+* `fuse::Bool`: whether or not to fuse the gates in the circuit (default: up to remote)
+* `reorderqubits::Bool`: whether or not to reorder the qubits in the circuit (default: up to remote)
 * `seed::Int`: a seed for running the simulation (default: random seed)
 """
 function execute end
@@ -173,6 +175,8 @@ function execute(
     timelimit=_gettimelimit(conn),
     bonddim::Union{Nothing, Integer}=nothing,
     entdim::Union{Nothing, Integer}=nothing,
+    fuse::Union{Nothing, Bool}=nothing,
+    reorderqubits::Union{Nothing, Bool}=nothing,
     force::Bool=false,
     seed::Int=rand(0:typemax(Int)),
     kwargs...,
@@ -216,6 +220,14 @@ function execute(
         "samples" => nsamples,
         "seed" => seed,
     )
+
+    if !isnothing(fuse)
+        pars["fuse"] = fuse
+    end
+
+    if !isnothing(reorderqubits)
+        pars["reorderQubits"] = reorderqubits
+    end
 
     pars["circuits"] = Dict{String, Any}[]
     circuitspath = String[]
