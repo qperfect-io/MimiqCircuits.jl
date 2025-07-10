@@ -29,6 +29,7 @@ Pages   = [
     "operations/power.jl",
     "operations/parallel.jl",
     "operations/ifstatement.jl",
+    "operations/repeat.jl",
 ]
 ```
 
@@ -47,4 +48,3 @@ Modules = [MimiqCircuitsBase]
 Private = false
 Pages = ["operations/classical/not.jl"]
 ```
-

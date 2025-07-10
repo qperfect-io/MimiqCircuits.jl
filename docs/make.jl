@@ -49,6 +49,8 @@ pages = Any[
         "Noise" => "manual/noise.md",
         "Symbolic Operations" => "manual/symbolic_ops.md",
         "Statistical Operations" => "manual/statistical_ops.md",
+        "Z-register operation" => "manual/zops.md",
+        "hamiltonian" => "manual/hamiltonian.md",
         "Special Operations" => "manual/special_ops.md",
         "Simulating Circuits" => "manual/simulation.md",
         "Cloud Execution" => "manual/remote_execution.md",
@@ -71,6 +73,8 @@ pages = Any[
             "library/mimiqcircuitsbase/operators.md",
             "library/mimiqcircuitsbase/bitstrings.md",
             "library/mimiqcircuitsbase/results.md",
+            "library/mimiqcircuitsbase/hamiltonian.md",
+            "library/mimiqcircuitsbase/aliases.md"
         ],
         "Internals" => "library/internals.md",
         "Function Index" => "library/function_index.md",

@@ -181,7 +181,7 @@ push!(c2, GateH(), 2)
 job_single = execute(conn, c1; nsamples=1000, label="Single_run")
 
 # Execute circuits in batch mode
-job_batch = execute(conn, [c1, c2]; nsamples=1000, label="batch_run")
+job_batch = execute(conn, [c1, c2]; nsamples=1000, label="batch_run", algorithm="statevector")
 ```
 
 ## Results
@@ -242,7 +242,7 @@ push!(c2, GateH(), 2) # hide
 job_single = execute(conn, c1; nsamples=1000, label="Single_run") # hide
 
 # Execute circuits in batch mode # hide
-job_batch = execute(conn, [c1, c2]; nsamples=1000, label="batch_run") # hide
+job_batch = execute(conn, [c1, c2]; nsamples=1000, label="batch_run", algorithm="statevector") # hide
 
 # Getting the Results
 res_single = getresult(conn, job_single)
@@ -403,7 +403,7 @@ push!(c2, GateH(), 2) # hide
 job_single = execute(conn, c1; nsamples=1000, label="Single_run") # hide
 
 # Execute circuits in batch mode # hide
-job_batch = execute(conn, [c1, c2]; nsamples=1000, label="batch_run") # hide
+job_batch = execute(conn, [c1, c2]; nsamples=1000, label="batch_run", algorithm="statevector") # hide
 
 # Getting the Results # hide
 res_single = getresult(conn, job_single) # hide

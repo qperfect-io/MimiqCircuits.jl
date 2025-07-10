@@ -138,8 +138,6 @@ The [`BitString`](@ref) class includes functionality for conversion to integer r
   to01(bs, endianess=:little)
   ```
 
-    
-
 ### Bitwise Operators
 
 [`BitString`](@ref) supports bitwise operations such as NOT, AND, OR, XOR, as well as bitwise shifts:

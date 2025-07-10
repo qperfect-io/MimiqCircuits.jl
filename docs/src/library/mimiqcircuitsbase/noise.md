@@ -16,6 +16,5 @@ Pages = [
     "operations/noisechannels/standard/depolarizing.jl",
     "operations/noisechannels/standard/pauli.jl",
     "operations/noisechannels/mixedunitary.jl",
-    "operations/generalized/paulistrings.jl",
 ]
 ```

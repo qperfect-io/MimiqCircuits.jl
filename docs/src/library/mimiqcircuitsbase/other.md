@@ -13,7 +13,7 @@ Pages   = ["custom.jl", "operations/operator.jl"]
 ```@autodocs
 Modules = [MimiqCircuitsBase]
 Private = false
-Pages   = ["gatedecl.jl"]
+Pages   = ["gatedecl.jl", "operations/block.jl"]
 ```
 
 ## Non-unitary operations
@@ -32,10 +32,26 @@ Private = false
 Pages   = ["barrier.jl"]
 ```
 
-## Others
+## Annotations
 
 ```@autodocs
 Modules = [MimiqCircuitsBase]
 Private = false
 Pages = ["annotations.jl"]
+```
+
+## Classical registers
+
+```@autodocs
+Modules = [MimiqCircuitsBase]
+Private = false
+Pages = ["classical.jl"]
+```
+
+## Z-register Arithmetic
+
+```@autodocs
+Modules = [MimiqCircuitsBase]
+Private = false
+Pages = ["complex.jl"]
 ```

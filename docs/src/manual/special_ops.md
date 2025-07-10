@@ -17,6 +17,7 @@ MIMIQ offers further possibilities to create circuits, such as new gate declarat
 
 Using MIMIQ you can define your own gates with a given name, arguments and instructions.
 For examples if you wish to apply an `H` gate followed by an `RX` gate with a specific argument for the rotation you can use [`GateDecl`](@ref) or `@gatedecl` as follows:
+
 ```@example special_op
 using MimiqCircuits # hide
 @gatedecl ansatz(rot) = begin
@@ -29,11 +30,13 @@ using MimiqCircuits # hide
     return c
 end
 ```
+
 Here, `ansatz` is the name that will be shown when printing or drawing the circuit and the variable name for the declaration. Then `ansatz(...)` is how we instantiate the gate and `(rot)` defines the gate parameters.
 
 As you can see in the code above, to generate your own gate declaration you will need to instantiate [`Instruction`](@ref)s. Instructions are instantiated using one operation followed by a list of targets needed by the operation. The order of the target follows the usual quantum register -> classical register -> Z-register order. Basically, it works the same way as [`push!`](@ref) except that no circuit is passed as an argument.
 
 After declaration you can add it to your circuit using [`push!`](@ref).
+
 ```@example special_op
 circuit = Circuit() # hide
 push!(circuit, ansatz(pi), 1, 2)
@@ -48,6 +51,7 @@ push!(circuit, ansatz(pi), 1, 2)
 Creating a gate declaration allows you to add easily the same sequence of gates in a very versatile way and manipulate your new gate like you would with any other gate. This means that you can combine it with other gates via [`Control`](@ref), add noise to the whole block in one call, use it as an operator for [`ExpectationValue`](@ref), use it within an [`IfStatement`](@ref) etc. See [unitary gates](unitary_gates.md), [non-unitary operations](non_unitary_ops.md), and [noise](noise.md) pages.
 
 For example, here is how to add noise to the previous gate declaration:
+
 ```@example special_op
 circuit = Circuit()
 my_gate = ansatz(pi)
@@ -60,12 +64,113 @@ draw(circuit)
 ```
 
 You can use it in an [`IfStatement`](@ref) as follows:
+
 ```julia
 IfStatement(my_gate, bs"111")
 ```
 
 Note that this type of combined operation does not work if we pass a circuit as an argument, instead of a declared gate (more precisely, a [`GateCall`](@ref), see note above).
 
+## Blocks of Instructions
+
+Blocks in MIMIQ allow you to encapsulate a collection of quantum operations as a reusable unit. They're particularly useful when you want to group instructions together that implement a specific algorithm or subroutine.
+
+A `Block` can be created in several ways:
+
+```julia
+# Empty block with specified dimensions
+Block(num_qubits, num_bits, num_variables)
+
+# From an existing circuit
+Block(circuit)
+
+# From a vector of instructions
+Block(instructions)
+
+# Empty block with named parameters
+Block(; nq=2, nc=1, nz=0)
+```
+
+Unlike gate declarations that create new gates, blocks simply group existing instructions without restriction on their nature or type.
+
+### Example: Error Correction Code Block
+
+```julia
+using MimiqCircuits
+
+# Create a simple error detection code block
+error_detection = let c = Circuit()
+    push!(c, GateCX(), 1, 2)
+    push!(c, GateCX(), 1, 3)
+    push!(c, MeasureZ(), 2, 1)  # Measure qubit 2 to bit 1
+    push!(c, MeasureZ(), 3, 2)  # Measure qubit 3 to bit 2
+    push!(c, IfStatement(GateX(), bs"01"), 1, 1, 2)  # Error correction
+    push!(c, IfStatement(GateX(), bs"10"), 1, 1, 2)  # Error correction
+    Block(c)
+end
+
+# Use the block in a larger circuit
+main_circuit = Circuit()
+push!(main_circuit, error_detection, 1, 2, 3, 1, 2)
+push!(main_circuit, GateH(), 1)
+push!(main_circuit, error_detection, 1, 2, 3, 1, 2)
+```
+
+### Working with Blocks
+
+Blocks have fixed dimensions (number of qubits, bits, and z-variables) when created. Any operations added to the block must respect these dimensions.
+
+```julia
+b = Block(2, 1, 0)  # A block with 2 qubits, 1 bit, and 0 z-variables
+push!(b, GateH(), 1)  # Add Hadamard gate on first qubit
+push!(b, GateX(), 2)  # Add X gate on second qubit
+push!(b, GateCNOT(), 1, 2)  # Add CNOT between qubits
+```
+
+Trying to add operations that use more resources than the block dimensions will result in an error:
+
+```julia
+push!(b, GateH(), 3)  # Error: Qubits out of range for a block
+```
+
+Blocks can be iterated over, indexed, and have a length just like circuits:
+
+```julia
+length(b)  # Number of instructions in the block
+b[1]       # First instruction in the block
+```
+
+### When to use Blocks vs Gate Declarations
+
+Use Blocks when you want to:
+
+- Group instructions together for organization
+- Reuse a sequence of operations multiple times
+- Apply a group of operations to different sets of qubits
+
+Use Gate Declarations when you want to:
+
+- Define a new unitary operation with a specific name
+- Create a parameterized gate that can be reused with different parameters
+- Apply advanced operations like control, noise, or measurement to the entire gate as a unit
+
+## Repeated Operations
+
+The `Repeat` operation allows you to apply the same quantum operation multiple times. This can be particularly useful for algorithms that require iterative application of the same operation, such as quantum walks or amplitude amplification.
+
+### Creating Repeated Operations
+
+There are two main ways to create repeated operations:
+
+```julia
+# Using the Repeat constructor
+Repeat(n, operation)  # Apply operation n times
+
+# Using the repeat function (recommended)
+repeat(n, operation)  # Also applies operation n times, with automatic simplification
+```
+
+The repeat function offers automatic simplification where possible, so it's generally preferred over the direct constructor.
 
 ## Composite Gates
 
@@ -77,12 +182,15 @@ These composite gates are different from the other gates in that the number of t
 ### Pauli String
 
 A [`PauliString`](@ref) is an ``N``-qubit tensor product of Pauli operators of the form
+
 ```math
 P_1 \otimes P_2 \otimes P_3 \otimes \ldots \otimes P_N,
 ```
+
 where each ``P_i \in \{ I, X, Y, Z \}`` is a single-qubit Pauli operator, including the identity.
 
 To create an operator using [`PauliString`](@ref) we simply pass as argument the Pauli string written as a `String`:
+
 ```@example special_op
 circuit = Circuit() # hide
 push!(circuit, PauliString("IXYZ"), 1, 2, 3, 4)
@@ -90,9 +198,33 @@ push!(circuit, PauliString("IXYZ"), 1, 2, 3, 4)
 
 You can give it an arbitrary number of Pauli operators.
 
+### Generalized Pauli Rotations
+
+A generalized Pauli rotation is a rotation around the axis of a given multi qubit Pauli string. It is defined as
+
+```math
+\exp{-\imath \frac{\theta}{2} P_1 \otimes P_2 \otimes P_3 \otimes \ldots \otimes P_N},
+```
+
+where  each ``P_i \in \{ I, X, Y, Z \}`` is a single-qubit Pauli operator, including the identity.
+
+To create a generalized Pauli rotation we can use the [`RPauli`](@ref) gate. The syntax is similar to the [`PauliString`](@ref) gate, but we need to add the rotation angle as an argument, e.g. `RPauli(pauli"IXYZ", 1.23)`.
+
+```@example special_op
+circuit = Circuit() # hide
+push!(circuit, RPauli(pauli"IXYZ", 1.23), 1, 2, 3, 4)
+```
+
+A special case of a generalized Pauli rotation is the case where all Pauli operators are ``Z``. For this case MIMIQ defines another generalized gate `GateRNZ(num_qubits, theta)`. It is equivalent to `RPauli(pauli"ZZZZ", theta)` however sometimes it can be treated differently by the simulators, and executed faster, using specialized algorithms (`GateRNZ` is a multi-qubit diagonal gate). For example `RPauli` will be decomposed into single qubit gates, while `GateRNZ` will be executed as a single gate.
+
+```@example special_op
+circuit = Circuit() # hide
+push!(circuit, GateRNZ(4, 1.23), 1, 2, 3, 4)
+```
+
 ### Quantum Fourier Transform
 
-The [Quantum Fourier transform](https://en.wikipedia.org/wiki/Quantum_Fourier_transform) is a circuit used to realize a linear tranformation on qubits and is a building block of many larger circuits such as [Shor's algorithm](https://en.wikipedia.org/wiki/Shor%27s_algorithm) or the [quantum phase estimation](https://en.wikipedia.org/wiki/Quantum_phase_estimation_algorithm). 
+The [Quantum Fourier transform](https://en.wikipedia.org/wiki/Quantum_Fourier_transform) is a circuit used to realize a linear tranformation on qubits and is a building block of many larger circuits such as [Shor's algorithm](https://en.wikipedia.org/wiki/Shor%27s_algorithm) or the [quantum phase estimation](https://en.wikipedia.org/wiki/Quantum_phase_estimation_algorithm).
 
 The QFT maps an arbitrary quantum state ``\ket{x} = \sum_{j = 0}^{N-1} x_{j}\ket{j}``
 to a quantum state ``\sum_{k=0}^{N-1} y_{k}\ket{k}`` according to the formula
@@ -102,11 +234,13 @@ to a quantum state ``\sum_{k=0}^{N-1} y_{k}\ket{k}`` according to the formula
 y_{k} = \frac{1}{\sqrt{N}} \sum_{j=0}^{N-1} x_{j}w_{N}^{-jk}
 \end{aligned}
 ```
+
 where ``w_N = e^{2\pi i / N}``.
 
 In MIMIQ the [`QFT`](@ref) gate allows you to quickly implement a QFT in your circuit on an arbitrary ``N`` number of qubits.
 You can instantiate the QFT gate by giving it the number of qubits you want to use `QFT(N)`
 and you can add it like any other gate in the circuit.
+
 ```@example special_op
 circuit = Circuit() # hide
 push!(circuit, QFT(5), 1:5...)
@@ -126,10 +260,12 @@ A phase gradient gate applies a phase shift to a quantum register of ``N`` qubit
 ```
 
 To use it you can simply give it the number of qubit targets and add it to the circuit like the following examples:
+
 ```@example special_op
 circuit = Circuit() # hide
 push!(circuit, PhaseGradient(5), 1:5...)
 ```
+
 This will add a 5 qubits [`PhaseGradient`](@ref) to the first 5 qubits of the quantum register.
 
 ### Polynomial Oracle
@@ -146,6 +282,7 @@ Here is how to use the [`PolynomialOracle`](@ref):
 circuit = Circuit() # hide
 push!(circuit, PolynomialOracle(5,5,1,2,3,4), 1:10...)
 ```
+
 The arguments for [`PolynomialOracle`](@ref) follow this order: ``N_x`` (size of ``x`` register), ``N_y`` (size of ``y`` register), ``a``, ``b``, ``c``, ``d``, see definitions above.
 
 ### Diffusion
@@ -155,17 +292,20 @@ The [`Diffusion`](@ref) operator corresponds to [Grover's diffusion operator](ht
 ```math
 H^{\otimes n} (1-2\ket{0^n} \bra{0^n}) H^{\otimes n}
 ```
+
 Here is how to use [`Diffusion`](@ref):
+
 ```@example special_op
 circuit = Circuit() # hide
 push!(circuit, Diffusion(10), 1:10...)
 ```
-Again, you need to give the number of targets and the index of the targets.
 
+Again, you need to give the number of targets and the index of the targets.
 
 ### More about composite gates
 
 All composite gates can be decomposed with [`decompose`](@ref) to extract the implementation (except for [`PolynomialOracle`](@ref)).
+
 ```@example special_op
 decompose(QFT(5))
 ```
@@ -176,6 +316,7 @@ Barrier is a Non-op operation that does not affect the quantum state, but preven
 As of now [`Barrier`](@ref) is only useful when combined with the MPS backend.
 
 To add barriers to the circuit you can use the [`Barrier`](@ref) operation:
+
 ```@example special_op
 circuit = Circuit() # hide 
 push!(circuit, GateX(), 1)
