@@ -45,13 +45,15 @@ Pages = ["annotations.jl"]
 ```@autodocs
 Modules = [MimiqCircuitsBase]
 Private = false
-Pages = ["classical.jl"]
+Pages = ["classical.jl", "setbits.jl"]
 ```
 
-## Z-register Arithmetic
+
+
+## Optimization
 
 ```@autodocs
 Modules = [MimiqCircuitsBase]
 Private = false
-Pages = ["complex.jl"]
+Pages   = ["optimization.jl"]
 ```

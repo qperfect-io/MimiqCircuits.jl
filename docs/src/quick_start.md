@@ -51,7 +51,7 @@ conn = connect()
 
 ```@example quick_start
 using MimiqCircuits # hide
-conn = connect(ENV["MIMIQUSER"], ENV["MIMIQPASS"]; url=QPERFECT_DEV) # hide
+conn = connect(ENV["MIMIQUSER"], ENV["MIMIQPASS"]; url=QPERFECT_CLOUD) # hide
 ```
 
 For more details see [`cloud execution page`](manual/remote_execution.md) or see the documentation of [`connect`](@ref). If executed without supplemental arguments, `connect()` will start a local webpage and will try to open it with your default browser. As an alternative, `connect("john.smith@example.com", "jonspassword")` allows to insert directly the username and password of the user.
@@ -142,10 +142,10 @@ Executing a circuit on MIMIQ requires three steps:
 2. send a circuit for execution,
 3. retrieve the results of the execution.
 
-After a connection has been established, an execution can be sent to the remote services using [`execute`](@ref).
+After a connection has been established, an execution can be sent to the remote services using [`schedule`](@ref).
 
 ```@example quick_start
-job = execute(conn, circuit)
+job = schedule(conn, circuit)
 ```
 
 This will execute a simulation of the given circuit with default parameters. The default choice of algorithm is `"auto"`.  Generally, there are three available options:
@@ -154,7 +154,7 @@ This will execute a simulation of the given circuit with default parameters. The
 - `"statevector"` for a highly optimized state vector engine, and
 - `"mps"` for the large-scale Matrix Product States (MPS) method.
 
-Check out the documentation of the [`execute`](@ref) function for details.
+Check out the documentation of the [`schedule`](@ref) function for details.
 
 Once the execution has finished, the results can be retrieved via the [`getresults`](@ref) function, which returns a [`QCSResults`](@ref) structure.
 
@@ -179,5 +179,5 @@ Check the [`cloud execution`](manual/remote_execution.md) page for more details 
 
 #### OpenQASM and Stim
 
-OpenQASM and Stim files, defining quantum algorithms can be executed on MIMIQ in the same way native circuits can, simply use [`execute`](@ref) and provide the path of the file to upload.
+OpenQASM and Stim files, defining quantum algorithms can be executed on MIMIQ in the same way native circuits can, simply use [`schedule`](@ref) and provide the path of the file to upload.
 See the [import-export](manual/import_export.md) page for more details on how include files are handled.

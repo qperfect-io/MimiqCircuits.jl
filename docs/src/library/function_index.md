@@ -13,6 +13,9 @@ Pages = [
     "mimiqcircuitsbase/bitstrings.md",
     "mimiqcircuitsbase/noise.md",
     "mimiqcircuitsbase/operators.md",
+    "mimiqcircuitsbase/zops.md",
+    "mimiqcircuitsbase/simplifications.md",
+    "mimiqcircuitsbase/decompositions.md",
     "internals.md",
 ]
 ```

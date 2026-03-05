@@ -46,3 +46,7 @@ const EXTENSION_QASM = "qasm"
 const EXTENSION_STIM = "stim"
 
 const RESULTS_FNAME = "results.json"
+
+const CIRCUITS_MANIFEST = "circuits.json"
+const OPTIMIZE_MANIFEST = "optimize.json"
+const REQUEST_MANIFEST = "request.json"

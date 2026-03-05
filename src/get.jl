@@ -29,34 +29,11 @@ See also [`getinput`](@ref), [`getresults`](@ref), [`getresult`](@ref).
 function getinputs(conn, ex::Execution)
     tmpdir = mktempdir(; prefix="mimiq_in_")
     names = MimiqLink.downloadjobfiles(conn, ex, tmpdir)
+    basenames = basename.(names)
 
-    if "circuits.json" ∉ basename.(names)
-        error(
-            "$ex is not a valid execution for MimiqCircuits: missing 'circuits.json'. Downloaded files: $(basename.(names))",
-        )
-    end
-    @info "Downloaded files: $(basename.(names))"
+    checkvalidinputs(ex, basenames)
 
-    parameters = JSON.parsefile(joinpath(tmpdir, "circuits.json"))
-
-    circuits = []
-
-    for circuit_info in parameters["circuits"]
-        file = circuit_info["file"]
-        file_path = joinpath(tmpdir, file)
-
-        if endswith(file, EXTENSION_PROTO)
-            push!(circuits, loadproto(file_path, Circuit))
-        elseif endswith(file, EXTENSION_QASM)
-            push!(circuits, file_path)
-        elseif endswith(file, EXTENSION_STIM)
-            push!(circuits, file_path)
-        else
-            error("Unsupported circuit file type for file: $file")
-        end
-    end
-
-    return circuits, parameters
+    return loadinputs(basenames, tmpdir)
 end
 
 getinputs(conn, ex::String) = getinputs(conn, Execution(ex))
@@ -69,13 +46,13 @@ Returns the first circuit and parameters for the given execution.
 See also [`getinputs`](@ref), [`getresults`](@ref), [`getresult`](@ref).
 """
 function getinput(conn, ex::Execution)
-    circuits, parameters = getinputs(conn, ex)
+    files, parameters = getinputs(conn, ex)
 
-    if length(circuits) > 1
-        @warn "Multiple circuits found. Returning the first one."
+    if length(files) > 1
+        @warn "Multiple files found. Returning the first one."
     end
 
-    return circuits[1], parameters
+    return files[1], parameters
 end
 
 getinput(conn, ex::String) = getinput(conn, Execution(ex))
@@ -131,7 +108,12 @@ function getresults(conn, ex::Execution; interval=1)
         if !isfile(fname)
             error("Missing result file $fname")
         end
-        return loadproto(joinpath(tmpdir, fname), QCSResults)
+
+        if occursin("optresult", basename(fname))
+            return loadproto(fname, OptimizationResults)
+        else
+            return loadproto(fname, QCSResults)
+        end
     end
 end
 

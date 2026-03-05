@@ -56,7 +56,7 @@ push!(c, ExpectationValue(pauli"XX"),1,2,1) # 1,2 -> qreg, 1 -> zreg
 push!(c, ExpectationValue(pauli"ZZ"),1,2,2) # 1,2 -> qreg, 2 -> zreg
 
 # compute the amplitude of a bitstring and store it in the z-register
-push!(c, Amplidute(bs"00"), 3)
+push!(c, Amplitude(bs"00"), 3)
 
 # compute sum the expectation values of ZZ and XX and store it a third the
 # z-register variable
@@ -68,7 +68,7 @@ push!(c, Multiply(1, 0.2), 3) # z[3] *= 0.2
 push!(c, Pow(-1), 3) # z[3] = z[3]^(-1)
 
 # display the circuit
-display(circuit)
+display(c)
 ```
 
 Operations like `Add` and `Multiply` can be used on an arbitrary number of inputs, for example, `Add(4)` and `Multiply(4)` take as input 4 Z-register variables and output the result on the 1st one.

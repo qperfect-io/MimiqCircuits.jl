@@ -44,7 +44,7 @@ function _check_file_qasm2(f::AbstractString)
     end
 end
 
-function _setmpsdims!(pars, algorithm, bonddim, entdim; force=false)
+function _setmpsdims!(pars, algorithm, bonddim, entdim, mpscutoff; force=false)
     if algorithm != "auto" && algorithm != "mps"
         return pars
     end
@@ -73,12 +73,11 @@ function _setmpsdims!(pars, algorithm, bonddim, entdim; force=false)
         pars["entDimension"] = entdim
     end
 
-    return pars
-end
-
-function _setextraargs!(pars, kwargs...)
-    for (key, val) in kwargs
-        pars[string(key)] = val
+    if !isnothing(mpscutoff)
+        if mpscutoff < 0
+            throw(ArgumentError("mpscutoff must be non-negative"))
+        end
+        pars["mpsCutoff"] = mpscutoff
     end
 
     return pars
@@ -95,3 +94,69 @@ function _gettimelimit(conn::MimiqConnection)
 end
 
 _gettimelimit(::PlanqkConnection) = DEFAULT_TIME_LIMIT
+
+iscircuitsjob(basenames) = CIRCUITS_MANIFEST in basenames
+
+isoptimizationjob(basenames) = OPTIMIZE_MANIFEST in basenames
+
+"""
+    checkvalidinputs(ex, basenames)
+
+Validate that the execution contains exactly one manifest
+(`circuits.json` OR `optimize.json`) AND always `request.json`.
+Throws an error if the inputs are invalid.
+"""
+function checkvalidinputs(ex, basenames::AbstractVector{<:AbstractString})
+    has_req = REQUEST_MANIFEST in basenames
+    has_circ = iscircuitsjob(basenames)
+    has_opt = isoptimizationjob(basenames)
+
+    if !has_req
+        error("Execution $ex is invalid: missing required '$REQUEST_MANIFEST'")
+    elseif !has_circ && !has_opt
+        error(
+            "Execution $ex is invalid: expected either '$CIRCUITS_MANIFEST' or '$OPTIMIZE_MANIFEST'",
+        )
+    elseif has_circ && has_opt
+        error(
+            "Execution $ex is invalid: both '$CIRCUITS_MANIFEST' and '$OPTIMIZE_MANIFEST' present (ambiguous)",
+        )
+    end
+
+    return nothing
+end
+
+function loadinputs(basenames::AbstractVector{<:AbstractString}, tmpdir::AbstractString)
+    joblist = Any[]
+
+    if iscircuitsjob(basenames)
+        parameters = JSON.parsefile(joinpath(tmpdir, CIRCUITS_MANIFEST))
+        for circuit_info in parameters["circuits"]
+            file = circuit_info["file"]
+            file_path = joinpath(tmpdir, file)
+
+            if endswith(file, EXTENSION_PROTO)
+                push!(joblist, loadproto(file_path, Circuit))
+            elseif endswith(file, EXTENSION_QASM) || endswith(file, EXTENSION_STIM)
+                push!(joblist, file_path)
+            else
+                error("Unsupported circuit file type: $file")
+            end
+        end
+        return joblist, parameters
+
+    elseif isoptimizationjob(basenames)
+        parameters = JSON.parsefile(joinpath(tmpdir, OPTIMIZE_MANIFEST))
+        for experiment_info in parameters["experiments"]
+            file = experiment_info["file"]
+            file_path = joinpath(tmpdir, file)
+
+            if endswith(file, EXTENSION_PROTO)
+                push!(joblist, loadproto(file_path, OptimizationExperiment))
+            else
+                error("Unsupported experiment file type: $file")
+            end
+        end
+        return joblist, parameters
+    end
+end

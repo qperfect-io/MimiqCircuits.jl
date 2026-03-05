@@ -1,7 +1,7 @@
 # Aliases
 
 ```@autodocs
-Modules = [MimiqCircuitsBase]
+Modules = [MimiqCircuitsBase.Aliases]
 Private = false
 Pages   = ["aliases.jl"]
 ```

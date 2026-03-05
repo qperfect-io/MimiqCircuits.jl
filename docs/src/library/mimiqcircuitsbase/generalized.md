@@ -10,7 +10,7 @@ Pages   = [
     "operations/generalized/polynomialoracle.jl",
     "operations/generalized/diffusion.jl",
     "operations/generalized/paulistrings.jl",
-    "operations/generalized/RPauli.jl",
-    "operations/generalized/GateRNZ.jl",
+    "operations/generalized/rpauli.jl",
+    "operations/generalized/rnz.jl",
 ]
 ```

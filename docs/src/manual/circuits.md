@@ -98,6 +98,12 @@ The first step in executing quantum algorithm on MIMIQ always consists in implem
 ```@example circuits
 circuit = Circuit()
 ```
+
+> [!TIP]
+> **Circuit DSL**
+>
+> For a more concise way to create circuits, check out the [Circuit DSL](dsl.md) page. It allows you to define circuits using the `@circuit` macro and a simplified syntax.
+
 There is no need to give any arguments. Not even the number of qubits, classical or Z-registers is necessary as it will be directly inferred from the operations added to the circuit.
 
 

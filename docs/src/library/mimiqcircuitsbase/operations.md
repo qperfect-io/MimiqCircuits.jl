@@ -46,5 +46,12 @@ Pages   = ["decompose.jl"]
 ```@autodocs
 Modules = [MimiqCircuitsBase]
 Private = false
-Pages = ["operations/classical/not.jl"]
+Pages = [
+    "operations/classical/not.jl",
+    "operations/classical/xor.jl",
+    "operations/classical/or.jl",
+    "operations/classical/and.jl",
+    "operations/classical/setbit.jl",
+    "operations/classical/paritycheck.jl"
+]
 ```

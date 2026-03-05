@@ -42,7 +42,10 @@ import Pkg
     MimiqConnection,
     PlanqkConnection
 
+export submit
 export execute
+export check_equivalence
+export optimize
 export getinputs
 export getinput
 export getresults
@@ -58,6 +61,7 @@ include("utils.jl")
 include("execute.jl")
 include("get.jl")
 include("deprecated.jl")
+include("optimization.jl")
 
 """
     saveresults(file, results)

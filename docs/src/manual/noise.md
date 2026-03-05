@@ -246,3 +246,128 @@ csampled = sample_mixedunitaries(c; rng=rng, ids=true)
 ```
 
 This function is internally called when executing a circuit, but can also be used outside of execution.
+
+## Noise Models
+
+In addition to adding noise directly to the circuit, MIMIQ provides a **Noise Model** framework. A [`NoiseModel`](@ref) is a collection of "noise rules" that define how noise should be applied to a circuit. This allows you to define a noise profile once and apply it to multiple circuits, or to define complex noise rules that depend on the specific instruction properties (e.g. gate type, qubits, idle time).
+
+### Building a Noise Model
+
+A noise model is essentially a container for rules. You can create an empty noise model and add rules to it.
+
+```julia
+model = NoiseModel("My Noise Model")
+```
+
+The recommended way to add rules is using the helper functions:
+
+- [`add_gate_noise!`](@ref)
+- [`add_readout_noise!`](@ref)
+- [`add_idle_noise!`](@ref)
+
+#### Gate Noise
+
+Use `add_gate_noise!` to add noise to specific gates. You can specify:
+- The gate type (or a symbolic pattern)
+- The noise channel
+- Optional: specific qubits (exact list or set of qubits)
+
+```julia
+# Add noise to all Hadamard gates
+add_gate_noise!(model, GateH(), Depolarizing1(0.001))
+
+# Add noise to CX gates only on qubits [1, 2]
+add_gate_noise!(model, GateCX(), Depolarizing2(0.01), qubits=[1, 2], exact=true)
+
+# Add noise to any CX gate involving qubits in set {1, 2, 3}
+add_gate_noise!(model, GateCX(), Depolarizing2(0.005), qubits=[1, 2, 3], exact=false)
+```
+
+#### Readout Noise
+
+Use `add_readout_noise!` to add noise to measurements.
+
+```julia
+# Global readout error
+add_readout_noise!(model, ReadoutErr(0.01, 0.02))
+
+# Readout error only on qubit 1
+add_readout_noise!(model, ReadoutErr(0.05, 0.05), qubits=[1])
+```
+
+#### Idle Noise
+
+Use `add_idle_noise!` to add noise to idle qubits (during `Delay` operations).
+
+```julia
+# Constant idle noise
+add_idle_noise!(model, AmplitudeDamping(0.0001))
+
+# Time-dependent idle noise (using symbolic variable t)
+@variables t
+add_idle_noise!(model, t => AmplitudeDamping(t / 1000.0))
+```
+
+### Applying a Noise Model
+
+Once you have defined a noise model, you can apply it to a circuit using [`apply_noise_model`](@ref). This will return a *new* circuit with the noise instructions inserted.
+
+```julia
+noisy_circuit = apply_noise_model(circuit, model)
+```
+
+### Adding Rules Directly
+
+While helper functions are convenient, you can also add rules directly to the model using [`add_rule!`](@ref). This gives you full control over the rule parameters.
+
+```julia
+add_rule!(model, GlobalReadoutNoise(ReadoutErr(0.01, 0.01)))
+```
+
+#### Available Rules
+
+Here is a list of the available noise rules. Each rule matches a specific condition in the circuit.
+
+**Readout Noise**
+
+- [`GlobalReadoutNoise`](@ref): Applies noise to *all* measurements.
+- [`SetQubitReadoutNoise`](@ref): Applies noise to measurements on any qubit in a given set.
+- [`ExactQubitReadoutNoise`](@ref): Applies noise to measurements on a specific sequence of qubits (sensitive to order).
+
+**Gate Noise**
+
+- [`GateInstanceNoise`](@ref): Applies noise to all instances of a specific gate type (e.g., all `CX` gates).
+- [`SetGateInstanceQubitNoise`](@ref): Applies noise to gates acting on qubits within a given set.
+- [`ExactGateInstanceQubitNoise`](@ref): Applies noise to gates acting on a specific sequence of qubits.
+
+**Idle Noise**
+
+- [`IdleNoise`](@ref): Applies noise to idle qubits during `Delay` instructions.
+- [`SetIdleQubitNoise`](@ref): Applies idle noise only to specific qubits.
+
+**Custom Rules**
+
+- [`CustomNoiseRule`](@ref): User-defined rule with custom matching and noise generation logic. Has the highest priority by default. Supports the `replace` option to substitute the original instruction with the noise operation.
+
+```julia
+# Custom rule with user-defined matching and generation functions
+rule = CustomNoiseRule(
+    inst -> getoperation(inst) isa GateH,
+    inst -> Instruction(AmplitudeDamping(0.01), getqubits(inst)...);
+    priority_val=0,  # highest priority (default)
+    replace=false
+)
+add_rule!(model, rule)
+```
+
+### Saving and Loading
+
+Noise models can be saved to and loaded from disk using the protobuf format. This is useful for sharing noise models between Julia and Python, or for persistence.
+
+```julia
+# Save to a file
+saveproto(model, "noise_model.pb")
+
+# Load from a file
+loaded_model = loadproto("noise_model.pb", NoiseModel)
+```

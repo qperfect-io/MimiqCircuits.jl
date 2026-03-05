@@ -16,10 +16,13 @@
 #
 
 """
-    execute(connection, circuit[; kwargs...])
-    execute(connection, circuits[; kwargs...])
+    submit(connection, circuit[; kwargs...])
+    submit(connection, circuits[; kwargs...])
+    submit(connection, circuit, noisemodel[; kwargs...])
+    submit(connection, circuits, noisemodel[; kwargs...])
 
-Execute a quantum circuit on the MIMIQ remote services.
+Submit and schedule a quantum circuit execution on the MIMIQ remote services.
+Returns a Job object (non-blocking).
 
 The circuit is applied to the zero state and the resulting state is measured via sampling.
 Optionally amplitudes corresponding to few selected bit states (or bitstrings) can be returned from the computation.
@@ -33,16 +36,61 @@ Optionally amplitudes corresponding to few selected bit states (or bitstrings) c
 * `timelimit`: number of minutes before the computation is stopped (default: maximum allowed or 30 minutes)
 * `bonddim::Int`: bond dimension for the MPS algorithm (default: 256, maximum: 4096)
 * `entdim::Int`: parameter to control pre compression of the circuit. Higher value makes simulations slower. (default: 16, minimum:4, maximum: 64)
+* `mpscutoff::Float64`: singular value truncation cutoff for MPS simulation. Smaller values give higher accuracy at increased cost. (default: up to remote)
+* `remove_swaps::Bool`: whether or not to remove SWAP gates while permuting the qubits (default: up to remote)
+* `canonicaldecompose::Bool`: whether or not to decompose the circuit into GateU and GateCX (default: up to remote)
 * `fuse::Bool`: whether or not to fuse the gates in the circuit (default: up to remote)
-* `reorderqubits::Bool`: whether or not to reorder the qubits in the circuit (default: up to remote)
+* `reorderqubits`: whether or not to reorder the qubits in the circuit. Can be `true` (default reordering), `false` (no reordering), or a `Symbol`/`String` for a specific method (e.g., `:greedy`, `:spectral`, `:rcm`, `:sa_warm_start`, `:sa_only`, `:memetic`, `:multilevel`, `:grasp`, `:hybrid`). (default: up to remote)
+* `reorderqubits_seed::Union{Nothing, Integer}`: independent seed for the qubit reordering RNG, allowing reproducible reordering independently of the simulation seed. (default: `nothing`, uses main seed)
 * `seed::Int`: a seed for running the simulation (default: random seed)
-"""
-function execute end
+* `mpsmethod::Symbol`: method to use for MPO application in MPS simulations. Can be `:dmpo` for direct application or `:vmpoa`/`:vmpob` for variational search. (default: up to remote)
+* `mpotraversal::Symbol`: method to traverse the circuit while compressing it into MPOs. Can be `:sequential` (default) or `:bfs` (Breadth-First Search). (default: up to remote)
+* `streaming::Bool`: whether or not to use the streaming simulator (default: `false`)
 
-execute(conn, c::Circuit; kwargs...) = execute(conn, [c]; kwargs...)
-execute(conn, c::String; kwargs...) = execute(conn, [c]; kwargs...)
+"""
+submit(conn, c::Circuit; kwargs...) = submit(conn, [c]; kwargs...)
+submit(conn, c::String; kwargs...) = submit(conn, [c]; kwargs...)
+
+submit(conn, c::Circuit, nm::NoiseModel; kwargs...) = submit(conn, apply_noise_model(c, nm); kwargs...)
+submit(conn, c::String, nm::NoiseModel; kwargs...) = throw(ArgumentError("Cannot apply NoiseModel to a file directly. Load the circuit first."))
+
+function submit(conn, circuits::Vector, nm::NoiseModel; kwargs...)
+    noisy_circuits = []
+    for c in circuits
+        if c isa Circuit
+            push!(noisy_circuits, apply_noise_model(c, nm))
+        else
+            throw(ArgumentError("Cannot apply NoiseModel to non-Circuit objects in batch mode. Load circuits first."))
+        end
+    end
+    return submit(conn, noisy_circuits; kwargs...)
+end
+
+function submit(conn, ex::CircuitTesterExperiment; kwargs...)
+    c = build_circuit(ex)
+    return submit(conn, c; kwargs...)
+end
+
+"""
+    check_equivalence(conn, ex::CircuitTesterExperiment; kwargs...)
+
+Executes the circuit tester experiment and verifies the results.
+Blocks until the execution is complete.
+"""
+function check_equivalence(conn, ex::CircuitTesterExperiment; kwargs...)
+    job = submit(conn, ex; kwargs...)
+    results = getresult(conn, job)
+    return interpret_results(ex, results)
+end
+
+function execute(conn, args...; kwargs...)
+    @warn "execute(conn, ...) is deprecated and will be blocking in the future. Use submit(conn, ...) for non-blocking execution." maxlog =
+        1
+    return submit(conn, args...; kwargs...)
+end
 
 function _file_is_openqasm2(f::AbstractString)
+
     open(f, "r") do io
         while true
             line = readline(io)
@@ -165,7 +213,7 @@ function _file_may_be_stim(f::AbstractString)
     end
 end
 
-function execute(
+function submit(
     conn,
     circuits::Vector;
     label::AbstractString="jlapi_$(_pkgversion(@__MODULE__))",
@@ -175,11 +223,18 @@ function execute(
     timelimit=_gettimelimit(conn),
     bonddim::Union{Nothing, Integer}=nothing,
     entdim::Union{Nothing, Integer}=nothing,
+    mpscutoff::Union{Nothing, Real}=nothing,
+    remove_swaps::Union{Nothing, Bool}=nothing,
+    canonicaldecompose::Union{Nothing, Bool}=nothing,
     fuse::Union{Nothing, Bool}=nothing,
-    reorderqubits::Union{Nothing, Bool}=nothing,
+    reorderqubits::Union{Nothing, Bool, Symbol, String}=nothing,
+    reorderqubits_seed::Union{Nothing, Integer}=nothing,
     force::Bool=false,
     seed::Int=rand(0:typemax(Int)),
-    kwargs...,
+
+    mpsmethod::Union{Nothing, Symbol}=nothing,
+    mpotraversal::Union{Nothing, Symbol}=nothing,
+    streaming::Union{Nothing, Bool}=nothing,
 )
 
     if isempty(circuits)
@@ -221,12 +276,46 @@ function execute(
         "seed" => seed,
     )
 
+
+
+    if !isnothing(mpsmethod)
+        if mpsmethod in (:vmpoa, :vmpob, :dmpo)
+            pars["mpsMethod"] = mpsmethod
+        else
+            throw(ArgumentError("Unknown MPS method: $mpsmethod"))
+        end
+    end
+
+    if !isnothing(mpotraversal)
+        if mpotraversal in (:sequential, :bfs)
+            pars["mpoTraversal"] = mpotraversal
+        else
+            throw(ArgumentError("Unknown MPO traversal method: $mpotraversal"))
+        end
+    end
+
+    if !isnothing(remove_swaps)
+        pars["removeSwaps"] = remove_swaps
+    end
+
+    if !isnothing(canonicaldecompose)
+        pars["canonicalDecompose"] = canonicaldecompose
+    end
+
     if !isnothing(fuse)
         pars["fuse"] = fuse
     end
 
     if !isnothing(reorderqubits)
         pars["reorderQubits"] = reorderqubits
+    end
+
+    if !isnothing(reorderqubits_seed)
+        pars["reorderQubitsSeed"] = reorderqubits_seed
+    end
+
+    if !isnothing(streaming)
+        pars["streaming"] = streaming
     end
 
     pars["circuits"] = Dict{String, Any}[]
@@ -286,11 +375,10 @@ function execute(
     end
 
     # set the bond and entangling dimensions
-    _setmpsdims!(pars, algorithm, bonddim, entdim; force=force)
-    _setextraargs!(pars, kwargs...)
+    _setmpsdims!(pars, algorithm, bonddim, entdim, mpscutoff; force=force)
 
     # write the parameters to a file
-    parsfile = joinpath(tempdir, "circuits.json")
+    parsfile = joinpath(tempdir, CIRCUITS_MANIFEST)
 
     open(parsfile, "w") do io
         write(io, JSON.json(pars))
@@ -306,7 +394,7 @@ function execute(
     )
 
     # write the request to a file
-    reqfile = joinpath(tempdir, "request.json")
+    reqfile = joinpath(tempdir, REQUEST_MANIFEST)
 
     open(reqfile, "w") do io
         write(io, JSON.json(req))

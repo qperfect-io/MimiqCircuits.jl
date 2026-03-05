@@ -129,7 +129,7 @@ end
 
 MIMIQ supports sending quantum circuits to its remote services for execution either as a **single circuit** or in **batch mode**, i.e. multiple circuits at once. In both cases, circuits are initialized in the zero state, and results are obtained by running the circuit and sampling.
 
-You can submit one or multiple circuits for execution using the [`execute`](@ref) function, which can be called as `execute(connection, circuits; kwargs...)`. This unified interface simplifies quantum job management, whether you're running a single job or a batch of jobs.
+You can submit one or multiple circuits for execution using the [`submit`](@ref) function, which can be called as `submit(connection, circuits; kwargs...)`. This unified interface simplifies quantum job management, whether you're running a single job or a batch of jobs.
 
 **Parameters**:
 
@@ -144,11 +144,14 @@ You can submit one or multiple circuits for execution using the [`execute`](@ref
   - **timelimit**: Maximum execution time in minutes (default: 30).
   - **bonddim**: Bond dimension for MPS (default: 256). See [simulation](simulation.md) page.
   - **entdim**: Entangling dimension for MPS (default: 16). See [simulation](simulation.md) page.
+  - **streaming**: Whether to use the streaming simulator (default: `false`).
   - **seed**: Seed for random number generator.
+  - **reorderqubits_seed**: Independent seed for the qubit reordering RNG (default: `nothing`, uses main seed). See [Simulation Parameters](simulation_parameters.md).
+  - **noisemodel**: A [`NoiseModel`](@ref) object to be applied to the circuit(s) before execution. This allows for noisy simulations locally before sending to the remote.
 
 **Return type: Jobs**:
 
-It is important to note that the [`execute`](@ref) function returns an object of type [`Execution`](@ref). This object can then be passed to other functions to get results or status updates (see [results](#results) and [job management](#job-management) sections). However, if for some reason we lose access to this object, or we simply want to connect to the same job in a different session, we can do so like this:
+It is important to note that the [`submit`](@ref) function returns an object of type [`Execution`](@ref). This object can then be passed to other functions to get results or status updates (see [results](#results) and [job management](#job-management) sections). However, if for some reason we lose access to this object, or we simply want to connect to the same job in a different session, we can do so like this:
 
 ```julia
 job = Execution("job-id")
@@ -178,10 +181,10 @@ push!(c1, GateX(), 1)
 push!(c2, GateH(), 2)
 
 # Execute Single circuit
-job_single = execute(conn, c1; nsamples=1000, label="Single_run")
+job_single = submit(conn, c1; nsamples=1000, label="Single_run")
 
 # Execute circuits in batch mode
-job_batch = execute(conn, [c1, c2]; nsamples=1000, label="batch_run", algorithm="statevector")
+job_batch = submit(conn, [c1, c2]; nsamples=1000, label="batch_run", algorithm="statevector")
 ```
 
 ## Results
@@ -208,7 +211,7 @@ They are both called in a similar way as `getresults(connection, execution; kwar
 **Parameters:**
 
 - `connection (Connection)`: The active connection to the MIMIQ services, see [connection](#connecting-to-server-for-sending-jobs) section.
-- `execution (Execution)`: The execution object representing the job whose results are to be fetched, see [execution](#execution) section. If you saved the output of `execute` then you can pass it to `getresults` (see example below). If you didn't save it, then you can copy the job ID from the Cloud server (see [cloud service](#cloud-service) section) and pass it to `getresults` as `Execution("job-id")`.
+- `execution (Execution)`: The execution object representing the job whose results are to be fetched, see [execution](#execution) section. If you saved the output of `submit` then you can pass it to `getresults` (see example below). If you didn't save it, then you can copy the job ID from the Cloud server (see [cloud service](#cloud-service) section) and pass it to `getresults` as `Execution("job-id")`.
 - `interval (Int)`: Time interval in seconds between calls to the remote to check for job completion (default: 1 second). A shorter interval results in more frequent checks, while a longer interval reduces the frequency of status checks, saving computational resources.
 
 !!! warning
@@ -239,10 +242,10 @@ push!(c1, GateX(), 1) # hide
 push!(c2, GateH(), 2) # hide
 
 # Execute Single circuit # hide
-job_single = execute(conn, c1; nsamples=1000, label="Single_run") # hide
+job_single = submit(conn, c1; nsamples=1000, label="Single_run") # hide
 
 # Execute circuits in batch mode # hide
-job_batch = execute(conn, [c1, c2]; nsamples=1000, label="batch_run", algorithm="statevector") # hide
+job_batch = submit(conn, [c1, c2]; nsamples=1000, label="batch_run", algorithm="statevector") # hide
 
 # Getting the Results
 res_single = getresult(conn, job_single)
@@ -315,7 +318,7 @@ push!(ghz, GateH(), 1) # hide
 push!(ghz, GateCX(), 1, 2:10) # hide
 
 # Execute Single circuit # hide
-job_single = execute(conn, ghz; nsamples=1000, label="Single_run") # hide
+job_single = submit(conn, ghz; nsamples=1000, label="Single_run") # hide
 
 # Getting the Results # hide
 res_single = getresult(conn, job_single) # hide
@@ -360,7 +363,7 @@ push!(c1, GateH(), 1) # hide
 push!(c1, GateCX(), 1, 2:10) # hide
 
 # Execute Single circuit # hide
-job_single = execute(conn, c1; nsamples=1000, label="Single_run") # hide
+job_single = submit(conn, c1; nsamples=1000, label="Single_run") # hide
 
 # Getting the Results # hide
 res_single = getresult(conn, job_single) # hide
@@ -400,10 +403,10 @@ push!(c1, GateX(), 1) # hide
 push!(c2, GateH(), 2) # hide
 
 # Execute Single circuit # hide
-job_single = execute(conn, c1; nsamples=1000, label="Single_run") # hide
+job_single = submit(conn, c1; nsamples=1000, label="Single_run") # hide
 
 # Execute circuits in batch mode # hide
-job_batch = execute(conn, [c1, c2]; nsamples=1000, label="batch_run", algorithm="statevector") # hide
+job_batch = submit(conn, [c1, c2]; nsamples=1000, label="batch_run", algorithm="statevector") # hide
 
 # Getting the Results # hide
 res_single = getresult(conn, job_single) # hide

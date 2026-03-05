@@ -4,7 +4,8 @@
 Modules = [MimiqCircuitsBase]
 Private = false
 Pages = [
-    "noisemodels.jl",
+    "noisemodel.jl",
+    "addnoise.jl",
     "samplenoise.jl",
     "operations/noisechannels/standard/projectivenoise.jl",
     "operations/noisechannels/kraus.jl",
@@ -16,5 +17,6 @@ Pages = [
     "operations/noisechannels/standard/depolarizing.jl",
     "operations/noisechannels/standard/pauli.jl",
     "operations/noisechannels/mixedunitary.jl",
+    "operations/redouterr.jl",
 ]
 ```

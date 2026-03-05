@@ -105,8 +105,23 @@ Because `H` has non-commuting terms, we use a **Trotter approximation**.
 
 **First-order Trotterization (Lie) ([`push_lietrotter!`](@ref))**
 
-```@example
+```@example hamiltonian
 using MimiqCircuits # hide
+
+N = 4            # hide
+J = 1.0          # hide
+h = 0.5          # hide
+
+
+hamiltonian = Hamiltonian()  # hide
+
+for j in 1:(N-1)   # hide
+    push!(hamiltonian, -J, pauli"ZZ", j, j+1)  # hide
+end  # hide
+
+for j in 1:N  # hide
+    push!(hamiltonian, -h, pauli"X", j)  # hide
+end  # hide
 
 c = Circuit()
 push_lietrotter!(c, Tuple(1:N), hamiltonian, 1.0, 1)
@@ -116,9 +131,20 @@ display(c)
 
 **Second-order Trotterization (Suzuki) ([`push_suzukitrotter!`](@ref))**
 
-```@example
+```@example hamiltonian
 using MimiqCircuits # hide
+N = 4            # hide
+J = 1.0          # hide
+h = 0.5          # hide
+hamiltonian = Hamiltonian()  # hide
 
+for j in 1:(N-1)   # hide
+    push!(hamiltonian, -J, pauli"ZZ", j, j+1)  # hide
+end  # hide
+
+for j in 1:N  # hide
+    push!(hamiltonian, -h, pauli"X", j)  # hide
+end  # hide
 c = Circuit()
 push_suzukitrotter!(c, Tuple(1:N), hamiltonian, 1.0, 1)
 decompose(c)
@@ -132,8 +158,22 @@ display(c)
 Once the circuit has prepared the desired quantum state via time evolution,
 we can measure the energy by evaluating the expectation value of the Hamiltonian:
 
-```@example
+```@example hamiltonian
 using MimiqCircuits # hide
+N = 4            # hide
+J = 1.0          # hide
+h = 0.5          # hide
+
+hamiltonian = Hamiltonian()  # hide
+
+for j in 1:(N-1)   # hide
+    push!(hamiltonian, -J, pauli"ZZ", j, j+1)  # hide
+end  # hide
+
+for j in 1:N  # hide
+    push!(hamiltonian, -h, pauli"X", j)  # hide
+end  # hide
+
 c = Circuit() # hide
 push_suzukitrotter!(c, Tuple(1:N), hamiltonian, 1.0, 1) # hide
 
