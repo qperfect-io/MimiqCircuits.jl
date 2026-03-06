@@ -131,6 +131,9 @@ MIMIQ supports sending quantum circuits to its remote services for execution eit
 
 You can submit one or multiple circuits for execution using the [`submit`](@ref) function, which can be called as `submit(connection, circuits; kwargs...)`. This unified interface simplifies quantum job management, whether you're running a single job or a batch of jobs.
 
+!!! compat "Deprecation"
+    The `execute` and `executeqasm` functions are deprecated. Use [`submit`](@ref) instead for all remote circuit executions.
+
 **Parameters**:
 
 - **connection**: The connection object used to communicate with the MIMIQ remote services.

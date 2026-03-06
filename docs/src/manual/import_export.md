@@ -106,12 +106,12 @@ open("/tmp/deutsch_n2.qasm", "w") do io
 end
 
 # actual execution of the QASM file
-job = executeqasm(conn, "/tmp/deutsch_n2.qasm"; algorithm="statevector")
+job = submit(conn, "/tmp/deutsch_n2.qasm"; algorithm="statevector")
 res = getresult(conn, job)
 plot(res)
 ```
 
-For more informations, read the documentation of [`execute`](@ref) and check the [remote execution](remote_execution.md) page.
+For more informations, read the documentation of [`submit`](@ref) and check the [remote execution](remote_execution.md) page.
 
 #### Behaviour of include files
 
@@ -170,7 +170,7 @@ Will be parsed as:
 The remote MIMIQ services can readily process and execute Stim files as follows:
 
 ```julia
-job = execute(conn, "my_stim_circuit.stim")
+job = submit(conn, "my_stim_circuit.stim")
 ```
 
 !!! warning

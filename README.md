@@ -81,8 +81,8 @@ plot(res)
 
 ```julia
 # Execute a QASM file directly
-job = executeqasm(conn, "path/to/circuit.qasm"; algorithm="statevector")
-res = getresults(conn, job)
+job = submit(conn, "path/to/circuit.qasm"; algorithm="statevector")
+res = getresult(conn, job)
 ```
 
 ## Related Libraries

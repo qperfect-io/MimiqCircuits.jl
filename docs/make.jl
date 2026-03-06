@@ -114,9 +114,12 @@ makedocs(;
     warnonly=true,
 )
 
-deploydocs(
-    repo="github.com/qperfect-io/MimiqCircuits.jl.git",
-    forcepush=true,
-    push_preview=true,
-    devbranch="main",
-)
+# Only deploy via Documenter on GitHub; on GitLab, CI handles artifact-based Pages
+if get(ENV, "GITHUB_ACTIONS", "") == "true"
+    deploydocs(
+        repo="github.com/qperfect-io/MimiqCircuits.jl.git",
+        forcepush=true,
+        push_preview=true,
+        devbranch="main",
+    )
+end

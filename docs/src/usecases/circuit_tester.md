@@ -31,7 +31,7 @@ push!(c2, GateH(), 2)
 ex = CircuitTesterExperiment(c1, c2)
 
 # Check equivalence
-# This schedules the experiment execution
+# Submit the experiment for execution
 probability = check_equivalence(connect(), ex)
 
 println("Equivalence score: ", probability)
