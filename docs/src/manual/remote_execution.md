@@ -21,7 +21,10 @@ Use the following links to navigate through the sections:
     - [Saving and loading results](#saving-and-loading-results)
   - [Useful Job Management Features](#useful-job-management-features)
     - [Check job status](#check-job-status)
+    - [Cancel a job](#cancel-a-job)
+    - [Delete job files](#delete-job-files)
     - [List all jobs](#list-all-jobs)
+    - [Download files](#download-files)
     - [Get inputs](#get-inputs)
 
 ## Cloud Service
@@ -432,7 +435,7 @@ MIMIQ provides several functions to facilitate job management. For this you need
 
 ### Check job status
 
-You can check the status of jobs using [`isjobdone`](@ref), [`isjobfailed`](@ref), [`isjobcanceled`](@ref), [`isjobstarted`](@ref). These functions check whether the job's status is `DONE`, `ERROR`, `CANCELED` or `RUNNING`, respectively, and return a boolean.
+You can check the status of jobs using [`isjobdone`](@ref), [`isjobfailed`](@ref), [`isjobcanceled`](@ref), [`isjobstarted`](@ref). These functions check whether the job's status is `DONE`/`ERROR`/`CANCELED`, `ERROR`, `CANCELED`, or not `NEW`, respectively, and return a boolean.
 
 You can find this information also in the cloud server, but doing it from within the Julia session allows you to perform different actions depending on job status. It is particularly useful to avoid a call to `getresults` to take too long because a job has not finished yet (check [results](#results) section).
 
@@ -445,6 +448,32 @@ isjobcanceled(connection, job)
 isjobstarted(connection, job)
 ```
 
+You can also get detailed information about a job using [`requestinfo`](@ref):
+
+```julia
+info = requestinfo(connection, job)
+```
+
+This returns a `Dict` containing full execution details such as `status`, `name`, `label`, `creationDate`, `runningDate`, `doneDate`, `errorMessage`, and file metadata.
+
+### Cancel a job
+
+You can cancel a running or pending job using [`stopexecution`](@ref):
+
+```julia
+stopexecution(connection, job)
+```
+
+If the job is `NEW`, it will be immediately canceled. If it is `RUNNING`, a stop signal will be sent to the executor.
+
+### Delete job files
+
+You can delete the uploaded and result files associated with a job using [`deletefiles`](@ref):
+
+```julia
+deletefiles(connection, job)
+```
+
 ### List all jobs
 
 You can get a list of all job requests sent to MIMIQ's cloud server using [`requests`](@ref). This can be useful for monitoring job history and active requests.
@@ -454,13 +483,38 @@ This function accepts several options, which you can use to filter by `status` (
 Here's an example to get the last 100 new jobs:
 
 ```julia
-requests(connection, status = "NEW", limit = 100)
+requests(connection; status = "NEW", limit = 100)
 ```
+
+You can also print the list in a formatted tree structure using [`printrequests`](@ref):
+
+```julia
+printrequests(connection; status = "RUNNING")
+```
+
+### Download files
+
+You can download the input files or results of a job directly using [`downloadjobfiles`](@ref) and [`downloadresults`](@ref):
+
+```julia
+# Download input files
+downloadjobfiles(connection, job)
+downloadjobfiles(connection, job, "my_directory/")
+
+# Download result files
+downloadresults(connection, job)
+downloadresults(connection, job, "my_directory/")
+```
+
+Both return a `Vector{String}` of downloaded file paths. Files are saved to `./{execution_id}/` by default.
+
+!!! note
+    For most use cases, [`getresults`](@ref) and [`getinputs`](@ref) are more convenient as they download, parse, and return the results/circuits directly.
 
 ### Get inputs
 
 You can retrieve the input circuits and parameter files for every job using [`getinput`](@ref) or [`getinputs`](@ref). The former fetches the data of the first circuit in the job, whereas the latter retrieves all inputs from all circuits in the job (useful in batch mode). This is similar to `getresult` vs `getresults`.
 
 ```julia
-  circuits, parameters = getinputs(connection, job)
+circuits, parameters = getinputs(connection, job)
 ```
