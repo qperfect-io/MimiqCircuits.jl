@@ -10,7 +10,7 @@ Use the following links to navigate through the sections:
     - [Terms of Service](#terms-of-service)
     - [User Management](#user-management)
   - [Connecting to server for sending jobs](#connecting-to-server-for-sending-jobs)
-    - [Credentials](#credentials)
+    - [Connection methods](#connection-methods)
     - [Tokens](#tokens)
   - [Execution](#execution)
   - [Results](#results)
@@ -81,17 +81,27 @@ Key features of user management include:
 
 In order to execute a circuit in the remote, you first need to connect to it, see also [quickstart](../quick_start.md) page.
 
-### Credentials
+### Connection methods
 
-You can connect to the MIMIQ server using the [`connect`](@ref) function and providing your credentials (username and password). If you do not supply your credentials directly in the function call, you will be redirected to a localhost page where you can securely enter your credentials. This method is preferred for better security, as it avoids storing your username and password in the script.
+The [`connect`](@ref) function supports three calling conventions:
+
+- `connect()` — opens a browser-based login page (**recommended**).
+- `connect(token)` — authenticates with a saved refresh token.
+- `connect(email, password)` — authenticates directly with credentials.
 
 ```julia
-# Connect to the server (opens a browser for login)
+# Browser login (recommended — avoids storing credentials in scripts)
 conn = connect()
 
-# Connect using Credentials directly
-conn = connect("your_username", "your_password")
+# Token-based login
+conn = connect("my_refresh_token")
+
+# Credential-based login
+conn = connect("john.doe@example.com", "password")
 ```
+
+!!! warning
+    Passing your email and password directly stores them as plain text in your script. Prefer browser login or token-based login for better security.
 
 ### Tokens
 
