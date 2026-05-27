@@ -16,15 +16,10 @@ default:
     # does not abort on host-key verification.
     - mkdir -p ~/.ssh && chmod 700 ~/.ssh
     - ssh-keyscan gitlab.qperfect.io >> ~/.ssh/known_hosts 2>/dev/null
-    # GIT_CONFIG_* env vars override all config files and are
-    # inherited by every git subprocess Pkg spawns, so the SSH->HTTPS
-    # rewrite applies regardless of HOME or whether libgit2 or CLI git
-    # is used.
-    - export GIT_CONFIG_COUNT=2
-    - export GIT_CONFIG_KEY_0="url.https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.qperfect.io/.insteadOf"
-    - export GIT_CONFIG_VALUE_0="git@gitlab.qperfect.io:"
-    - export GIT_CONFIG_KEY_1="url.https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.qperfect.io/.insteadOf"
-    - export GIT_CONFIG_VALUE_1="https://gitlab.qperfect.io/"
+    # Use --add so both insteadOf patterns coexist; without it the second
+    # `git config` silently replaces the first and the SSH rewrite is lost.
+    - git config --global --add url."https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.qperfect.io/".insteadOf "git@gitlab.qperfect.io:"
+    - git config --global --add url."https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.qperfect.io/".insteadOf "https://gitlab.qperfect.io/"
     - julia -e 'import Pkg; Pkg.update()'
     - julia -e 'import Pkg; Pkg.Registry.add(Pkg.RegistrySpec(url="https://gitlab.qperfect.io/julia/Registry.git"))'
 
@@ -43,8 +38,11 @@ test:
 
 register:
   stage: register
+  # Only the `-private` tag registers into the internal GitLab registry;
+  # the bare `vX.Y.Z` public tag is registered into QPerfectRegistry by
+  # the GitHub Actions workflow on the public remote.
   rules:
-    - if: $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+/
+    - if: $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+-private$/
   before_script:
     - apt-get update -qq && apt-get install -y -qq git openssh-client
     - eval $(ssh-agent -s)
@@ -67,23 +65,27 @@ register:
                  repo="git@gitlab.qperfect.io:development/mimiq/MimiqCircuits.jl.git")
       '
 
-pages:
-  stage: deploy
-  image: julia:1
+# Build the docs on devel and merge requests so a broken build fails
+# the pipeline, but don't deploy anywhere — only `main` publishes to
+# GitLab Pages (see the `pages` job below).
+docs:
+  stage: test
   <<: *setup_julia
   rules:
-    - if: $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/
-      variables:
-        DOCS_VERSION: $CI_COMMIT_TAG
-    - if: $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+-private$/
-      variables:
-        DOCS_VERSION: $CI_COMMIT_TAG
-    - if: $CI_COMMIT_BRANCH == "main"
-      variables:
-        DOCS_VERSION: "dev"
     - if: $CI_COMMIT_BRANCH == "devel"
-      variables:
-        DOCS_VERSION: "devel"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  variables:
+    MIMIQUSER: $MIMIQUSER
+    MIMIQPASS: $MIMIQPASS
+  script:
+    - julia --project=docs -e 'import Pkg; Pkg.develop(Pkg.PackageSpec(path=pwd())); Pkg.instantiate()'
+    - julia --project=docs docs/make.jl
+
+pages:
+  stage: deploy
+  <<: *setup_julia
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
   variables:
     MIMIQUSER: $MIMIQUSER
     MIMIQPASS: $MIMIQPASS
@@ -96,9 +98,7 @@ pages:
     paths:
       - public
   publish: public
-  pages:
-    path_prefix: $DOCS_VERSION
   environment:
-    name: pages/$DOCS_VERSION
-    url: $CI_PAGES_URL/$DOCS_VERSION
+    name: pages
+    url: $CI_PAGES_URL
   resource_group: pages-deploy

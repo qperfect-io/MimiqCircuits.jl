@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.24.1] — 2026-05-27
+
+### Fixed
+- `docs/make.jl` now passes `repo=` to `makedocs` so doc builds
+  succeed in GitLab CI where the shallow checkout has no `origin`
+  set (Documenter no longer auto-detects).
+
+### CI
+- GitLab Pages is now deployed only from `main`, with no version
+  path-prefix or per-version environment (the runner host doesn't
+  support parallel deployments). `devel` and merge-request pipelines
+  still build the docs in a new `docs` job in the `test` stage so a
+  broken build trips the pipeline, but they no longer try to publish.
+- The GitLab `register` job now fires only on `-private` tags. The
+  bare public `vX.Y.Z` tag is registered into QPerfectRegistry by
+  the GitHub Actions workflow on the public remote; the previous
+  rule attempted both and could double-register.
+- Replaced the `GIT_CONFIG_*` env-var approach for the insteadOf
+  rewrites with `git config --global --add` to match the other
+  Julia repos and avoid env-inheritance surprises in CI.
+
 ## [0.24.0] — 2026-05-27
 
 ### Changed

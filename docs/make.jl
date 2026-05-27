@@ -107,6 +107,7 @@ pages = Any[
 makedocs(;
     sitename="MimiqCircuits.jl",
     authors="QPerfect",
+    repo="https://github.com/qperfect-io/MimiqCircuits.jl/blob/{commit}{path}#{line}",
     modules=[MimiqCircuits, MimiqLink, MimiqCircuitsBase],
     format=format,
     pages=pages,
