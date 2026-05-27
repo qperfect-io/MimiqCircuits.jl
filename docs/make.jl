@@ -52,6 +52,7 @@ pages = Any[
             "Unitary Gates" => "manual/unitary_gates.md",
             "Non-unitary Operations" => "manual/non_unitary_ops.md",
             "Noise" => "manual/noise.md",
+            "Loss" => "manual/loss.md",
             "Symbolic Operations" => "manual/symbolic_ops.md",
             "Statistical Operations" => "manual/statistical_ops.md",
             "Z-register operation" => "manual/zops.md",

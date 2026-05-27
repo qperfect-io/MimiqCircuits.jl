@@ -5,22 +5,6 @@ All statistical operations will result in a real or complex number that will be 
 
 On this page you will find all statistical operations available on MIMIQ with explanations and examples.
 
-- [Statistical Operations](#statistical-operations)
-  - [Expectation value](#expectation-value)
-      - [Mathematical definition](#mathematical-definition)
-      - [Usage on MIMIQ](#usage-on-mimiq)
-  - [Entanglement](#entanglement)
-    - [Von Neumann Entropy](#von-neumann-entropy)
-      - [Mathematical definition](#mathematical-definition-1)
-      - [Usage on MIMIQ](#usage-on-mimiq-1)
-    - [Bond Dimension](#bond-dimension)
-      - [Mathematical definition](#mathematical-definition-2)
-      - [Usage on MIMIQ](#usage-on-mimiq-2)
-    - [Schmidt Rank](#schmidt-rank)
-      - [Mathematical definition](#mathematical-definition-3)
-      - [Usage on MIMIQ](#usage-on-mimiq-3)
-  - [Amplitude](#amplitude)
-
 
 ## Expectation value
 

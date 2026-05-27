@@ -2,16 +2,6 @@
 
 MIMIQ offers further possibilities to create circuits, such as new gate declarations, or wrappers for common combinations of gates.
 
-- [Special Operations](#special-operations)
-  - [Gate Declaration \& Gate Calls](#gate-declaration--gate-calls)
-  - [Composite Gates](#composite-gates)
-    - [Pauli String](#pauli-string)
-    - [Quantum Fourier Transform](#quantum-fourier-transform)
-    - [Phase Gradient](#phase-gradient)
-    - [Polynomial Oracle](#polynomial-oracle)
-    - [Diffusion](#diffusion)
-    - [More about composite gates](#more-about-composite-gates)
-  - [Barrier](#barrier)
 
 ## Gate Declaration & Gate Calls
 
@@ -48,7 +38,7 @@ push!(circuit, ansatz(pi), 1, 2)
 !!! note
     `ansatz` is an object of type [`GateDecl`](@ref), whereas `ansatz(pi)` is of type [`GateCall`](@ref).
 
-Creating a gate declaration allows you to add easily the same sequence of gates in a very versatile way and manipulate your new gate like you would with any other gate. This means that you can combine it with other gates via [`Control`](@ref), add noise to the whole block in one call, use it as an operator for [`ExpectationValue`](@ref), use it within an [`IfStatement`](@ref) etc. See [unitary gates](unitary_gates.md), [non-unitary operations](non_unitary_ops.md), and [noise](noise.md) pages.
+Creating a gate declaration allows you to add easily the same sequence of gates in a very versatile way and manipulate your new gate like you would with any other gate. This means that you can combine it with other gates via [`Control`](@ref), add noise to the whole block in one call, use it as an operator for [`ExpectationValue`](@ref), use it within an [`IfStatement`](@ref) or [`WhileStatement`](@ref), etc. See [unitary gates](unitary_gates.md), [non-unitary operations](non_unitary_ops.md), and [noise](noise.md) pages.
 
 For example, here is how to add noise to the previous gate declaration:
 
@@ -67,6 +57,12 @@ You can use it in an [`IfStatement`](@ref) as follows:
 
 ```julia
 IfStatement(my_gate, bs"111")
+```
+
+Similarly, you can also use it in a [`WhileStatement`](@ref):
+
+```julia
+WhileStatement(my_gate, bs"111")
 ```
 
 Note that this type of combined operation does not work if we pass a circuit as an argument, instead of a declared gate (more precisely, a [`GateCall`](@ref), see note above).

@@ -1,0 +1,104 @@
+stages:
+  - test
+  - register
+  - deploy
+
+variables:
+  JULIA_PKG_USE_CLI_GIT: "true"
+
+default:
+  image: julia:1
+
+.setup_julia: &setup_julia
+  before_script:
+    - apt-get update -qq && apt-get install -y -qq git openssh-client
+    # Trust GitLab's host key so any path that still resorts to SSH
+    # does not abort on host-key verification.
+    - mkdir -p ~/.ssh && chmod 700 ~/.ssh
+    - ssh-keyscan gitlab.qperfect.io >> ~/.ssh/known_hosts 2>/dev/null
+    # GIT_CONFIG_* env vars override all config files and are
+    # inherited by every git subprocess Pkg spawns, so the SSH->HTTPS
+    # rewrite applies regardless of HOME or whether libgit2 or CLI git
+    # is used.
+    - export GIT_CONFIG_COUNT=2
+    - export GIT_CONFIG_KEY_0="url.https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.qperfect.io/.insteadOf"
+    - export GIT_CONFIG_VALUE_0="git@gitlab.qperfect.io:"
+    - export GIT_CONFIG_KEY_1="url.https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.qperfect.io/.insteadOf"
+    - export GIT_CONFIG_VALUE_1="https://gitlab.qperfect.io/"
+    - julia -e 'import Pkg; Pkg.update()'
+    - julia -e 'import Pkg; Pkg.Registry.add(Pkg.RegistrySpec(url="https://gitlab.qperfect.io/julia/Registry.git"))'
+
+test:
+  stage: test
+  <<: *setup_julia
+  # Registry clone occasionally times out reaching gitlab.qperfect.io
+  # from the docker network. Retry covers the transient failures.
+  retry: 2
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "devel"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - julia --project=. -e 'import Pkg; Pkg.instantiate(); Pkg.build()'
+    - julia --project=. -e 'import Pkg; Pkg.test()'
+
+register:
+  stage: register
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+/
+  before_script:
+    - apt-get update -qq && apt-get install -y -qq git openssh-client
+    - eval $(ssh-agent -s)
+    - cat "$PRIVATEREGISTRY_SSH_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh && chmod 700 ~/.ssh
+    - ssh-keyscan gitlab.qperfect.io >> ~/.ssh/known_hosts
+    - git config --global url."https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.qperfect.io/".insteadOf "https://gitlab.qperfect.io/"
+    - git config --global user.email "technical@qperfect.io"
+    - git config --global user.name "QPerfect"
+    - julia -e 'import Pkg; Pkg.update()'
+    - julia -e 'import Pkg; Pkg.Registry.add(Pkg.RegistrySpec(url="git@gitlab.qperfect.io:julia/Registry.git"))'
+  script:
+    - |
+      julia --color=yes -e '
+        import Pkg
+        Pkg.add("LocalRegistry")
+        Pkg.develop(path="./")
+        using LocalRegistry
+        register("MimiqCircuits", registry="QPerfectInternalRegistry",
+                 repo="git@gitlab.qperfect.io:development/mimiq/MimiqCircuits.jl.git")
+      '
+
+pages:
+  stage: deploy
+  image: julia:1
+  <<: *setup_julia
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/
+      variables:
+        DOCS_VERSION: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+-private$/
+      variables:
+        DOCS_VERSION: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH == "main"
+      variables:
+        DOCS_VERSION: "dev"
+    - if: $CI_COMMIT_BRANCH == "devel"
+      variables:
+        DOCS_VERSION: "devel"
+  variables:
+    MIMIQUSER: $MIMIQUSER
+    MIMIQPASS: $MIMIQPASS
+  script:
+    - julia --project=docs -e 'import Pkg; Pkg.develop(Pkg.PackageSpec(path=pwd())); Pkg.instantiate()'
+    - julia --project=docs docs/make.jl
+    - mkdir -p public
+    - cp -r docs/build/* public/
+  artifacts:
+    paths:
+      - public
+  publish: public
+  pages:
+    path_prefix: $DOCS_VERSION
+  environment:
+    name: pages/$DOCS_VERSION
+    url: $CI_PAGES_URL/$DOCS_VERSION
+  resource_group: pages-deploy

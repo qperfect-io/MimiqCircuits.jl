@@ -2,26 +2,6 @@
 
 Unitary gates are fundamental components of quantum circuits. Here we explain how to work with unitary gates in MIMIQ.
 
-- [Unitary Gates](#unitary-gates)
-  - [Mathematical background](#mathematical-background)
-    - [State vector and probability](#state-vector-and-probability)
-    - [Unitary transformation](#unitary-transformation)
-  - [Unitary gates in MIMIQ](#unitary-gates-in-mimiq)
-    - [Single-qubit gates](#single-qubit-gates)
-    - [Single-qubit parametric gates](#single-qubit-parametric-gates)
-    - [Two qubit gates](#two-qubit-gates)
-    - [Two-qubit parametric gates](#two-qubit-parametric-gates)
-    - [Multi-qubit gates](#multi-qubit-gates)
-    - [Generalized gates](#generalized-gates)
-  - [Custom Gates](#custom-gates)
-  - [Composition: Control, Power, Inverse, Parallel](#composition-control-power-inverse-parallel)
-    - [Control](#control)
-    - [Power](#power)
-    - [Inverse](#inverse)
-    - [Parallel](#parallel)
-  - [Extract information of unitary gates](#extract-information-of-unitary-gates)
-    - [Matrix](#matrix)
-    - [Number of targets](#number-of-targets)
 
 ## Mathematical background
 

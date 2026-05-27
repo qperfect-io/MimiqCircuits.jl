@@ -2,14 +2,61 @@
 
 This page provides detailed information on specialized functionalities in MIMIQ.
 
-- [Special Topics](#special-topics)
-  - [BitString](#bitstring)
-    - [Using BitString in MIMIQ Operations](#using-bitstring-in-mimiq-operations)
-    - [Constructors](#constructors)
-    - [Accessing and Modifying Bits](#accessing-and-modifying-bits)
-    - [Conversion and Manipulation Methods](#conversion-and-manipulation-methods)
-    - [Bitwise Operators](#bitwise-operators)
-    - [Concatenation and Repetition](#concatenation-and-repetition)
+## Repeated Targets
+
+By default, MIMIQ does not allow repeated targets in a single instruction. This means that if an operation acts on several targets of the same register, those targets are normally expected to be distinct.
+
+Qubit targets are a special case: they can never be repeated.
+
+For some operations, repeated classical-bit or Z-register targets are meaningful and therefore explicitly allowed. This is useful when the same register is both read and written by the operation.
+
+### Repeated classical-bit targets
+
+Some classical and control-flow operations allow repeated classical-bit targets. This includes [`IfStatement`](@ref), [`WhileStatement`](@ref), [`And`](@ref), [`Or`](@ref), and [`Xor`](@ref).
+
+For [`IfStatement`](@ref) and [`WhileStatement`](@ref), this means that the same classical register can appear both in the body of the operation and in the condition bits.
+
+```@example remoteexec
+using MimiqCircuits # hide
+
+c = Circuit()
+
+# Toggle c[1] if c[1] == 1
+push!(c, IfStatement(Not(), bs"1"), 1, 1)
+```
+
+```@example remoteexec
+c = Circuit()
+
+# Repeatedly apply Not() while c[1] == 1
+push!(c, WhileStatement(Not(), bs"1"), 1, 1)
+```
+
+For classical Boolean operations such as [`And`](@ref), [`Or`](@ref), and [`Xor`](@ref), repeated bit targets allow in-place updates.
+
+```@example remoteexec
+c = Circuit()
+push!(c, And(), 1, 1, 2)
+```
+
+This means that the result is written to `c[1]` while also reading `c[1]` as one of the inputs.
+
+### Repeated Z-register targets
+
+Some Z-register operations also allow repeated targets. This includes [`Add`](@ref), [`Multiply`](@ref), [`Pow`](@ref), and also the wrapper operations [`IfStatement`](@ref) and [`WhileStatement`](@ref).
+
+This is useful for in-place updates of Z-register variables.
+
+```@example remoteexec
+c = Circuit()
+push!(c, Add(3), 1, 1, 2)
+```
+
+```@example remoteexec
+push!(c, Multiply(3), 1, 1, 2)
+```
+
+In the first case we compute `z[1] = z[1] + z[2]`, and in the second case `z[1] = z[1] * z[2]`.
 
 ## BitString
 
@@ -18,13 +65,16 @@ The [`BitString`](@ref) class represents the state of bits and can be used to re
 
 ### Using BitString in MIMIQ Operations
 
-In MIMIQ, several operations use BitString as a direct input for conditional logic or specific quantum operations, such as [`IfStatement`](@ref) and [`Amplitude`](@ref), see [non-unitary operations](non_unitary_ops.md) and [statistical operations](statistical_ops.md) pages. Here are some examples:
+In MIMIQ, several operations use BitString as a direct input for conditional logic or specific quantum operations, such as [`IfStatement`](@ref), [`WhileStatement`](@ref), and [`Amplitude`](@ref), see [non-unitary operations](non_unitary_ops.md) and [statistical operations](statistical_ops.md) pages. Here are some examples:
 
 ```@example remoteexec
 using MimiqCircuits # hide
 
 # Conditional Operation: IfStatement
 if_statement = IfStatement(GateX(), BitString("01011"))
+
+# Conditional Loop: WhileStatement
+while_statement = WhileStatement(Not(), BitString("1"))
 
 # Amplitude Operation
 Amplitude(BitString("001"))

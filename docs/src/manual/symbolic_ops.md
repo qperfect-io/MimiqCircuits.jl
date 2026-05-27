@@ -2,11 +2,6 @@
 
 This section provides detailed information on how to use symbolic operations in MIMIQ, including defining symbols, creating symbolic operations, substituting values, and running circuits with symbolic parameters.
 
-- [Symbolic Operations](#symbolic-operations)
-  - [When Symbolic Operations Can Be Useful](#when-symbolic-operations-can-be-useful)
-  - [Defining Symbols](#defining-symbols)
-  - [Defining Symbolic Operations](#defining-symbolic-operations)
-  - [Substituting Symbols with Values](#substituting-symbols-with-values)
 
 ## When Symbolic Operations Can Be Useful
 

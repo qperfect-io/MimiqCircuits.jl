@@ -7,13 +7,6 @@ the Variational Quantum Eigensolver (VQE) and related variational tasks.
 
 ---
 
-- [Variational Optimization](#variational-optimization)
-  - [Concepts](#concepts)
-  - [Quick Start: VQE in MIMIQ](#quick-start-vqe-in-mimiq)
-  - [Running Optimization on Cloud](#running-optimization-on-cloud)
-
----
-
 ## Concepts
 
 **Variational Quantum Algorithms (VQAs)** are hybrid quantum–classical methods that

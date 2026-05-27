@@ -3,30 +3,6 @@
 This page provides detailed information on how to execute quantum circuits on MIMIQ's remote services.
 Use the following links to navigate through the sections:
 
-- [Execution on MIMIQ](#execution-on-mimiq)
-  - [Cloud Service](#cloud-service)
-    - [Overview](#overview)
-    - [Job Management](#job-management)
-    - [Terms of Service](#terms-of-service)
-    - [User Management](#user-management)
-  - [Connecting to server for sending jobs](#connecting-to-server-for-sending-jobs)
-    - [Connection methods](#connection-methods)
-    - [Tokens](#tokens)
-  - [Execution](#execution)
-  - [Results](#results)
-    - [Getting results (Cloud server)](#getting-results-cloud-server)
-    - [Getting results (Julia session)](#getting-results-julia-session)
-    - [Format of Results](#format-of-results)
-    - [Plotting results](#plotting-results)
-    - [Saving and loading results](#saving-and-loading-results)
-  - [Useful Job Management Features](#useful-job-management-features)
-    - [Check job status](#check-job-status)
-    - [Cancel a job](#cancel-a-job)
-    - [Delete job files](#delete-job-files)
-    - [List all jobs](#list-all-jobs)
-    - [Download files](#download-files)
-    - [Get inputs](#get-inputs)
-
 ## Cloud Service
 
 MIMIQ provides remote execution of quantum circuits via its cloud services, allowing users to run quantum jobs on high-performance infrastructure. You can connect to the cloud server by providing your credentials and accessing the MIMIQ cloud URL at [https://mimiq.qperfect.io/sign-in].

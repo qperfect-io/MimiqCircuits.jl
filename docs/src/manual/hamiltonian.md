@@ -10,15 +10,6 @@ This workflow allows you to:
 - Simulate time evolution efficiently using Trotter expansions
 - Measure physical observables like energy
 
----
-
-- [Hamiltonians and Time Evolution](#hamiltonians-and-time-evolution)
-  - [Hamiltonian](#hamiltonian)
-  - [Simulating the Ising Model](#simulating-the-ising-model)
-  - [Ising Model](#ising-model)
-  - [Building the Hamiltonian](#building-the-hamiltonian)
-  - [Simulating Time Evolution](#simulating-time-evolution)
-  - [Measuring the Energy](#measuring-the-energy)
 
 ---
 

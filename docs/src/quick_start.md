@@ -2,15 +2,6 @@
 
 In this tutorial, we will walk you through the fundamental procedures for simulating a quantum circuit using MIMIQ. Throughout the tutorial, we will provide links to detailed documentation and examples that can provide a deeper understanding of each topic.
 
-- [Quick Start](#quick-start)
-  - [Install and load MIMIQ](#install-and-load-mimiq)
-  - [Connect to remote service](#connect-to-remote-service)
-  - [Example: Simulate a GHZ circuit](#example-simulate-a-ghz-circuit)
-    - [Construct basic circuit](#construct-basic-circuit)
-    - [Measure, add noise, and extract information](#measure-add-noise-and-extract-information)
-    - [Execute circuit](#execute-circuit)
-      - [OpenQASM and Stim](#openqasm-and-stim)
-
 ## Install and load MIMIQ
 
 To install MIMIQ, please [open Julia's interactive session (REPL)](https://docs.julialang.org/en/v1/manual/getting-started/), then press the `]` to start using the package manager mode, then type the following commands.

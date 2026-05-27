@@ -3,16 +3,6 @@
 In this section we introduce different options to import and export circuits.
 In particular, MIMIQ allows to import circuits in well-known languages such as OpenQASM and Stim, as well as save and import circuits using its own ProtoBuf structure.
 
-- [Import and export circuits](#import-and-export-circuits)
-  - [ProtoBuf](#protobuf)
-    - [Export ProtoBuf files from MIMIQ](#export-protobuf-files-from-mimiq)
-    - [Import ProtoBuf file to MIMIQ](#import-protobuf-file-to-mimiq)
-  - [OpenQASM](#openqasm)
-    - [Execute OpenQASM file in MIMIQ](#execute-openqasm-file-in-mimiq)
-      - [Behaviour of include files](#behaviour-of-include-files)
-      - [Relations between OpenQASM registers and MIMIQ indices](#relations-between-openqasm-registers-and-mimiq-indices)
-  - [Stim](#stim)
-    - [Execute Stim file on MIMIQ](#execute-stim-file-on-mimiq)
 
 ## ProtoBuf
 

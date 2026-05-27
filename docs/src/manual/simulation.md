@@ -2,13 +2,6 @@
 
 This page provides information on how MIMIQ simulates quantum circuits.
 
-- [Simulating circuits](#simulating-circuits)
-  - [Simulator backends](#simulator-backends)
-    - [State Vector](#state-vector)
-    - [Matrix-Product States](#matrix-product-states)
-  - [Fidelity and Error estimates](#fidelity-and-error-estimates)
-  - [Understanding sampling](#understanding-sampling)
-
 
 ## Simulator backends
 
@@ -65,7 +58,7 @@ For example, if the fidelity is 0.8 it means that the state computed by MPS has 
 
 ## Understanding sampling
 
-When running a circuit with MIMIQ we compute and return measurement samples, among other quantities (see [Cloud Execution](remote_execution.md) section). Which measurement samples are returned depends on the type of circuit executed. There are three fundamental cases based on the presence of [non-unitary operations](non_unitary_ops.md) such as measurements ([Measure](@ref)...), resets ([Reset](@ref)), if statements ([IfStatement](@ref)), or [noise](noise.md).
+When running a circuit with MIMIQ we compute and return measurement samples, among other quantities (see [Cloud Execution](remote_execution.md) section). Which measurement samples are returned depends on the type of circuit executed. There are three fundamental cases based on the presence of [non-unitary operations](non_unitary_ops.md) such as measurements ([Measure](@ref)...), resets ([Reset](@ref)), conditional statements ([`IfStatement`](@ref), [`WhileStatement`](@ref)), or [noise](noise.md).
 
 **No non-unitary operations**
 
@@ -78,7 +71,6 @@ In this case the circuit is executed only once again, and the final state is sam
 **Mid-circuit measurements or non-unitary operations**
 
 In this case the circuit is executed `nsamples` times, and the final state is sampled only once per run. The sampled value of all the classical bits used in the circuit is returned.
-
 
 
 

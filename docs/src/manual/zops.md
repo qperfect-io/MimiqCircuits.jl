@@ -3,13 +3,6 @@
 Operations on the Z-register allow users to manipulate complex-valued variables inside a quantum circuit. This section covers all the information needed to perform operations on the
 complex-valued variables stored in the Z-register.
 
-- [Z-register Operations](#z-register-operations)
-  - [What is the Z-register?](#what-is-the-z-register)
-  - [What can you do with the Z-register?](#what-can-you-do-with-the-z-register)
-    - [Storing information in the Z-register](#storing-information-in-the-z-register)
-    - [Manipulating the Z-register](#manipulating-the-z-register)
-      - [Example: Ising Hamiltonian expectation value (Energy)](#example-ising-hamiltonian-expectation-value-energy)
-
 ---
 
 ## What is the Z-register?

@@ -113,6 +113,7 @@ function optimize(
         "apilang" => "julia",
         "apiversion" => _pkgversion(@__MODULE__),
         "circuitsapiversion" => _pkgversion(MimiqCircuitsBase),
+        "wireformatversion" => string(WIRE_FORMAT_VERSION),
     )
 
     reqfile = joinpath(tempdir, REQUEST_MANIFEST)

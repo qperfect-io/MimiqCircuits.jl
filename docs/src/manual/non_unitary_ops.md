@@ -2,18 +2,6 @@
 
 Contrary to [unitary gates](unitary_gates.md), non-unitary operations based on measurements make the quantum state collapse. Find in the following sections all the non-unitary operations supported by MIMIQ.
 
-- [Non-unitary Operations](#non-unitary-operations)
-  - [Measure](#measure)
-    - [Mathematical definition](#mathematical-definition)
-    - [How to use measurements](#how-to-use-measurements)
-  - [Reset](#reset)
-  - [Measure-Reset](#measure-reset)
-  - [Conditional logic](#conditional-logic)
-    - [If statements](#if-statements)
-  - [Operators](#operators)
-    - [Mathematical definition](#mathematical-definition-1)
-    - [Operators available in MIMIQ](#operators-available-in-mimiq)
-    - [How to use operators](#how-to-use-operators)
 
 !!! note
     As a rule of thumb all non-unitary operations can be added to the circuit using the function [`push!`](@ref) by giving the index of the targets in the following order: quantum register index -> classical register index. 
@@ -122,6 +110,28 @@ push!(circuit, IfStatement(GateX(), bs"101"), 1, 2, 3, 4)
 
 Here, an `X` gate will be applied to qubit 1, if classical registers 2 and 4 are `1`, and classical register 3 is `0`. Of course, if the gate targets more than 1 qubit, then all qubit indices will be specified before the classical registers, as usual (see [circuit](circuits.md) page).
 
+### While statements
+
+A *while* statement consists in repeatedly applying an operation while some classical register matches a given bitstring. In that sense, it resembles a classical *while* loop.
+
+In MIMIQ you can implement it using [`WhileStatement`](@ref), which also requires two arguments: an operation to apply and a [`BitString`](@ref) as the condition.
+
+```@example non_unitary
+WhileStatement(Not(), BitString("1"))
+```
+
+To add a [`WhileStatement`](@ref) to a circuit use the [`push!`](@ref) function. As for [`IfStatement`](@ref), the quantum targets come first and the classical targets come after them. The classical targets are ordered as body bits first, then the condition bits.
+
+```@example non_unitary
+circuit = Circuit() # hide
+push!(circuit, WhileStatement(Not(), bs"1"), 1, 1)
+```
+
+This example applies `Not()` repeatedly to the classical bit while that bit is equal to `1`.
+
+!!! note
+    A `WhileStatement` has no built-in iteration cap. The body of the loop should modify at least one of the condition bits, otherwise the loop may never terminate.
+
 ## Operators
 
 ### Mathematical definition
@@ -177,5 +187,4 @@ krausoperators(ampdamp)
 
 !!! note
     Whenever possible, using specialized operators, such as `DiagonalOp` and `SigmaMinus`, as opposed to custom operators, such as `Operator`, is generally better for performance.
-
 

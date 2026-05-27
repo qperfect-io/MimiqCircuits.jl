@@ -3,16 +3,6 @@
 Here we explain how to run noisy simulations that mimic the behavior of real
 quantum computers on MIMIQ. In this section you'll find:
 
-- [Noisy simulations on MIMIQ](#noisy-simulations-on-mimiq)
-	- [Summary of noise functionality](#summary-of-noise-functionality)
-	- [Mathematical background](#mathematical-background)
-		- [Kraus operators](#kraus-operators)
-		- [Evolution with noise](#evolution-with-noise)
-	- [Building noise channels](#building-noise-channels)
-	- [How to add noise](#how-to-add-noise)
-		- [Adding noise one by one](#adding-noise-one-by-one)
-		- [Adding noise to all gates of same type](#adding-noise-to-all-gates-of-same-type)
-	- [Running a noisy circuit](#running-a-noisy-circuit)
 
 ## Summary of noise functionality
 
@@ -140,6 +130,8 @@ kmatrices = [[1 0; 0 sqrt(0.9)], [0 sqrt(0.1); 0 0]]    # Kraus matrices
 Kraus(kmatrices)
 ```
 
+Custom [`Kraus`](@ref) channels also support [`LossyOperator`](@ref) branches, which makes them loss-aware Kraus channels. For more information, see the [loss](loss.md#loss-aware-kraus-channels) page.
+
 Check the documentation of each noise channel to understand the conditions that each of the parameters needs to fulfill for the noise channel to be valid.
 
 In MIMIQ the most important distinction of noise channels is between _mixed unitary_ and general Kraus channels (see [mathematical section](#mathematical-background) for definitions). You can use [`ismixedunitary`](@ref) to check if a channel is mixed unitary or not like this:
@@ -249,38 +241,41 @@ This function is internally called when executing a circuit, but can also be use
 
 ## Noise Models
 
-In addition to adding noise directly to the circuit, MIMIQ provides a **Noise Model** framework. A [`NoiseModel`](@ref) is a collection of "noise rules" that define how noise should be applied to a circuit. This allows you to define a noise profile once and apply it to multiple circuits, or to define complex noise rules that depend on the specific instruction properties (e.g. gate type, qubits, idle time).
+In addition to adding noise directly to the circuit, MIMIQ provides a **Noise Model** framework. A [`NoiseModel`](@ref) is a collection of noise rules that define how noise should be applied to a circuit. This allows you to define a noise profile once and apply it to multiple circuits, or to define more complex rules that depend on the instruction properties (e.g. operation pattern, qubits, idle time).
 
 ### Building a Noise Model
 
 A noise model is essentially a container for rules. You can create an empty noise model and add rules to it.
 
 ```julia
-model = NoiseModel("My Noise Model")
+model = NoiseModel(name="My Noise Model")
 ```
 
 The recommended way to add rules is using the helper functions:
 
-- [`add_gate_noise!`](@ref)
+- [`add_operation_noise!`](@ref)
 - [`add_readout_noise!`](@ref)
 - [`add_idle_noise!`](@ref)
 
-#### Gate Noise
+#### Operation-Instance Noise
 
-Use `add_gate_noise!` to add noise to specific gates. You can specify:
-- The gate type (or a symbolic pattern)
+Use `add_operation_noise!` to add noise to specific operations. You can specify:
+- The operation instance (or a symbolic operation pattern)
 - The noise channel
 - Optional: specific qubits (exact list or set of qubits)
 
 ```julia
 # Add noise to all Hadamard gates
-add_gate_noise!(model, GateH(), Depolarizing1(0.001))
+add_operation_noise!(model, GateH(), Depolarizing1(0.001))
 
 # Add noise to CX gates only on qubits [1, 2]
-add_gate_noise!(model, GateCX(), Depolarizing2(0.01), qubits=[1, 2], exact=true)
+add_operation_noise!(model, GateCX(), Depolarizing2(0.01), qubits=[1, 2], exact=true)
 
-# Add noise to any CX gate involving qubits in set {1, 2, 3}
-add_gate_noise!(model, GateCX(), Depolarizing2(0.005), qubits=[1, 2, 3], exact=false)
+# Add noise to any CX gate acting on qubits in the set {1, 2, 3}
+add_operation_noise!(model, GateCX(), Depolarizing2(0.005), qubits=[1, 2, 3], exact=false)
+
+# Add measurement noise before each measurement
+add_operation_noise!(model, Measure(), PauliX(0.02); before=true)
 ```
 
 #### Readout Noise
@@ -334,11 +329,11 @@ Here is a list of the available noise rules. Each rule matches a specific condit
 - [`SetQubitReadoutNoise`](@ref): Applies noise to measurements on any qubit in a given set.
 - [`ExactQubitReadoutNoise`](@ref): Applies noise to measurements on a specific sequence of qubits (sensitive to order).
 
-**Gate Noise**
+**Operation-instance Noise**
 
-- [`GateInstanceNoise`](@ref): Applies noise to all instances of a specific gate type (e.g., all `CX` gates).
-- [`SetGateInstanceQubitNoise`](@ref): Applies noise to gates acting on qubits within a given set.
-- [`ExactGateInstanceQubitNoise`](@ref): Applies noise to gates acting on a specific sequence of qubits.
+- [`OperationInstanceNoise`](@ref): Applies noise to all instances of a specific operation pattern.
+- [`SetOperationInstanceQubitNoise`](@ref): Applies noise to operations acting on qubits within a given set.
+- [`ExactOperationInstanceQubitNoise`](@ref): Applies noise to operations acting on a specific sequence of qubits.
 
 **Idle Noise**
 

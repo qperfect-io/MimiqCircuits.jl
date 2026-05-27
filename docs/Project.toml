@@ -10,4 +10,4 @@ Quantikz = "b0d11df0-eea3-4d79-b4a5-421488cbf74b"
 tectonic_jll = "d7dd28d6-a5e6-559c-9131-7eb760cdacc5"
 
 [sources]
-MimiqCircuits = { path = ".." }
+MimiqCircuits = {path = ".."}

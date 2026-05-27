@@ -2,21 +2,6 @@
 
 On this page you can find all the information needed to build a circuit using MIMIQ. Every useful function will be presented below, accompanied by an explanation of their purpose and examples of use.
 
-
-- [Circuits](#circuits)
-  - [What is a circuit and what are instructions](#what-is-a-circuit-and-what-are-instructions)
-    - [Circuits \& Instructions in MIMIQ](#circuits--instructions-in-mimiq)
-  - [Registers: quantum/classical/Z-register](#registers-quantumclassicalz-register)
-  - [Creating a circuit](#creating-a-circuit)
-  - [Adding Gates](#adding-gates)
-    - [Push](#push)
-      - [`Push!` specifics](#push-specifics)
-    - [Insert](#insert)
-    - [Append](#append)
-  - [Visualizing circuits](#visualizing-circuits)
-  - [Decompose](#decompose)
-
-
 ## What is a circuit and what are instructions 
 
 A quantum circuit, similar to a classical circuit, represents a sequence of quantum gates applied to qubits, which are the carriers of quantum information. Quantum circuits are essential for designing quantum algorithms. The complexity of a quantum circuit is typically measured by two key metrics: width and depth. Width refers to the number of qubits in the circuit, while depth indicates the maximum number of sequential gates applied to any single qubit.
@@ -79,6 +64,8 @@ As you can see in the code above the indexing of the different registers always 
 1. Index of the quantum register.
 2. Index of the classical register.
 3. Index of the z-register.
+
+By default, targets within the same register cannot be repeated in a single instruction. Qubit targets can never be repeated. Some operations explicitly allow repeated classical-bit or Z-register targets when reading from and writing to the same register is meaningful. See the [special topics](special_topics.md#repeated-targets) page for more information.
 
 
 Be careful when writing information to the z-register or to the classical register as the information can be easily overwritten if the same index is used multiple times. For example if you measure two different qubits and store both in the same classical bit the results of the sampling will only report the last measurement.
@@ -248,4 +235,3 @@ push!(circuit, GateX(), 1)
 # decompose the circuit
 decompose(circuit)
 ```
-

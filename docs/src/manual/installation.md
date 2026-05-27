@@ -2,19 +2,6 @@
 
 In this section, we’ll walk you through the steps needed to get MIMIQ up and running on your system. We’ll cover everything from installing Julia, adding the necessary registries, and installing the MIMIQ packages, to setting up Jupyter with a Julia kernel for an enhanced coding experience. By the end of this guide, you’ll be ready to dive into quantum computing with MIMIQ.
 
-- [Installation](#installation)
-  - [Installing Julia](#installing-julia)
-    - [Install `juliaup`](#install-juliaup)
-      - [Windows](#windows)
-      - [macOS and Linux](#macos-and-linux)
-    - [Install Julia](#install-julia)
-  - [Adding the QPerfect Registry](#adding-the-qperfect-registry)
-  - [Installing MIMIQ](#installing-mimiq)
-  - [Using MIMIQ and Julia with Jupyter](#using-mimiq-and-julia-with-jupyter)
-    - [Install Jupyter](#install-jupyter)
-    - [Start Jupyter](#start-jupyter)
-    - [Using MIMIQ in Jupyter](#using-mimiq-in-jupyter)
-
 
 ## Installing Julia
 
