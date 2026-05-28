@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.24.2] — 2026-05-28
+
+### Fixed
+- `submit` no longer dies with `UndefVarError: WIRE_FORMAT_VERSION
+  not defined in MimiqCircuits`. The reference in
+  `execute.jl` is now qualified as
+  `MimiqCircuitsBase.WIRE_FORMAT_VERSION` so it doesn't rely on the
+  `@reexport using MimiqCircuitsBase` chain resolving the symbol
+  in MimiqCircuits's own namespace at runtime.
+
 ## [0.24.1] — 2026-05-27
 
 ### Fixed

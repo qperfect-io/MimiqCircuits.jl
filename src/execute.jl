@@ -391,7 +391,7 @@ function submit(
         "apilang" => "julia",
         "apiversion" => _pkgversion(@__MODULE__),
         "circuitsapiversion" => _pkgversion(MimiqCircuitsBase),
-        "wireformatversion" => string(WIRE_FORMAT_VERSION),
+        "wireformatversion" => string(MimiqCircuitsBase.WIRE_FORMAT_VERSION),
     )
 
     # write the request to a file
