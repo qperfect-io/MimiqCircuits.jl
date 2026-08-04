@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Other Operations · MimiqCircuits.jl</title><meta name="title" content="Other Operations · MimiqCircuits.jl"/><meta property="og:title" content="Other Operations · MimiqCircuits.jl"/><meta property="twitter:title" content="Other Operations · MimiqCircuits.jl"/><meta name="description" content="Documentation for MimiqCircuits.jl."/><meta property="og:description" content="Documentation for MimiqCircuits.jl."/><meta property="twitter:description" content="Documentation for MimiqCircuits.jl."/><script data-outdated-warner src="../../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../../assets/documenter.js"></script><script src="../../../search_index.js"></script><script src="../../../siteinfo.js"></script><script src="../../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../../"><img src="../../../assets/logo.png" alt="MimiqCircuits.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../../">MimiqCircuits.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../../">Introduction</a></li><li><a class="tocitem" href="../../../installation/">Installation</a></li><li><a class="tocitem" href="../../../tutorial/">Tutorial</a></li><li><span class="tocitem">Manual</span><ul><li><a class="tocitem" href="../../../manual/execution/">Circuit execution</a></li><li><a class="tocitem" href="../../../manual/openqasm/">OpenQASM</a></li></ul></li><li><span class="tocitem">Library</span><ul><li><a class="tocitem" href="../../outline/">Outline</a></li><li><a class="tocitem" href="../../mimiqcircuits/">MimiqCircuits</a></li><li><a class="tocitem" href="../../mimiqlink/">MimiqLink</a></li><li><input class="collapse-toggle" id="menuitem-5-4" type="checkbox" checked/><label class="tocitem" for="menuitem-5-4"><span class="docs-label">MimiqCircuitsBase</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../general/">General functions</a></li><li><a class="tocitem" href="../circuits/">Quantum Circuits and Instructions</a></li><li><a class="tocitem" href="../operations/">Operations</a></li><li><a class="tocitem" href="../standard/">Standard Gates</a></li><li><a class="tocitem" href="../generalized/">Generalized gates</a></li><li class="is-active"><a class="tocitem" href>Other Operations</a><ul class="internal"><li><a class="tocitem" href="#Custom-gates"><span>Custom gates</span></a></li><li><a class="tocitem" href="#Gate-definitions"><span>Gate definitions</span></a></li><li><a class="tocitem" href="#Non-unitary-operations"><span>Non-unitary operations</span></a></li><li><a class="tocitem" href="#No-ops"><span>No-ops</span></a></li></ul></li><li><a class="tocitem" href="../bitstrings/">Bit Strings</a></li><li><a class="tocitem" href="../results/">Quantum Circuit Simulation Results</a></li></ul></li><li><a class="tocitem" href="../../internals/">Internals</a></li><li><a class="tocitem" href="../../function_index/">Function Index</a></li></ul></li><li><a class="tocitem" href="../../../references/">References</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Library</a></li><li><a class="is-disabled">MimiqCircuitsBase</a></li><li class="is-active"><a href>Other Operations</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Other Operations</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/qperfect-io/MimiqCircuits.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-navbar-link" href="https://github.com/qperfect-io/MimiqCircuits.jl/blob/main/docs/src/library/mimiqcircuitsbase/other.md" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Other-Operations"><a class="docs-heading-anchor" href="#Other-Operations">Other Operations</a><a id="Other-Operations-1"></a><a class="docs-heading-anchor-permalink" href="#Other-Operations" title="Permalink"></a></h1><h2 id="Custom-gates"><a class="docs-heading-anchor" href="#Custom-gates">Custom gates</a><a id="Custom-gates-1"></a><a class="docs-heading-anchor-permalink" href="#Custom-gates" title="Permalink"></a></h2><article class="docstring"><header><a class="docstring-article-toggle-button fa-solid fa-chevron-down" href="javascript:;" title="Collapse docstring"></a><a class="docstring-binding" id="MimiqCircuitsBase.GateCustom" href="#MimiqCircuitsBase.GateCustom"><code>MimiqCircuitsBase.GateCustom</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct GateCustom{N,T} &lt;: AbstractGate{N}</code></pre><p><code>N</code> qubit gate specified by a <span>$2^N \times 2^N$</span> matrix with elements of type <code>T</code>.</p><p>Use this to construct your own gates based on unitary matrices. Currently only N=1,2 (M=2,4) are recognised.</p><p>MIMIQ uses textbook convention for specifying gates.</p><p>One qubit gate matrices are defined in the basis <span>$|0\rangle$</span>, <span>$|1\rangle$</span> e.g.,</p><p class="math-container">\[\operatorname{Z} =
+\begin{pmatrix}
+    1&amp;0\\
+    0&amp;-1
+\end{pmatrix}\]</p><p>Two qubit gate matrices are defined in the basis <span>$|00\rangle$</span>, <span>$|01\rangle$</span>&gt;, <span>$|10\rangle$</span>, <span>$|11\rangle$</span> where the left-most qubit is the first to appear in the target list e.g.,</p><p class="math-container">\[\operatorname{CNOT} =
+\begin{pmatrix}
+    1&amp;0&amp;0&amp;0\\
+    0&amp;1&amp;0&amp;0\\
+    0&amp;0&amp;0&amp;1\\
+    0&amp;0&amp;1&amp;0
+\end{pmatrix}\]</p><pre><code class="nohighlight hljs">julia&gt; CNOT = [1 0 0 0; 0 1 0 0; 0 0 0 1; 0 0 1 0]
+4×4 Matrix{Int64}:
+ 1  0  0  0
+ 0  1  0  0
+ 0  0  0  1
+ 0  0  1  0
+
+julia&gt; # CNOT gate with control on q1 and target on q2
+
+julia&gt; Instruction(GateCustom(CNOT), 1, 2)
+GateCustom([1 0 0 0; 0 1 0 0; 0 0 0 1; 0 0 1 0]) @ q1, q2
+
+# Examples
+</code></pre><p>jldoctest julia&gt; g = GateCustom([1 0; 0 1]) Custom([1.0 0.0; 0.0 1.0])</p><p>julia&gt; push!(Circuit(), g, 1) 1-qubit circuit with 1 instructions: └── Custom([1.0 0.0; 0.0 1.0]) @ q1 ```</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.7.1/src/operations/gates/custom.jl#L7-L67">source</a></section></article><h2 id="Gate-definitions"><a class="docs-heading-anchor" href="#Gate-definitions">Gate definitions</a><a id="Gate-definitions-1"></a><a class="docs-heading-anchor-permalink" href="#Gate-definitions" title="Permalink"></a></h2><article class="docstring"><header><a class="docstring-article-toggle-button fa-solid fa-chevron-down" href="javascript:;" title="Collapse docstring"></a><a class="docstring-binding" id="MimiqCircuitsBase.GateCall" href="#MimiqCircuitsBase.GateCall"><code>MimiqCircuitsBase.GateCall</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">GateCall(decl, args...)</code></pre><p>Gate corresponding to a call to a <a href="#MimiqCircuitsBase.GateDecl"><code>GateDecl</code></a> definition.</p><p>It is created by calling a <a href="#MimiqCircuitsBase.GateDecl"><code>GateDecl</code></a> with the proper number of arguments.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; decl = @gatedecl ansatz(θ) = begin
+           insts = Instruction[]
+           push!(insts, Instruction(GateX(), 1))
+           push!(insts, Instruction(GateRX(θ), 2))
+           return insts
+       end;
+
+
+julia&gt; @variables λ;
+
+
+julia&gt; decl(λ)
+ansatz(λ)
+</code></pre><p><strong>See also</strong></p><p><a href="#MimiqCircuitsBase.GateDecl"><code>GateDecl</code></a></p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.7.1/src/gatedecl.jl#L110-L140">source</a></section></article><article class="docstring"><header><a class="docstring-article-toggle-button fa-solid fa-chevron-down" href="javascript:;" title="Collapse docstring"></a><a class="docstring-binding" id="MimiqCircuitsBase.GateDecl" href="#MimiqCircuitsBase.GateDecl"><code>MimiqCircuitsBase.GateDecl</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">GateDecl(name, args, instructions)</code></pre><p>Define a new gate of given name, arguments and instructions.</p><p><strong>Examples</strong></p><p>A simple gate declaration, via the <code>@gatedecl</code> macro:</p><pre><code class="language-julia-repl hljs">julia&gt; decl = @gatedecl ansatz(θ) = begin
+           insts = Instruction[]
+           push!(insts, Instruction(GateX(), 1))
+           push!(insts, Instruction(GateRX(θ), 2))
+           return insts
+       end
+gate ansatz(θ) =
+├── X @ q[1]
+└── RX(θ) @ q[2]
+
+julia&gt; @variables λ;
+
+
+julia&gt; decompose(decl(λ))
+2-qubit circuit with 2 instructions:
+├── X @ q[1]
+└── RX(λ) @ q[2]
+</code></pre><p><strong>See also</strong></p><p><a href="#MimiqCircuitsBase.GateCall"><code>GateCall</code></a></p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.7.1/src/gatedecl.jl#L1-L33">source</a></section></article><h2 id="Non-unitary-operations"><a class="docs-heading-anchor" href="#Non-unitary-operations">Non-unitary operations</a><a id="Non-unitary-operations-1"></a><a class="docs-heading-anchor-permalink" href="#Non-unitary-operations" title="Permalink"></a></h2><article class="docstring"><header><a class="docstring-article-toggle-button fa-solid fa-chevron-down" href="javascript:;" title="Collapse docstring"></a><a class="docstring-binding" id="MimiqCircuitsBase.Reset" href="#MimiqCircuitsBase.Reset"><code>MimiqCircuitsBase.Reset</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">Reset()</code></pre><p>Quantum operation that resets the status of one qubit to the <span>$\ket{0}$</span> state.</p><p>See also <a href="../operations/#MimiqCircuitsBase.Operation"><code>Operation</code></a>, <a href="#MimiqCircuitsBase.Measure"><code>Measure</code></a>.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; Reset()
+Reset
+
+julia&gt; c = push!(Circuit(), Reset, 1)
+1-qubit circuit with 1 instructions:
+└── Reset @ q[1]
+
+julia&gt; push!(c, Reset(), 3)
+3-qubit circuit with 2 instructions:
+├── Reset @ q[1]
+└── Reset @ q[3]</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.7.1/src/operations/reset.jl#L17-L40">source</a></section></article><article class="docstring"><header><a class="docstring-article-toggle-button fa-solid fa-chevron-down" href="javascript:;" title="Collapse docstring"></a><a class="docstring-binding" id="MimiqCircuitsBase.Measure" href="#MimiqCircuitsBase.Measure"><code>MimiqCircuitsBase.Measure</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">Measure()</code></pre><p>Single qubit measurement operation in the computational basis</p><p>The operation projects the quantum states and stores the result of such measurement is stored in a classical register.</p><div class="admonition is-category-warn"><header class="admonition-header">Warn</header><div class="admonition-body"><p><code>Measure</code> is non-reversible.</p></div></div><p>See also <a href="../operations/#MimiqCircuitsBase.Operation"><code>Operation</code></a>, <a href="#MimiqCircuitsBase.Reset"><code>Reset</code></a>.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; Measure()
+Measure
+
+julia&gt; c = push!(Circuit(), Measure, 1, 1)
+1-qubit circuit with 1 instructions:
+└── Measure @ q[1], c[1]
+
+julia&gt; push!(c, Measure(), 3, 4)
+3-qubit circuit with 2 instructions:
+├── Measure @ q[1], c[1]
+└── Measure @ q[3], c[4]</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.7.1/src/operations/measure.jl#L17-L45">source</a></section></article><h2 id="No-ops"><a class="docs-heading-anchor" href="#No-ops">No-ops</a><a id="No-ops-1"></a><a class="docs-heading-anchor-permalink" href="#No-ops" title="Permalink"></a></h2><article class="docstring"><header><a class="docstring-article-toggle-button fa-solid fa-chevron-down" href="javascript:;" title="Collapse docstring"></a><a class="docstring-binding" id="MimiqCircuitsBase.Barrier" href="#MimiqCircuitsBase.Barrier"><code>MimiqCircuitsBase.Barrier</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">Barrier(numqubits)</code></pre><p>No-op operation that does not affect the quantum state or the execution of a circuit, but prevents compression or optimization across it.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; Barrier(1)
+Barrier
+
+julia&gt; Barrier(2)
+Barrier
+
+julia&gt; c = push!(Circuit(), Barrier(1), 1)
+1-qubit circuit with 1 instructions:
+└── Barrier @ q[1]
+
+julia&gt; push!(c, Barrier(1), 1:3)
+3-qubit circuit with 4 instructions:
+├── Barrier @ q[1]
+├── Barrier @ q[1]
+├── Barrier @ q[2]
+└── Barrier @ q[3]
+
+julia&gt; push!(c, Barrier(3), 1,2,3)
+3-qubit circuit with 5 instructions:
+├── Barrier @ q[1]
+├── Barrier @ q[1]
+├── Barrier @ q[2]
+├── Barrier @ q[3]
+└── Barrier @ q[1:3]</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.7.1/src/operations/barrier.jl#L17-L51">source</a></section></article></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../generalized/">« Generalized gates</a><a class="docs-footer-nextpage" href="../bitstrings/">Bit Strings »</a><div class="flexbox-break"></div><p class="footer-message">Copyright 2021-2023 QPerfect. All rights reserved.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="auto">Automatic (OS)</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.2.1 on <span class="colophon-date" title="Monday 11 December 2023 21:54">Monday 11 December 2023</span>. Using Julia version 1.9.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
