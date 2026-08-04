@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="logo.svg" alt="MIMIQ" width="380">
+</p>
+
 
 # MimiqCircuits.jl
 

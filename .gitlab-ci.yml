@@ -44,16 +44,13 @@ register:
   rules:
     - if: $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+-private$/
   before_script:
-    - apt-get update -qq && apt-get install -y -qq git openssh-client
-    - eval $(ssh-agent -s)
-    - cat "$PRIVATEREGISTRY_SSH_KEY" | tr -d '\r' | ssh-add -
-    - mkdir -p ~/.ssh && chmod 700 ~/.ssh
-    - ssh-keyscan gitlab.qperfect.io >> ~/.ssh/known_hosts
-    - git config --global url."https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.qperfect.io/".insteadOf "https://gitlab.qperfect.io/"
+    - apt-get update -qq && apt-get install -y -qq git
+    - git config --global --add url."https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.qperfect.io/".insteadOf "git@gitlab.qperfect.io:"
+    - git config --global --add url."https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.qperfect.io/".insteadOf "https://gitlab.qperfect.io/"
     - git config --global user.email "technical@qperfect.io"
     - git config --global user.name "QPerfect"
     - julia -e 'import Pkg; Pkg.update()'
-    - julia -e 'import Pkg; Pkg.Registry.add(Pkg.RegistrySpec(url="git@gitlab.qperfect.io:julia/Registry.git"))'
+    - julia -e "import Pkg; Pkg.Registry.add(Pkg.RegistrySpec(url=\"https://${REGISTRY_TOKEN_NAME}:${REGISTRY_TOKEN}@gitlab.qperfect.io/julia/Registry.git\"))"
   script:
     - |
       julia --color=yes -e '
@@ -61,8 +58,9 @@ register:
         Pkg.add("LocalRegistry")
         Pkg.develop(path="./")
         using LocalRegistry
-        register("MimiqCircuits", registry="QPerfectInternalRegistry",
-                 repo="git@gitlab.qperfect.io:development/mimiq/MimiqCircuits.jl.git")
+        register("MimiqCircuits"; registry="QPerfectInternalRegistry",
+                 repo="git@gitlab.qperfect.io:development/mimiq/MimiqCircuits.jl.git",
+                 push=true)
       '
 
 # Build the docs on devel and merge requests so a broken build fails
