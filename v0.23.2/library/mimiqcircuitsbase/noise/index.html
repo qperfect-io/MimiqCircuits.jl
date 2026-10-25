@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Noise · MimiqCircuits.jl</title><meta name="title" content="Noise · MimiqCircuits.jl"/><meta property="og:title" content="Noise · MimiqCircuits.jl"/><meta property="twitter:title" content="Noise · MimiqCircuits.jl"/><meta name="description" content="Documentation for MimiqCircuits.jl."/><meta property="og:description" content="Documentation for MimiqCircuits.jl."/><meta property="twitter:description" content="Documentation for MimiqCircuits.jl."/><script data-outdated-warner src="../../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../../assets/documenter.js"></script><script src="../../../search_index.js"></script><script src="../../../siteinfo.js"></script><script src="../../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../../"><img src="../../../assets/logo.png" alt="MimiqCircuits.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../../">MimiqCircuits.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../../">MIMIQ Documentation</a></li><li><a class="tocitem" href="../../../quick_start/">Quick start</a></li><li><input class="collapse-toggle" id="menuitem-3" type="checkbox"/><label class="tocitem" for="menuitem-3"><span class="docs-label">Manual</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><input class="collapse-toggle" id="menuitem-3-1" type="checkbox"/><label class="tocitem" for="menuitem-3-1"><span class="docs-label">Getting Started</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../../manual/installation/">Installation</a></li><li><a class="tocitem" href="../../../manual/overview/">Overview</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3-2" type="checkbox"/><label class="tocitem" for="menuitem-3-2"><span class="docs-label">Core Concepts</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../../manual/circuits/">Circuits</a></li><li><a class="tocitem" href="../../../manual/hamiltonian/">Hamiltonians</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3-3" type="checkbox"/><label class="tocitem" for="menuitem-3-3"><span class="docs-label">Operations</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../../manual/unitary_gates/">Unitary Gates</a></li><li><a class="tocitem" href="../../../manual/non_unitary_ops/">Non-unitary Operations</a></li><li><a class="tocitem" href="../../../manual/noise/">Noise</a></li><li><a class="tocitem" href="../../../manual/symbolic_ops/">Symbolic Operations</a></li><li><a class="tocitem" href="../../../manual/statistical_ops/">Statistical Operations</a></li><li><a class="tocitem" href="../../../manual/zops/">Z-register operation</a></li><li><a class="tocitem" href="../../../manual/special_ops/">Special Operations</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3-4" type="checkbox"/><label class="tocitem" for="menuitem-3-4"><span class="docs-label">Simulation &amp; Execution</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../../manual/simulation/">Simulating Circuits</a></li><li><a class="tocitem" href="../../../manual/simulation_parameters/">Simulation Parameters</a></li><li><a class="tocitem" href="../../../manual/remote_execution/">Cloud Execution</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-3-5" type="checkbox"/><label class="tocitem" for="menuitem-3-5"><span class="docs-label">Advanced Topics</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../../manual/import_export/">Import &amp; Export Circuits</a></li><li><a class="tocitem" href="../../../manual/dsl/">Circuit DSL</a></li><li><a class="tocitem" href="../../../manual/special_topics/">Special Topics</a></li><li><input class="collapse-toggle" id="menuitem-3-5-4" type="checkbox"/><label class="tocitem" for="menuitem-3-5-4"><span class="docs-label">Compilation &amp; Optimization</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../../manual/compilation/simplifications/">Simplifications</a></li><li><a class="tocitem" href="../../../manual/compilation/decompositions/">Rewrites and Decompositions</a></li><li><a class="tocitem" href="../../../manual/compilation/custom_decompositions/">Custom Decompositions</a></li></ul></li></ul></li></ul></li><li><input class="collapse-toggle" id="menuitem-4" type="checkbox"/><label class="tocitem" for="menuitem-4"><span class="docs-label">Use cases</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../../usecases/vqe/">VQE</a></li><li><a class="tocitem" href="../../../usecases/circuit_tester/">Circuit Tester</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-5" type="checkbox" checked/><label class="tocitem" for="menuitem-5"><span class="docs-label">API Reference</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../outline/">Outline</a></li><li><a class="tocitem" href="../../mimiqcircuits/">MimiqCircuits</a></li><li><a class="tocitem" href="../../mimiqlink/">MimiqLink</a></li><li><input class="collapse-toggle" id="menuitem-5-4" type="checkbox" checked/><label class="tocitem" for="menuitem-5-4"><span class="docs-label">MimiqCircuitsBase</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../general/">General functions</a></li><li><a class="tocitem" href="../circuits/">Quantum Circuits and Instructions</a></li><li><a class="tocitem" href="../operations/">Operations</a></li><li><a class="tocitem" href="../standard/">Standard Gates</a></li><li><a class="tocitem" href="../multiqubit/">Multi-Qubit Gates</a></li><li><a class="tocitem" href="../generalized/">Generalized gates</a></li><li><a class="tocitem" href="../other/">Other Operations</a></li><li class="is-active"><a class="tocitem" href>Noise</a></li><li><a class="tocitem" href="../operators/">Operators</a></li><li><a class="tocitem" href="../zops/">Z-register Operations</a></li><li><a class="tocitem" href="../bitstrings/">Bit Strings</a></li><li><a class="tocitem" href="../results/">Quantum Circuit Simulation Results</a></li><li><a class="tocitem" href="../simplifications/">Circuit Compilation &amp; Optimization</a></li><li><a class="tocitem" href="../decompositions/">Decompositions</a></li><li><a class="tocitem" href="../aliases/">Aliases</a></li></ul></li><li><a class="tocitem" href="../../internals/">Internals</a></li><li><a class="tocitem" href="../../function_index/">Function Index</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">API Reference</a></li><li><a class="is-disabled">MimiqCircuitsBase</a></li><li class="is-active"><a href>Noise</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Noise</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/qperfect-io/MimiqCircuits.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-navbar-link" href="https://github.com/qperfect-io/MimiqCircuits.jl/blob/main/docs/src/library/mimiqcircuitsbase/noise.md" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Noise"><a class="docs-heading-anchor" href="#Noise">Noise</a><a id="Noise-1"></a><a class="docs-heading-anchor-permalink" href="#Noise" title="Permalink"></a></h1><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.AbstractNoiseRule"><a class="docstring-binding" href="#MimiqCircuitsBase.AbstractNoiseRule"><code>MimiqCircuitsBase.AbstractNoiseRule</code></a> — <span class="docstring-category">Type</span></summary><section><div><pre><code class="language-julia hljs">AbstractNoiseRule</code></pre><p>Abstract base type for all noise rules in the noise model. Each concrete noise rule defines when and how noise should be applied to circuit instructions.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/noisemodel.jl#L35-L40">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.CustomNoiseRule"><a class="docstring-binding" href="#MimiqCircuitsBase.CustomNoiseRule"><code>MimiqCircuitsBase.CustomNoiseRule</code></a> — <span class="docstring-category">Type</span></summary><section><div><pre><code class="language-julia hljs">CustomNoiseRule &lt;: AbstractNoiseRule</code></pre><p>Apply noise based on a custom matching function.</p><p><strong>Fields</strong></p><ul><li><code>matcher::Function</code>: Function (inst) -&gt; Bool</li><li><code>generator::Function</code>: Function (inst) -&gt; Instruction</li><li><code>priority_val::Int</code>: Priority for this rule (default: 0)</li><li><code>before::Bool</code>: If true, apply noise before the matched instruction</li><li><code>replace::Bool</code>: If true, noise replaces the original instruction</li></ul><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs"># Add noise to all 2-qubit operations
+
+julia&gt; rule = CustomNoiseRule(
+           inst -&gt; numqubits(getoperation(inst)) == 2,
+           inst -&gt; Instruction(Depolarizing2(0.01), getqubits(inst)...)
+       )
+CustomNoiseRule(var&quot;#3#5&quot;(), var&quot;#4#6&quot;(), 0, false, false)</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/noisemodel.jl#L852-L874">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.ExactOperationInstanceQubitNoise"><a class="docstring-binding" href="#MimiqCircuitsBase.ExactOperationInstanceQubitNoise"><code>MimiqCircuitsBase.ExactOperationInstanceQubitNoise</code></a> — <span class="docstring-category">Type</span></summary><section><div><pre><code class="language-julia hljs">ExactOperationInstanceQubitNoise &lt;: AbstractNoiseRule</code></pre><p>Apply noise to a specific operation pattern only when it acts on specific qubits in exact order.</p><p>The operation pattern can have symbolic parameters (see <a href="#MimiqCircuitsBase.OperationInstanceNoise"><code>OperationInstanceNoise</code></a>).</p><p><strong>Fields</strong></p><ul><li><code>operation::Operation</code>: The operation pattern to match (may have symbolic parameters)</li><li><code>qubits::Vector{Int}</code>: Exact sequence of qubits (order matters)</li><li><code>noise::Union{AbstractKrausChannel,AbstractGate}</code>: The noise to apply (may use symbolic variables)</li><li><code>before::Bool</code>: If true, apply noise before the operation (default: false)</li><li><code>replace::Bool</code>: If true, replace the matched operation with the noise operation (default: false)</li></ul><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">@variables a
+# Only matches GateRX on qubit 1, with angle-dependent noise
+
+julia&gt; rule = ExactOperationInstanceQubitNoise(GateRX(a), [1], AmplitudeDamping(a / π))
+ExactOperationInstanceQubitNoise(GateRX(a), [1], AmplitudeDamping(a / π), false, false)
+
+# Compact syntax
+julia&gt; rule = ExactOperationInstanceQubitNoise(GateRX(a) =&gt; AmplitudeDamping(a / π), qubits=[1])
+ExactOperationInstanceQubitNoise(GateRX(a), [1], AmplitudeDamping(a / π), false, false)</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/noisemodel.jl#L439-L465">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.ExactQubitReadoutNoise"><a class="docstring-binding" href="#MimiqCircuitsBase.ExactQubitReadoutNoise"><code>MimiqCircuitsBase.ExactQubitReadoutNoise</code></a> — <span class="docstring-category">Type</span></summary><section><div><pre><code class="language-julia hljs">ExactQubitReadoutNoise &lt;: AbstractNoiseRule</code></pre><p>Apply readout noise only to measurements on specific qubits in exact order.</p><p><strong>Fields</strong></p><ul><li><code>qubits::Vector{Int}</code>: Exact sequence of qubits (order matters)</li><li><code>noise::ReadoutErr</code>: The readout error to apply</li></ul><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs"># Only matches Measure on qubits [1, 2] in that exact order
+
+julia&gt; rule = ExactQubitReadoutNoise([1, 2], ReadoutErr(0.01, 0.02))
+ExactQubitReadoutNoise([1, 2], ReadoutErr(0.01, 0.02))
+
+# Different from [2, 1]
+julia&gt; rule2 = ExactQubitReadoutNoise([2, 1], ReadoutErr(0.02, 0.03))
+ExactQubitReadoutNoise([2, 1], ReadoutErr(0.02, 0.03))</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/noisemodel.jl#L172-L192">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.GlobalReadoutNoise"><a class="docstring-binding" href="#MimiqCircuitsBase.GlobalReadoutNoise"><code>MimiqCircuitsBase.GlobalReadoutNoise</code></a> — <span class="docstring-category">Type</span></summary><section><div><pre><code class="language-julia hljs">GlobalReadoutNoise &lt;: AbstractNoiseRule</code></pre><p>Apply readout noise to all measurement operations in the circuit.</p><p><strong>Fields</strong></p><ul><li><code>noise::ReadoutErr</code>: The readout error to apply</li></ul><p><strong>Examples</strong></p><pre><code class="language-julia hljs">rule = GlobalReadoutNoise(ReadoutErr([0.01, 0.02]))</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/noisemodel.jl#L141-L153">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.IdleNoise"><a class="docstring-binding" href="#MimiqCircuitsBase.IdleNoise"><code>MimiqCircuitsBase.IdleNoise</code></a> — <span class="docstring-category">Type</span></summary><section><div><pre><code class="language-julia hljs">IdleNoise &lt;: AbstractNoiseRule</code></pre><p>Apply noise to qubits that are idle (not involved in any operation) at a given time step.</p><p>The noise can depend on the idle time using a relation with a symbolic time variable.</p><p><strong>Fields</strong></p><ul><li><code>relation::Union{Pair, Operation}</code>: Either a relation <code>time_var =&gt; noise(time_var)</code> or constant noise</li></ul><p><strong>Examples</strong></p><p><strong>Constant idle noise</strong></p><pre><code class="language-julia-repl hljs">julia&gt; IdleNoise(AmplitudeDamping(0.0001))
+IdleNoise(AmplitudeDamping(0.0001))</code></pre><p><strong>Time-dependent idle noise</strong></p><pre><code class="language-julia-repl hljs">julia&gt; @variables t
+1-element Vector{Symbolics.Num}:
+ t
+
+julia&gt; IdleNoise(t =&gt; AmplitudeDamping(t / 1000))
+IdleNoise(t =&gt; AmplitudeDamping(t / 1000))
+
+julia&gt; IdleNoise(t =&gt; AmplitudeDamping(1 - exp(-t / t^2)))
+IdleNoise(t =&gt; AmplitudeDamping(1 - exp(-1 / t)))</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/noisemodel.jl#L681-L711">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.NoiseModel"><a class="docstring-binding" href="#MimiqCircuitsBase.NoiseModel"><code>MimiqCircuitsBase.NoiseModel</code></a> — <span class="docstring-category">Type</span></summary><section><div><pre><code class="language-julia hljs">NoiseModel</code></pre><p>A collection of noise rules that define how noise is applied to a quantum circuit.</p><p><strong>Fields</strong></p><ul><li><code>rules::Vector{AbstractNoiseRule}</code>: List of noise rules in the model</li><li><code>name::String</code>: Optional name for the noise model</li></ul><p><strong>Priority Order (lower number = higher priority)</strong></p><ul><li><a href="#MimiqCircuitsBase.CustomNoiseRule"><code>CustomNoiseRule</code></a>: configurable (default 0)</li><li><a href="#MimiqCircuitsBase.ExactOperationInstanceQubitNoise"><code>ExactOperationInstanceQubitNoise</code></a>: 40</li><li><a href="#MimiqCircuitsBase.ExactQubitReadoutNoise"><code>ExactQubitReadoutNoise</code></a>: 50</li><li><a href="#MimiqCircuitsBase.SetOperationInstanceQubitNoise"><code>SetOperationInstanceQubitNoise</code></a>: 60</li><li><a href="#MimiqCircuitsBase.SetQubitReadoutNoise"><code>SetQubitReadoutNoise</code></a>: 70</li><li><a href="#MimiqCircuitsBase.OperationInstanceNoise"><code>OperationInstanceNoise</code></a>: 80</li><li><a href="#MimiqCircuitsBase.GlobalReadoutNoise"><code>GlobalReadoutNoise</code></a>: 90</li><li><a href="#MimiqCircuitsBase.SetIdleQubitNoise"><code>SetIdleQubitNoise</code></a>: 190</li><li><a href="#MimiqCircuitsBase.IdleNoise"><code>IdleNoise</code></a>: 200</li></ul><p><strong>Examples</strong></p><p><strong>Using symbolic parameters for angle-dependent noise</strong></p><pre><code class="language-julia-repl hljs">julia&gt; @variables θ
+1-element Vector{Symbolics.Num}:
+ θ
+
+julia&gt; model = NoiseModel([
+           # Noise that scales with rotation angle
+           OperationInstanceNoise(GateRX(θ), Depolarizing1(θ / π)),
+           OperationInstanceNoise(GateRY(θ), Depolarizing1(θ / π)),
+
+           # Different noise for different qubit pairs
+           ExactOperationInstanceQubitNoise(GateCX(), [1, 2], Depolarizing2(0.01)),
+           ExactOperationInstanceQubitNoise(GateCX(), [2, 1], Depolarizing2(0.02)),
+
+           # General fallbacks
+           GlobalReadoutNoise(ReadoutErr(0.01, 0.02)),
+           IdleNoise(AmplitudeDamping(0.0001))
+       ], name=&quot;Angle-Dependent Noise Model&quot;)
+
+NoiseModel(AbstractNoiseRule[ExactOperationInstanceQubitNoise(GateCX(), [1, 2], Depolarizing(2, 0.01), false, false), ExactOperationInstanceQubitNoise(GateCX(), [2, 1], Depolarizing(2, 0.02), false, false), OperationInstanceNoise(GateRX(θ), Depolarizing(1, θ / π), false, false), OperationInstanceNoise(GateRY(θ), Depolarizing(1, θ / π), false, false), GlobalReadoutNoise(ReadoutErr(0.01, 0.02)), IdleNoise(AmplitudeDamping(0.0001))], &quot;Angle-Dependent Noise Model&quot;)</code></pre><p><strong>Using symbolic parameters with complex expressions</strong></p><pre><code class="language-julia hljs">@variables α β
+model = NoiseModel([
+    # Two-parameter operation with combined noise
+    OperationInstanceNoise(GateU(α, β, 0), Depolarizing1((α^2 + β^2) / (2π^2))),
+], name=&quot;Complex Parameter Noise&quot;)</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/noisemodel.jl#L901-L956">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.OperationInstanceNoise"><a class="docstring-binding" href="#MimiqCircuitsBase.OperationInstanceNoise"><code>MimiqCircuitsBase.OperationInstanceNoise</code></a> — <span class="docstring-category">Type</span></summary><section><div><pre><code class="language-julia hljs">OperationInstanceNoise &lt;: AbstractNoiseRule</code></pre><p>Apply noise to operations matching a specific operation pattern.</p><p>The operation pattern can have symbolic parameters (e.g., <code>GateRX(a)</code>) which will be matched positionally against concrete operation instances. When a match occurs, the symbolic variables are substituted with the concrete parameter values in the noise.</p><p><strong>Fields</strong></p><ul><li><code>operation::Operation</code>: The operation pattern to match (may have symbolic parameters)</li><li><code>noise::Union{AbstractKrausChannel,AbstractGate}</code>: The noise to apply (may use symbolic variables)</li><li><code>before::Bool</code>: If true, apply noise before the operation (default: false)</li><li><code>replace::Bool</code>: If true, replace the matched operation with the noise operation (default: false)</li></ul><p><strong>Examples</strong></p><p><strong>Concrete operation matching</strong></p><pre><code class="language-julia-repl hljs">julia&gt; rule = OperationInstanceNoise(GateRX(π/2), AmplitudeDamping(0.001))
+OperationInstanceNoise(GateRX(π/2), AmplitudeDamping(0.001), false, false)</code></pre><p><strong>Symbolic operation matching with parameter-dependent noise</strong></p><pre><code class="language-julia-repl hljs">
+julia&gt; @variables a
+1-element Vector{Symbolics.Num}:
+ a
+
+# Matches any GateRX, applies noise that depends on the rotation angle
+
+julia&gt; rule = OperationInstanceNoise(GateRX(a), Depolarizing1(a / π))
+OperationInstanceNoise(GateRX(a), Depolarizing(1, a / π), false, false)
+
+# When GateRX(0.4) is encountered, applies Depolarizing1(0.4 / π)</code></pre><p><strong>Multi-parameter symbolic matching</strong></p><pre><code class="language-julia-repl hljs">julia&gt; @variables θ φ
+2-element Vector{Symbolics.Num}:
+ θ
+ φ
+
+julia&gt; rule = OperationInstanceNoise(GateU(θ, φ, 0), Depolarizing1((θ^2 + φ^2) / (2π^2)))
+OperationInstanceNoise(GateU(θ, φ, 0, 0π), Depolarizing(1, (θ^2 + φ^2) / 19.739208802178716), false, false)</code></pre><p><strong>Compact relation syntax</strong></p><pre><code class="language-julia-repl hljs">
+julia&gt; @variables a
+1-element Vector{Symbolics.Num}:
+ a
+
+julia&gt; rule = OperationInstanceNoise(GateRX(a) =&gt; Depolarizing1(a + 2))
+OperationInstanceNoise(GateRX(a), Depolarizing(1, 2 + a), false, false)</code></pre><p><strong>Measurement noise with Pauli channels (apply before measurement)</strong></p><pre><code class="language-julia-repl hljs">julia&gt; rule = OperationInstanceNoise(Measure(), PauliX(0.02); before=true)
+OperationInstanceNoise(Measure(), PauliX(0.02), true, false)</code></pre><p><strong>Reset noise</strong></p><pre><code class="language-julia-repl hljs">julia&gt; rule = OperationInstanceNoise(Reset(), Depolarizing1(0.01))
+OperationInstanceNoise(Reset(), Depolarizing(1, 0.01), false, false)</code></pre><p><strong>Replace matched operation</strong></p><pre><code class="language-julia-repl hljs">julia&gt; rule = OperationInstanceNoise(GateH(), AmplitudeDamping(0.001); replace=true)
+OperationInstanceNoise(GateH(), AmplitudeDamping(0.001), false, true)</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/noisemodel.jl#L280-L357">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.SetIdleQubitNoise"><a class="docstring-binding" href="#MimiqCircuitsBase.SetIdleQubitNoise"><code>MimiqCircuitsBase.SetIdleQubitNoise</code></a> — <span class="docstring-category">Type</span></summary><section><div><pre><code class="language-julia hljs">SetIdleQubitNoise &lt;: AbstractNoiseRule</code></pre><p>Apply noise to idle qubits that are in a specified set.</p><p>The noise can depend on the idle time using a relation with a symbolic time variable.</p><p><strong>Fields</strong></p><ul><li><code>relation::Union{Pair, Operation}</code>: Either a relation <code>time_var =&gt; noise(time_var)</code> or constant noise</li><li><code>qubits::Set{Int}</code>: Set of qubit indices where noise should be applied</li></ul><p><strong>Examples</strong></p><p><strong>Constant idle noise</strong></p><pre><code class="language-julia hljs">SetIdleQubitNoise(AmplitudeDamping(0.0001), [1,2,3])</code></pre><p><strong>Time-dependent idle noise</strong></p><pre><code class="language-julia-repl hljs">julia&gt; @variables t
+1-element Vector{Symbolics.Num}:
+ t
+
+julia&gt; SetIdleQubitNoise(t =&gt; AmplitudeDamping(t / 1000), [1,2,3])
+SetIdleQubitNoise(t =&gt; AmplitudeDamping(t / 1000), Set([2, 3, 1]))</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/noisemodel.jl#L762-L789">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.SetOperationInstanceQubitNoise"><a class="docstring-binding" href="#MimiqCircuitsBase.SetOperationInstanceQubitNoise"><code>MimiqCircuitsBase.SetOperationInstanceQubitNoise</code></a> — <span class="docstring-category">Type</span></summary><section><div><pre><code class="language-julia hljs">SetOperationInstanceQubitNoise &lt;: AbstractNoiseRule</code></pre><p>Apply noise to a specific operation pattern when all its qubits are in a specified set.</p><p>The operation pattern can have symbolic parameters (see <a href="#MimiqCircuitsBase.OperationInstanceNoise"><code>OperationInstanceNoise</code></a>).</p><p><strong>Fields</strong></p><ul><li><code>operation::Operation</code>: The operation pattern to match (may have symbolic parameters)</li><li><code>qubits::Set{Int}</code>: Set of qubit indices where noise should be applied</li><li><code>noise::Union{AbstractKrausChannel,AbstractGate}</code>: The noise to apply (may use symbolic variables)</li><li><code>before::Bool</code>: If true, apply noise before the operation (default: false)</li><li><code>replace::Bool</code>: If true, replace the matched operation with the noise operation (default: false)</li></ul><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">@variables a
+# Matches GateRX on any qubits in {1, 2, 3} with angle-dependent noise
+
+julia&gt; rule = SetOperationInstanceQubitNoise(GateRX(a), [1, 2, 3], PhaseAmplitudeDamping(1, 1, a / (2π)))
+SetOperationInstanceQubitNoise(GateRX(a), Set([2, 3, 1]), PhaseAmplitudeDamping(1, 1, a / 6.283185307179586), false, false)
+
+# Compact syntax
+julia&gt; rule = SetOperationInstanceQubitNoise(GateRX(a) =&gt; PhaseAmplitudeDamping(1, 1, a / (2π)), qubits=[1, 2, 3])
+SetOperationInstanceQubitNoise(GateRX(a), Set([2, 3, 1]), PhaseAmplitudeDamping(1, 1, a / 6.283185307179586), false, false)</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/noisemodel.jl#L558-L584">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.SetQubitReadoutNoise"><a class="docstring-binding" href="#MimiqCircuitsBase.SetQubitReadoutNoise"><code>MimiqCircuitsBase.SetQubitReadoutNoise</code></a> — <span class="docstring-category">Type</span></summary><section><div><pre><code class="language-julia hljs">SetQubitReadoutNoise &lt;: AbstractNoiseRule</code></pre><p>Apply readout noise to measurements if all qubits are in the specified set.</p><p><strong>Fields</strong></p><ul><li><code>qubits::Set{Int}</code>: Set of qubit indices where noise should be applied</li><li><code>noise::ReadoutErr</code>: The readout error to apply</li></ul><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs"># Matches any measurement where all qubits are in {1, 3, 5}
+julia&gt; rule = SetQubitReadoutNoise([1, 3, 5], ReadoutErr(0.01, 0.02))
+SetQubitReadoutNoise(Set([5, 3, 1]), ReadoutErr(0.01, 0.02))</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/noisemodel.jl#L226-L241">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.add_idle_noise!-Tuple{NoiseModel, Union{Pair{&lt;:Union{Nothing, Symbolics.Num}, &lt;:Operation}, Operation}}"><a class="docstring-binding" href="#MimiqCircuitsBase.add_idle_noise!-Tuple{NoiseModel, Union{Pair{&lt;:Union{Nothing, Symbolics.Num}, &lt;:Operation}, Operation}}"><code>MimiqCircuitsBase.add_idle_noise!</code></a> — <span class="docstring-category">Method</span></summary><section><div><pre><code class="language-julia hljs">add_idle_noise!(model, noise[; qubits=nothing])</code></pre><p>Add idle noise to a noise model.</p><p><strong>Arguments</strong></p><ul><li><code>model</code>: The <code>NoiseModel</code> to which the rule will be added</li><li><code>noise</code>: Either a constant noise operation or a relation <code>time_var =&gt; noise(time_var)</code></li><li><code>qubits</code>: (Optional) A collection of qubit indices to restrict the noise to</li></ul></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/noisemodel.jl#L1522-L1531">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.add_operation_noise!-Tuple{NoiseModel, Operation, Union{AbstractGate, AbstractKrausChannel}}"><a class="docstring-binding" href="#MimiqCircuitsBase.add_operation_noise!-Tuple{NoiseModel, Operation, Union{AbstractGate, AbstractKrausChannel}}"><code>MimiqCircuitsBase.add_operation_noise!</code></a> — <span class="docstring-category">Method</span></summary><section><div><pre><code class="language-julia hljs">add_operation_noise!(model, operation, noise[; qubits=nothing[, exact=false[, before=false[, replace=false]]]])</code></pre><p>Add an operation-instance noise rule to a noise model.</p><p>This function adds noise to operation instances. The <code>operation</code> parameter can be either:</p><ol><li>A concrete operation (e.g., <code>GateRX(π/2)</code> or <code>Reset()</code>) - matches only that exact operation</li><li>A symbolic operation (e.g., <code>GateRX(a)</code> where <code>a</code> is a symbolic variable) - matches any operation of that type and substitutes parameter values into the noise expression</li></ol><p><strong>Arguments</strong></p><ul><li><code>model</code>: The <code>NoiseModel</code> to which the rule will be added</li><li><code>operation</code>: The operation instance to target (concrete or symbolic)</li><li><code>noise</code>: The noise to apply (may contain symbolic expressions using variables from <code>operation</code>)</li><li><code>qubits</code>: (Optional) A collection of qubit indices to restrict the noise to</li><li><code>exact</code>: (Optional) If true and qubits is provided, the noise will only apply to operations on the exact sequence of qubits. Defaults to false</li><li><code>before</code>: (Optional) If true, the noise is applied before the matched operation. Defaults to false</li><li><code>replace</code>: (Optional) If true, the matched operation is replaced by the noise operation. Defaults to false</li></ul><p><strong>Examples</strong></p><p><strong>Concrete operation matching</strong></p><pre><code class="language-julia-repl hljs">julia&gt; model = NoiseModel()
+NoiseModel(AbstractNoiseRule[], &quot;&quot;)
+
+# Apply noise only to RX(π/2) operations
+
+julia&gt; add_operation_noise!(model, GateRX(π/2), AmplitudeDamping(0.001))
+NoiseModel(AbstractNoiseRule[OperationInstanceNoise(GateRX(π/2), AmplitudeDamping(0.001), false, false)], &quot;&quot;)</code></pre><p><strong>Symbolic operation matching with angle-dependent noise</strong></p><pre><code class="language-julia-repl hljs">julia&gt; @variables θ
+1-element Vector{Symbolics.Num}:
+ θ
+julia&gt; model = NoiseModel()
+NoiseModel(AbstractNoiseRule[], &quot;&quot;)
+
+# Apply noise to all RX operations, with noise strength proportional to angle
+
+julia&gt; add_operation_noise!(model, GateRX(θ), Depolarizing1(θ / π))
+NoiseModel(AbstractNoiseRule[OperationInstanceNoise(GateRX(θ), Depolarizing(1, θ / π), false, false)], &quot;&quot;)
+
+# When GateRX(0.4) is encountered, Depolarizing1(0.4 / π) ≈ Depolarizing1(0.127) is applied
+# When GateRX(1.2) is encountered, Depolarizing1(1.2 / π) ≈ Depolarizing1(0.382) is applied</code></pre><p><strong>Symbolic multi-parameter operations</strong></p><pre><code class="language-julia-repl hljs">julia&gt; @variables α β
+2-element Vector{Symbolics.Num}:
+ α
+ β
+
+# Noise depends on both parameters
+
+julia&gt; model = NoiseModel()
+NoiseModel(AbstractNoiseRule[], &quot;&quot;)
+
+julia&gt; add_operation_noise!(model, GateU(α, β, 0), Depolarizing1((α^2 + β^2) / (2π^2)))
+NoiseModel(AbstractNoiseRule[OperationInstanceNoise(GateU(α, β, 0, 0π), Depolarizing(1, (α^2 + β^2) / 19.739208802178716), false, false)], &quot;&quot;)</code></pre><p><strong>Qubit-specific symbolic noise</strong></p><pre><code class="language-julia-repl hljs">julia&gt; @variables θ
+1-element Vector{Symbolics.Num}:
+ θ
+
+# Only on specific qubits
+julia&gt; model = NoiseModel()
+NoiseModel(AbstractNoiseRule[], &quot;&quot;)
+
+julia&gt; add_operation_noise!(model, GateRX(θ), Depolarizing1(θ / π), qubits=[1, 2, 3], exact=false)
+NoiseModel(AbstractNoiseRule[SetOperationInstanceQubitNoise(GateRX(θ), Set([2, 3, 1]), Depolarizing(1, θ / π), false, false)], &quot;&quot;)
+
+# Only on exact qubit order
+julia&gt; model = NoiseModel()
+NoiseModel(AbstractNoiseRule[], &quot;&quot;)
+
+julia&gt; add_operation_noise!(model, GateRX(θ), Depolarizing1(θ / π), qubits=[1], exact=true)
+NoiseModel(AbstractNoiseRule[ExactOperationInstanceQubitNoise(GateRX(θ), [1], Depolarizing(1, θ / π), false, false)], &quot;&quot;)</code></pre><p><strong>Measurement noise with Pauli channels</strong></p><pre><code class="language-julia-repl hljs">julia&gt; model = NoiseModel()
+NoiseModel(AbstractNoiseRule[], &quot;&quot;)
+
+julia&gt; add_operation_noise!(model, Measure(), PauliX(0.02); before=true)
+NoiseModel(AbstractNoiseRule[OperationInstanceNoise(Measure(), PauliX(0.02), true, false)], &quot;&quot;)</code></pre><p><strong>Reset noise</strong></p><pre><code class="language-julia-repl hljs">julia&gt; model = NoiseModel()
+NoiseModel(AbstractNoiseRule[], &quot;&quot;)
+
+julia&gt; add_operation_noise!(model, Reset(), Depolarizing1(0.01))
+NoiseModel(AbstractNoiseRule[OperationInstanceNoise(Reset, Depolarizing(1, 0.01), false, false)], &quot;&quot;)</code></pre><p><strong>Replace matched operation</strong></p><pre><code class="language-julia-repl hljs">julia&gt; model = NoiseModel()
+NoiseModel(AbstractNoiseRule[], &quot;&quot;)
+
+julia&gt; add_operation_noise!(model, GateH(), AmplitudeDamping(0.001); replace=true)
+NoiseModel(AbstractNoiseRule[OperationInstanceNoise(GateH(), AmplitudeDamping(0.001), false, true)], &quot;&quot;)</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/noisemodel.jl#L1391-L1503">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.add_readout_noise!-Tuple{NoiseModel, ReadoutErr}"><a class="docstring-binding" href="#MimiqCircuitsBase.add_readout_noise!-Tuple{NoiseModel, ReadoutErr}"><code>MimiqCircuitsBase.add_readout_noise!</code></a> — <span class="docstring-category">Method</span></summary><section><div><pre><code class="language-julia hljs">add_readout_noise!(model, noise[; qubits=nothing[, exact=false]])</code></pre><p>Add a readout noise rule to a noise model.</p><p>This function simplifies the process of adding different types of readout noise.</p><p><strong>Arguments</strong></p><ul><li><code>model</code>: The <code>NoiseModel</code> to which the rule will be added</li><li><code>noise</code>: The <code>ReadoutErr</code> to apply</li><li><code>qubits</code>: (Optional) A collection of qubit indices. If not provided, the noise is global</li><li><code>exact</code>: (Optional) If <code>true</code> and <code>qubits</code> is provided, the noise will only apply to measurements on the exact sequence of qubits. Defaults to <code>false</code></li></ul><p><strong>Behavior</strong></p><ul><li>If <code>qubits</code> is <code>nothing</code>, a <code>GlobalReadoutNoise</code> rule is added</li><li>If <code>qubits</code> is provided and <code>exact</code> is <code>false</code>, a <code>SetQubitReadoutNoise</code> rule is added</li><li>If <code>qubits</code> is provided and <code>exact</code> is <code>true</code>, an <code>ExactQubitReadoutNoise</code> rule is added</li></ul><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; model = NoiseModel()
+NoiseModel(AbstractNoiseRule[], &quot;&quot;)
+
+# Global readout noise
+julia&gt; add_readout_noise!(model, ReadoutErr(0.01, 0.02))
+NoiseModel(AbstractNoiseRule[GlobalReadoutNoise(ReadoutErr(0.01, 0.02))], &quot;&quot;)
+
+# Readout noise on a specific set of qubits
+julia&gt; add_readout_noise!(model, ReadoutErr(0.03, 0.04), qubits=[1, 3])
+NoiseModel(AbstractNoiseRule[SetQubitReadoutNoise(Set([3, 1]), ReadoutErr(0.03, 0.04)), GlobalReadoutNoise(ReadoutErr(0.01, 0.02))], &quot;&quot;)
+
+# Readout noise for an exact qubit order
+julia&gt; add_readout_noise!(model, ReadoutErr(0.05, 0.06), qubits=[2, 1], exact=true)
+NoiseModel(AbstractNoiseRule[ExactQubitReadoutNoise([2, 1], ReadoutErr(0.05, 0.06)), SetQubitReadoutNoise(Set([3, 1]), ReadoutErr(0.03, 0.04)), GlobalReadoutNoise(ReadoutErr(0.01, 0.02))], &quot;&quot;)</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/noisemodel.jl#L1343-L1378">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.add_rule!-Tuple{NoiseModel, AbstractNoiseRule}"><a class="docstring-binding" href="#MimiqCircuitsBase.add_rule!-Tuple{NoiseModel, AbstractNoiseRule}"><code>MimiqCircuitsBase.add_rule!</code></a> — <span class="docstring-category">Method</span></summary><section><div><pre><code class="language-julia hljs">add_rule!(model::NoiseModel, rule::AbstractNoiseRule)</code></pre><p>Add a new rule to the noise model. Rules are automatically sorted by priority.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/noisemodel.jl#L974-L978">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.apply_noise_model!-Tuple{Circuit, NoiseModel}"><a class="docstring-binding" href="#MimiqCircuitsBase.apply_noise_model!-Tuple{Circuit, NoiseModel}"><code>MimiqCircuitsBase.apply_noise_model!</code></a> — <span class="docstring-category">Method</span></summary><section><div><pre><code class="language-julia hljs">apply_noise_model!(circuit::Circuit, model::NoiseModel)</code></pre><p>Apply a noise model to a circuit in-place.</p><p>This is a convenience function that replaces the circuit with its noisy version.</p><p><strong>Arguments</strong></p><ul><li><code>circuit</code>: The circuit to modify</li><li><code>model</code>: The noise model to apply</li></ul><p><strong>Returns</strong></p><p>The modified circuit</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/noisemodel.jl#L1318-L1331">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.apply_noise_model-Tuple{Circuit, NoiseModel}"><a class="docstring-binding" href="#MimiqCircuitsBase.apply_noise_model-Tuple{Circuit, NoiseModel}"><code>MimiqCircuitsBase.apply_noise_model</code></a> — <span class="docstring-category">Method</span></summary><section><div><pre><code class="language-julia hljs">apply_noise_model(circuit::Circuit, model::NoiseModel) -&gt; Circuit</code></pre><p>Apply a noise model to a circuit, creating a new noisy circuit.</p><p>For each instruction in the circuit, the rules are tried in priority order until one applies. The <code>apply_rule</code> function returns <code>nothing</code> for non-matching rules, allowing efficient rule search without redundant matching checks.</p><p>Wrapper operations are processed recursively (<code>Block</code>, <code>IfStatement</code>, <code>Parallel</code>, <code>Repeat</code>, and <code>GateCall</code>). Nested wrappers are also traversed recursively.</p><p><strong>Arguments</strong></p><ul><li><code>circuit</code>: The original circuit</li><li><code>model</code>: The noise model to apply</li></ul><p><strong>Returns</strong></p><p>A new circuit with noise applied according to the model</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; @variables θ
+1-element Vector{Symbolics.Num}:
+ θ
+
+julia&gt; c = Circuit()
+empty circuit
+
+julia&gt; push!(c, GateRX(0.4), 1)
+1-qubit circuit with 1 instruction:
+└── RX(0.4) @ q[1]
+
+julia&gt; push!(c, GateRX(0.8), 2)
+2-qubit circuit with 2 instructions:
+├── RX(0.4) @ q[1]
+└── RX(0.8) @ q[2]
+
+julia&gt; push!(c, Measure(), 1:2, 1:2)
+2-qubit, 2-bit circuit with 4 instructions:
+├── RX(0.4) @ q[1]
+├── RX(0.8) @ q[2]+
+├── M @ q[1], c[1]
+└── M @ q[2], c[2]
+
+
+julia&gt; model = NoiseModel([
+           OperationInstanceNoise(GateRX(θ), Depolarizing1(θ / π)),
+           GlobalReadoutNoise(ReadoutErr(0.01, 0.02))
+       ])
+NoiseModel(AbstractNoiseRule[OperationInstanceNoise(GateRX(θ), Depolarizing(1, θ / π), false, false), GlobalReadoutNoise(ReadoutErr(0.01, 0.02))], &quot;&quot;)
+
+julia&gt; noisy_circuit = apply_noise_model(c, model)
+2-qubit, 2-bit circuit with 8 instructions:
+├── RX(0.4) @ q[1]
+├── Depolarizing(1,0.127324) @ q[1]
+├── RX(0.8) @ q[2]
+├── Depolarizing(1,0.254648) @ q[2]
+├── M @ q[1], c[1]
+├── RErr(0.01, 0.02) @ c[1]
+├── M @ q[2], c[2]
+└── RErr(0.01, 0.02) @ c[2]
+# Result:
+# - GateRX(0.4) followed by Depolarizing1(0.4 / π) ≈ Depolarizing1(0.127)
+# - GateRX(0.8) followed by Depolarizing1(0.8 / π) ≈ Depolarizing1(0.255)
+# - Measurements followed by ReadoutErr(0.01, 0.02)</code></pre><p><strong>Recursive wrapper behavior (<code>Block</code>, <code>GateCall</code>, <code>Parallel</code>, <code>Repeat</code>, <code>IfStatement</code>)</strong></p><pre><code class="language-julia-repl hljs">
+julia&gt; model = NoiseModel([OperationInstanceNoise(GateH(), AmplitudeDamping(0.01))])
+NoiseModel(AbstractNoiseRule[OperationInstanceNoise(GateH(), AmplitudeDamping(0.01), false, false)], &quot;&quot;)
+
+# Block
+julia&gt; c_block = Circuit()
+empty circuit
+
+julia&gt; push!(c_block, Block(1, 0, 0, [Instruction(GateH(), (1,), (), ())]), 1)
+1-qubit circuit with 1 instruction:
+└── block 2y91k9t1raigi @ q[1]
+
+julia&gt; n_block = apply_noise_model(c_block, model)
+1-qubit circuit with 1 instruction:
+└── block 1gbh70af4yogd @ q[1]
+
+julia&gt; n_block|&gt;decompose_step
+1-qubit circuit with 2 instructions:
+├── H @ q[1]
+└── AmplitudeDamping(0.01) @ q[1]
+
+
+# GateCall
+julia&gt; decl = GateDecl(:local_h, (), [Instruction(GateH(), (1,), (), ())])
+gate local_h() =
+└── H @ q[1]
+
+julia&gt; c_gatecall = Circuit()
+empty circuit
+
+julia&gt; push!(c_gatecall, GateCall(decl), 1)
+1-qubit circuit with 1 instruction:
+└── local_h @ q[1]
+
+julia&gt; n_gatecall = apply_noise_model(c_gatecall, model)
+1-qubit circuit with 1 instruction:
+└── block 32mk75z1nxr64 @ q[1]
+
+julia&gt; n_gatecall|&gt;decompose_step
+1-qubit circuit with 2 instructions:
+├── H @ q[1]
+└── AmplitudeDamping(0.01) @ q[1]
+
+# Parallel
+julia&gt; c_parallel = Circuit()
+empty circuit
+
+julia&gt; push!(c_parallel, Parallel(2, GateH()), 1, 2)
+2-qubit circuit with 1 instruction:
+└── ⨷ ² H @ q[1], q[2]
+
+julia&gt; n_parallel = apply_noise_model(c_parallel, model)
+2-qubit circuit with 1 instruction:
+└── block 2ee4nt7tqqx9l @ q[1:2]
+
+julia&gt; n_parallel|&gt;decompose_step
+2-qubit circuit with 4 instructions:
+├── H @ q[1]
+├── AmplitudeDamping(0.01) @ q[1]
+├── H @ q[2]
+└── AmplitudeDamping(0.01) @ q[2]
+
+# Repeat
+julia&gt; c_repeat = Circuit()
+empty circuit
+
+julia&gt; push!(c_repeat, Repeat(2, GateH()), 1)
+1-qubit circuit with 1 instruction:
+└── ∏² H @ q[1]
+
+julia&gt; n_repeat = apply_noise_model(c_repeat, model)
+1-qubit circuit with 1 instruction:
+└── block 33yafv6sg3yxg @ q[1]
+
+julia&gt; n_repeat|&gt;decompose_step
+1-qubit circuit with 4 instructions:
+├── H @ q[1]
+├── AmplitudeDamping(0.01) @ q[1]
+├── H @ q[1]
+└── AmplitudeDamping(0.01) @ q[1]
+
+# IfStatement
+julia&gt; c_if = Circuit()
+empty circuit
+
+julia&gt; push!(c_if, IfStatement(GateH(), BitString(&quot;1&quot;)), 1, 1)
+1-qubit, 1-bit circuit with 1 instruction:
+└── IF(c==1) H @ q[1], condition[1]
+
+julia&gt; n_if = apply_noise_model(c_if, model)
+1-qubit, 1-bit circuit with 1 instruction:
+└── IF(c==1) block 2mvmsxvfbxhb2 @ q[1], condition[1]
+
+julia&gt; n_if|&gt;decompose_step
+1-qubit, 1-bit circuit with 2 instructions:
+├── IF(c==1) H @ q[1], condition[1]
+└── IF(c==1) AmplitudeDamping(0.01) @ q[1], condition[1]</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/noisemodel.jl#L1144-L1311">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.apply_rule-Tuple{AbstractNoiseRule, Instruction}"><a class="docstring-binding" href="#MimiqCircuitsBase.apply_rule-Tuple{AbstractNoiseRule, Instruction}"><code>MimiqCircuitsBase.apply_rule</code></a> — <span class="docstring-category">Method</span></summary><section><div><pre><code class="language-julia hljs">apply_rule(rule::AbstractNoiseRule, inst::Instruction) -&gt; Union{Instruction, Nothing}</code></pre><p>Generate a noise instruction based on the rule and the matched instruction.</p><p>Returns <code>nothing</code> if the rule does not match the instruction. This allows the noise application loop to try multiple rules without needing separate match checks.</p><p><strong>Arguments</strong></p><ul><li><code>rule</code>: The noise rule to apply</li><li><code>inst</code>: The instruction that the rule should be applied to</li></ul><p><strong>Returns</strong></p><ul><li>A new <code>Instruction</code> representing the noise to be added, or</li><li><code>nothing</code> if the rule does not match the instruction</li></ul></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/noisemodel.jl#L83-L98">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.before-Tuple{AbstractNoiseRule}"><a class="docstring-binding" href="#MimiqCircuitsBase.before-Tuple{AbstractNoiseRule}"><code>MimiqCircuitsBase.before</code></a> — <span class="docstring-category">Method</span></summary><section><div><pre><code class="language-julia hljs">before(rule::AbstractNoiseRule) -&gt; Bool</code></pre><p>Return whether the noise should be applied before the operation. Default is false (apply after). Override for specific rule types.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/noisemodel.jl#L51-L56">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.describe-Tuple{NoiseModel}"><a class="docstring-binding" href="#MimiqCircuitsBase.describe-Tuple{NoiseModel}"><code>MimiqCircuitsBase.describe</code></a> — <span class="docstring-category">Method</span></summary><section><div><pre><code class="language-julia hljs">describe(model::NoiseModel)</code></pre><p>Print a human-readable description of the noise model.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/noisemodel.jl#L1549-L1553">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.matches-Tuple{AbstractNoiseRule, Instruction}"><a class="docstring-binding" href="#MimiqCircuitsBase.matches-Tuple{AbstractNoiseRule, Instruction}"><code>MimiqCircuitsBase.matches</code></a> — <span class="docstring-category">Method</span></summary><section><div><pre><code class="language-julia hljs">matches(rule::AbstractNoiseRule, inst::Instruction) -&gt; Bool</code></pre><p>Check if a noise rule matches a given instruction.</p><p><strong>Arguments</strong></p><ul><li><code>rule</code>: The noise rule to check</li><li><code>inst</code>: The instruction to potentially add noise to</li></ul><p><strong>Returns</strong></p><p><code>true</code> if the rule applies to this instruction, <code>false</code> otherwise</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/noisemodel.jl#L67-L78">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.priority-Tuple{AbstractNoiseRule}"><a class="docstring-binding" href="#MimiqCircuitsBase.priority-Tuple{AbstractNoiseRule}"><code>MimiqCircuitsBase.priority</code></a> — <span class="docstring-category">Method</span></summary><section><div><pre><code class="language-julia hljs">priority(rule::AbstractNoiseRule) -&gt; Int</code></pre><p>Return the priority of a noise rule. Lower numbers have higher priority. Default priority is 100. Override this method to change rule priority.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/noisemodel.jl#L43-L48">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.add_noise!-Tuple{Circuit, Union{Type{&lt;:Operation}, Operation}, Union{AbstractGate, AbstractKrausChannel}}"><a class="docstring-binding" href="#MimiqCircuitsBase.add_noise!-Tuple{Circuit, Union{Type{&lt;:Operation}, Operation}, Union{AbstractGate, AbstractKrausChannel}}"><code>MimiqCircuitsBase.add_noise!</code></a> — <span class="docstring-category">Method</span></summary><section><div><pre><code class="language-julia hljs">add_noise!(c, g, noise; before=false, parallel=false)</code></pre><p>Add a noise operation <code>noise</code> to every operation <code>g</code> in the circuit <code>c</code>.</p><p>The noise operation <code>noise</code> can be a Kraus channel or a gate and will act on the same qubits as the operation <code>g</code> it is being added to. The operations <code>g</code> and <code>noise</code> must act on the  same number of qubits.</p><div class="admonition is-category-warn" id="Warn-d691012a61458e4a"><header class="admonition-header">Warn<a class="admonition-anchor" href="#Warn-d691012a61458e4a" title="Permalink"></a></header><div class="admonition-body"><p>This function is maintained for backward compatibility. Consider using <a href="#MimiqCircuitsBase.decorate!-Tuple{Circuit, Function, Function}"><code>decorate!</code></a> for more general decoration needs.</p></div></div><p><strong>Arguments</strong></p><ul><li><code>c</code>: Circuit to modify</li><li><code>g</code>: Operation to which noise will be added</li><li><code>noise</code>: Kraus channel or gate that will be added to each operation <code>g</code></li><li><code>before</code>: If <code>true</code>, add noise before the operation (default: <code>false</code>)</li><li><code>parallel</code>: If <code>true</code>, group transversal operations into blocks (default: <code>false</code>)</li></ul><p><strong>Returns</strong></p><p>The circuit <code>c</code> with the noise added in place</p><p><strong>Examples</strong></p><p><strong>Parallel vs not parallel</strong></p><pre><code class="language-julia-repl hljs">julia&gt; c = push!(Circuit(), GateH(), 1:3);
+
+julia&gt; add_noise!(c, GateH(), AmplitudeDamping(0.2))
+3-qubit circuit with 6 instructions:
+├── H @ q[1]
+├── AmplitudeDamping(0.2) @ q[1]
+├── H @ q[2]
+├── AmplitudeDamping(0.2) @ q[2]
+├── H @ q[3]
+└── AmplitudeDamping(0.2) @ q[3]
+
+julia&gt; c = push!(Circuit(), GateH(), 1:3);
+
+julia&gt; add_noise!(c, GateH(), AmplitudeDamping(0.2); parallel=true)
+3-qubit circuit with 6 instructions:
+├── H @ q[1]
+├── H @ q[2]
+├── H @ q[3]
+├── AmplitudeDamping(0.2) @ q[1]
+├── AmplitudeDamping(0.2) @ q[2]
+└── AmplitudeDamping(0.2) @ q[3]</code></pre><p><strong>Noise before measurements</strong></p><pre><code class="language-julia-repl hljs">julia&gt; c = push!(Circuit(), Measure(), 1:3, 1:3);
+
+julia&gt; add_noise!(c, Measure(), PauliX(0.1); before=true)
+3-qubit, 3-bit circuit with 6 instructions:
+├── PauliX(0.1) @ q[1]
+├── M @ q[1], c[1]
+├── PauliX(0.1) @ q[2]
+├── M @ q[2], c[2]
+├── PauliX(0.1) @ q[3]
+└── M @ q[3], c[3]
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/addnoise.jl#L586-L650">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.add_noise-Tuple{Circuit, Union{Type{&lt;:Operation}, Operation}, Union{AbstractGate, AbstractKrausChannel}}"><a class="docstring-binding" href="#MimiqCircuitsBase.add_noise-Tuple{Circuit, Union{Type{&lt;:Operation}, Operation}, Union{AbstractGate, AbstractKrausChannel}}"><code>MimiqCircuitsBase.add_noise</code></a> — <span class="docstring-category">Method</span></summary><section><div><pre><code class="language-julia hljs">add_noise(c, g, noise; before=false, parallel=false)</code></pre><p>Add noise operation <code>noise</code> to every operation <code>g</code> in circuit <code>c</code>.</p><p>A copy of <code>c</code> is created and then noise is added to the copy.</p><div class="admonition is-category-warn" id="Warn-5e0b39ccf31b6258"><header class="admonition-header">Warn<a class="admonition-anchor" href="#Warn-5e0b39ccf31b6258" title="Permalink"></a></header><div class="admonition-body"><p>This function is maintained for backward compatibility. Consider using <a href="#MimiqCircuitsBase.decorate-Tuple{Circuit, Function, Function}"><code>decorate</code></a> for more general decoration needs.</p></div></div><p>See <a href="#MimiqCircuitsBase.add_noise!-Tuple{Circuit, Union{Type{&lt;:Operation}, Operation}, Union{AbstractGate, AbstractKrausChannel}}"><code>add_noise!</code></a> for more information.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/addnoise.jl#L661-L673">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.decorate!-Tuple{Circuit, Function, Function}"><a class="docstring-binding" href="#MimiqCircuitsBase.decorate!-Tuple{Circuit, Function, Function}"><code>MimiqCircuitsBase.decorate!</code></a> — <span class="docstring-category">Method</span></summary><section><div><pre><code class="language-julia hljs">decorate!(circuit::Circuit, matcher::Function, generator::Function; before=false, parallel=false)</code></pre><p>Modifies a circuit in-place by adding generated instructions next to matched instructions.</p><p>This is the main mutating interface for circuit decoration. It combines the functionality of single and parallel decoration based on the <code>parallel</code> parameter.</p><p><strong>Arguments</strong></p><ul><li><code>circuit</code>: The circuit to modify</li><li><code>matcher</code>: A function that takes an instruction and returns <code>true</code> if it should be decorated</li><li><code>generator</code>: A function that takes a matched instruction and returns a new instruction to add</li><li><code>before</code>: If <code>true</code>, add decorations before matched instructions (default: <code>false</code>)</li><li><code>parallel</code>: If <code>true</code>, group transversal operations into blocks (default: <code>false</code>)</li></ul><p><strong>Returns</strong></p><p>The modified circuit</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; c = Circuit();
+
+julia&gt; push!(c, GateX(), 1);
+
+julia&gt; push!(c, GateY(), 2);
+
+julia&gt; decorate!(c,
+           inst -&gt; getoperation(inst) isa GateX,
+           inst -&gt; Instruction(GateH(), getqubits(inst)...);
+           before=true)
+2-qubit circuit with 3 instructions:
+├── H @ q[1]
+├── X @ q[1]
+└── Y @ q[2]
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/addnoise.jl#L411-L447">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.decorate!-Union{Tuple{M}, Tuple{L}, Tuple{N}, Tuple{Circuit, Operation{N, L, M}, Operation{N, L, M}}} where {N, L, M}"><a class="docstring-binding" href="#MimiqCircuitsBase.decorate!-Union{Tuple{M}, Tuple{L}, Tuple{N}, Tuple{Circuit, Operation{N, L, M}, Operation{N, L, M}}} where {N, L, M}"><code>MimiqCircuitsBase.decorate!</code></a> — <span class="docstring-category">Method</span></summary><section><div><pre><code class="language-julia hljs">decorate!(circuit::Circuit, target::Operation, decoration::Operation; before=false, parallel=false)</code></pre><p>Modifies a circuit in-place by adding <code>decoration</code> operations next to all instances of <code>target</code> operation.</p><p>Mutating version of <a href="#MimiqCircuitsBase.decorate-Tuple{Circuit, Function, Function}"><code>decorate</code></a>.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/addnoise.jl#L495-L501">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.decorate!-Union{Tuple{M}, Tuple{L}, Tuple{N}, Tuple{Circuit, Type{&lt;:Operation{N, L, M}}, Operation{N, L, M}}} where {N, L, M}"><a class="docstring-binding" href="#MimiqCircuitsBase.decorate!-Union{Tuple{M}, Tuple{L}, Tuple{N}, Tuple{Circuit, Type{&lt;:Operation{N, L, M}}, Operation{N, L, M}}} where {N, L, M}"><code>MimiqCircuitsBase.decorate!</code></a> — <span class="docstring-category">Method</span></summary><section><div><pre><code class="language-julia hljs">decorate!(circuit::Circuit, target::Type{&lt;:Operation}, decoration::Operation; before=false, parallel=false)</code></pre><p>Modifies a circuit in-place by adding <code>decoration</code> operations next to all operations of type <code>target</code>.</p><p>Mutating version of <a href="#MimiqCircuitsBase.decorate-Tuple{Circuit, Function, Function}"><code>decorate</code></a>.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/addnoise.jl#L545-L551">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.decorate-Tuple{Circuit, Function, Function}"><a class="docstring-binding" href="#MimiqCircuitsBase.decorate-Tuple{Circuit, Function, Function}"><code>MimiqCircuitsBase.decorate</code></a> — <span class="docstring-category">Method</span></summary><section><div><pre><code class="language-julia hljs">decorate(circuit::Circuit, matcher::Function, generator::Function; before=false, parallel=false)</code></pre><p>Creates a new decorated circuit by adding generated instructions next to matched instructions.</p><p>This is the main non-mutating interface for circuit decoration. It combines the functionality of single and parallel decoration based on the <code>parallel</code> parameter.</p><p><strong>Arguments</strong></p><ul><li><code>circuit</code>: The original circuit (not modified)</li><li><code>matcher</code>: A function that takes an instruction and returns <code>true</code> if it should be decorated</li><li><code>generator</code>: A function that takes a matched instruction and returns a new instruction to add</li><li><code>before</code>: If <code>true</code>, add decorations before matched instructions (default: <code>false</code>)</li><li><code>parallel</code>: If <code>true</code>, group transversal operations into blocks (default: <code>false</code>)</li></ul><p><strong>Returns</strong></p><p>A new circuit with decorations added</p><p><strong>Examples</strong></p><p><strong>Basic decoration with custom matcher and generator</strong></p><pre><code class="language-julia-repl hljs">julia&gt; c = Circuit();
+
+julia&gt; push!(c, GateH(), 1);
+
+julia&gt; push!(c, GateX(), 2);
+
+julia&gt; push!(c, GateH(), 3);
+
+julia&gt; is_hadamard(inst) = getoperation(inst) isa GateH;
+
+julia&gt; add_phase(inst) = Instruction(GateS(), getqubits(inst)...);
+
+julia&gt; c2 = decorate(c, is_hadamard, add_phase)
+3-qubit circuit with 5 instructions:
+├── H @ q[1]
+├── S @ q[1]
+├── X @ q[2]
+├── H @ q[3]
+└── S @ q[3]
+</code></pre><p><strong>Parallel decoration for transversal operations</strong></p><pre><code class="language-julia-repl hljs">julia&gt; c = Circuit();
+
+julia&gt; push!(c, GateH(), 1:4);
+
+julia&gt; c2 = decorate(c, 
+           inst -&gt; getoperation(inst) isa GateH,
+           inst -&gt; Instruction(GateT(), getqubits(inst)...);
+           parallel=true)
+4-qubit circuit with 8 instructions:
+├── H @ q[1]
+├── H @ q[2]
+├── H @ q[3]
+├── H @ q[4]
+├── T @ q[1]
+├── T @ q[2]
+├── T @ q[3]
+└── T @ q[4]</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/addnoise.jl#L338-L402">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.decorate-Union{Tuple{M}, Tuple{L}, Tuple{N}, Tuple{Circuit, Operation{N, L, M}, Operation{N, L, M}}} where {N, L, M}"><a class="docstring-binding" href="#MimiqCircuitsBase.decorate-Union{Tuple{M}, Tuple{L}, Tuple{N}, Tuple{Circuit, Operation{N, L, M}, Operation{N, L, M}}} where {N, L, M}"><code>MimiqCircuitsBase.decorate</code></a> — <span class="docstring-category">Method</span></summary><section><div><pre><code class="language-julia hljs">decorate(circuit::Circuit, target::Operation, decoration::Operation; before=false, parallel=false)</code></pre><p>Creates a new circuit by adding <code>decoration</code> operations next to all instances of <code>target</code> operation.</p><p><strong>Arguments</strong></p><ul><li><code>circuit</code>: The original circuit (not modified)</li><li><code>target</code>: The specific operation to decorate</li><li><code>decoration</code>: The operation to add as decoration</li><li><code>before</code>: If <code>true</code>, add decorations before target operations (default: <code>false</code>)</li><li><code>parallel</code>: If <code>true</code>, group transversal operations into blocks (default: <code>false</code>)</li></ul><p><strong>Returns</strong></p><p>A new circuit with decorations added</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; c = Circuit();
+
+julia&gt; push!(c, GateH(), 1:2);
+
+julia&gt; push!(c, GateX(), 1);
+
+julia&gt; c2 = decorate(c, GateH(), GateS())
+2-qubit circuit with 5 instructions:
+├── H @ q[1]
+├── S @ q[1]
+├── H @ q[2]
+├── S @ q[2]
+└── X @ q[1]
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/addnoise.jl#L456-L488">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.decorate-Union{Tuple{M}, Tuple{L}, Tuple{N}, Tuple{Circuit, Type{&lt;:Operation{N, L, M}}, Operation{N, L, M}}} where {N, L, M}"><a class="docstring-binding" href="#MimiqCircuitsBase.decorate-Union{Tuple{M}, Tuple{L}, Tuple{N}, Tuple{Circuit, Type{&lt;:Operation{N, L, M}}, Operation{N, L, M}}} where {N, L, M}"><code>MimiqCircuitsBase.decorate</code></a> — <span class="docstring-category">Method</span></summary><section><div><pre><code class="language-julia hljs">decorate(circuit::Circuit, target::Type{&lt;:Operation}, decoration::Operation; before=false, parallel=false)</code></pre><p>Creates a new circuit by adding <code>decoration</code> operations next to all operations of type <code>target</code>.</p><p><strong>Arguments</strong></p><ul><li><code>circuit</code>: The original circuit (not modified)</li><li><code>target</code>: The type of operations to decorate</li><li><code>decoration</code>: The operation to add as decoration</li><li><code>before</code>: If <code>true</code>, add decorations before target operations (default: <code>false</code>)</li><li><code>parallel</code>: If <code>true</code>, group transversal operations into blocks (default: <code>false</code>)</li></ul><p><strong>Returns</strong></p><p>A new circuit with decorations added</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; c = Circuit();
+
+julia&gt; push!(c, GateH(), 1);
+
+julia&gt; push!(c, GateX(), 3);
+
+julia&gt; c2 = decorate(c, GateH, GateT(); before=true)
+3-qubit circuit with 3 instructions:
+├── T @ q[1]
+├── H @ q[1]
+└── X @ q[3]
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/addnoise.jl#L508-L538">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.decorate_on_match_parallel!-Tuple{Circuit, Function, Function}"><a class="docstring-binding" href="#MimiqCircuitsBase.decorate_on_match_parallel!-Tuple{Circuit, Function, Function}"><code>MimiqCircuitsBase.decorate_on_match_parallel!</code></a> — <span class="docstring-category">Method</span></summary><section><div><pre><code class="language-julia hljs">decorate_on_match_parallel!(circuit::Circuit, matcher::Function, generator::Function; before::Bool=false)</code></pre><p>Modifies a circuit in-place by adding blocks of instructions next to transversal blocks  of instructions identified by a <code>matcher</code> function.</p><p>This function identifies consecutive instructions that satisfy the matcher and act on  disjoint resources (qubits, classical bits, variables), treating them as a transversal block. It then generates a corresponding block of decorations and inserts it before or after the entire original block.</p><p><strong>Arguments</strong></p><ul><li><code>circuit</code>: The circuit to modify</li><li><code>matcher</code>: A function that takes an instruction and returns <code>true</code> if it should be decorated</li><li><code>generator</code>: A function that takes a matched instruction and returns a new instruction to add</li><li><code>before</code>: If <code>true</code>, add the generated block before the matched block (default: <code>false</code>)</li></ul><p><strong>Returns</strong></p><p>The modified circuit</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; c = Circuit();
+
+julia&gt; push!(c, GateH(), 1:3);  # Transversal H gates
+
+julia&gt; push!(c, GateX(), 1);
+
+julia&gt; matcher(inst) = getoperation(inst) isa GateH;
+
+julia&gt; generator(inst) = Instruction(GateS(), getqubits(inst)...);
+
+julia&gt; decorate_on_match_parallel!(c, matcher, generator)
+3-qubit circuit with 7 instructions:
+├── H @ q[1]
+├── H @ q[2]
+├── H @ q[3]
+├── S @ q[1]
+├── S @ q[2]
+├── S @ q[3]
+└── X @ q[1]
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/addnoise.jl#L194-L237">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.decorate_on_match_parallel-Tuple{Circuit, Function, Function}"><a class="docstring-binding" href="#MimiqCircuitsBase.decorate_on_match_parallel-Tuple{Circuit, Function, Function}"><code>MimiqCircuitsBase.decorate_on_match_parallel</code></a> — <span class="docstring-category">Method</span></summary><section><div><pre><code class="language-julia hljs">decorate_on_match_parallel(circuit::Circuit, matcher::Function, generator::Function; before::Bool=false)</code></pre><p>Creates a new circuit by adding blocks of instructions next to transversal blocks  of instructions identified by a <code>matcher</code> function.</p><p>Non-mutating version of <a href="#MimiqCircuitsBase.decorate_on_match_parallel!-Tuple{Circuit, Function, Function}"><code>decorate_on_match_parallel!</code></a>.</p><p><strong>Arguments</strong></p><ul><li><code>circuit</code>: The original circuit (not modified)</li><li><code>matcher</code>: A function that takes an instruction and returns <code>true</code> if it should be decorated</li><li><code>generator</code>: A function that takes a matched instruction and returns a new instruction to add</li><li><code>before</code>: If <code>true</code>, add the generated block before the matched block (default: <code>false</code>)</li></ul><p><strong>Returns</strong></p><p>A new circuit with decorations added</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; c = Circuit();
+
+julia&gt; push!(c, GateH(), 1:3);  # Transversal H gates
+
+julia&gt; matcher(inst) = getoperation(inst) isa GateH;
+
+julia&gt; generator(inst) = Instruction(GateT(), getqubits(inst)...);
+
+julia&gt; c2 = decorate_on_match_parallel(c, matcher, generator; before=true)
+3-qubit circuit with 6 instructions:
+├── T @ q[1]
+├── T @ q[2]
+├── T @ q[3]
+├── H @ q[1]
+├── H @ q[2]
+└── H @ q[3]
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/addnoise.jl#L269-L306">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.decorate_on_match_single!-Tuple{Circuit, Function, Function}"><a class="docstring-binding" href="#MimiqCircuitsBase.decorate_on_match_single!-Tuple{Circuit, Function, Function}"><code>MimiqCircuitsBase.decorate_on_match_single!</code></a> — <span class="docstring-category">Method</span></summary><section><div><pre><code class="language-julia hljs">decorate_on_match_single!(circuit::Circuit, matcher::Function, generator::Function; before::Bool=false)</code></pre><p>Modifies a circuit in-place by adding instructions generated by a <code>generator</code> function  next to each instruction identified by a <code>matcher</code> function.</p><p>For each instruction that satisfies the <code>matcher</code>, a corresponding instruction is generated using the <code>generator</code> function and inserted either before or after the  matched instruction.</p><p><strong>Arguments</strong></p><ul><li><code>circuit</code>: The circuit to modify</li><li><code>matcher</code>: A function that takes an instruction and returns <code>true</code> if it should be decorated</li><li><code>generator</code>: A function that takes a matched instruction and returns a new instruction to add</li><li><code>before</code>: If <code>true</code>, add the generated instruction before the matched one (default: <code>false</code>)</li></ul><p><strong>Returns</strong></p><p>The modified circuit</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; c = Circuit();
+
+julia&gt; push!(c, GateH(), 1);
+
+julia&gt; push!(c, GateX(), 2);
+
+julia&gt; push!(c, GateH(), 3);
+
+julia&gt; matcher(inst) = getoperation(inst) isa GateH;
+
+julia&gt; generator(inst) = Instruction(GateZ(), getqubits(inst)...);
+
+julia&gt; decorate_on_match_single!(c, matcher, generator)
+3-qubit circuit with 5 instructions:
+├── H @ q[1]
+├── Z @ q[1]
+├── X @ q[2]
+├── H @ q[3]
+└── Z @ q[3]</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/addnoise.jl#L22-L63">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.decorate_on_match_single-Tuple{Circuit, Function, Function}"><a class="docstring-binding" href="#MimiqCircuitsBase.decorate_on_match_single-Tuple{Circuit, Function, Function}"><code>MimiqCircuitsBase.decorate_on_match_single</code></a> — <span class="docstring-category">Method</span></summary><section><div><pre><code class="language-julia hljs">decorate_on_match_single(circuit::Circuit, matcher::Function, generator::Function; before::Bool=false)</code></pre><p>Creates a new circuit by adding instructions generated by a <code>generator</code> function  next to each instruction identified by a <code>matcher</code> function.</p><p>Non-mutating version of <a href="#MimiqCircuitsBase.decorate_on_match_single!-Tuple{Circuit, Function, Function}"><code>decorate_on_match_single!</code></a>.</p><p><strong>Arguments</strong></p><ul><li><code>circuit</code>: The original circuit (not modified)</li><li><code>matcher</code>: A function that takes an instruction and returns <code>true</code> if it should be decorated</li><li><code>generator</code>: A function that takes a matched instruction and returns a new instruction to add</li><li><code>before</code>: If <code>true</code>, add the generated instruction before the matched one (default: <code>false</code>)</li></ul><p><strong>Returns</strong></p><p>A new circuit with decorations added</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; c = Circuit();
+
+julia&gt; push!(c, GateH(), 1);
+
+julia&gt; push!(c, GateX(), 2);
+
+julia&gt; matcher(inst) = getoperation(inst) isa GateH;
+
+julia&gt; generator(inst) = Instruction(GateT(), getqubits(inst)...);
+
+julia&gt; c2 = decorate_on_match_single(c, matcher, generator; before=true)
+2-qubit circuit with 3 instructions:
+├── T @ q[1]
+├── H @ q[1]
+└── X @ q[2]
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/addnoise.jl#L83-L119">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.sample_mixedunitaries-Tuple{Circuit}"><a class="docstring-binding" href="#MimiqCircuitsBase.sample_mixedunitaries-Tuple{Circuit}"><code>MimiqCircuitsBase.sample_mixedunitaries</code></a> — <span class="docstring-category">Method</span></summary><section><div><pre><code class="language-julia hljs">sample_mixedunitaries(c; rng, ids=false)</code></pre><p>Samples one unitary gate for each mixed unitary Kraus channel in the circuit.</p><p>This is possible because for mixed unitary noise channels the probabilities of each Kraus operator are fixed (state-independent).</p><p>Note: This function is internally called (before applying any gate) when executing a circuit with noise using trajectories, but it can also be used to generate samples of circuits without running them.</p><p>See also <a href="#MimiqCircuitsBase.ismixedunitary-Union{Tuple{Type{T}}, Tuple{T}} where T&lt;:AbstractKrausChannel"><code>ismixedunitary</code></a>, <a href="#MimiqCircuitsBase.MixedUnitary"><code>MixedUnitary</code></a>, <a href="#MimiqCircuitsBase.probabilities-Tuple{AbstractKrausChannel}"><code>probabilities</code></a>, and <a href="#MimiqCircuitsBase.unitarygates-Tuple{AbstractKrausChannel}"><code>unitarygates</code></a>.</p><p><strong>Arguments</strong></p><ul><li><code>c</code>: Circuit to be sampled.</li><li><code>rng</code>: (optional) Random number generator.</li><li><code>ids</code>: (optional) Boolean, default=<code>false</code>. When the selected Kraus operator is an identity it has no effect on the circuit. The parameter <code>ids</code> decides whether to add it to the circuit (<code>ids=true</code><code>) or not (</code>ids=false`; default). Usually, most of the Kraus operators selected will be identity gates.</li></ul><p><strong>Returns</strong></p><p>A copy of circuit but with every mixed unitary Kraus channel replaced by one of the unitary gates of the channel (or nothing if identity and <code>ids==false</code>).</p><p><strong>Examples</strong></p><p>Gates and non-mixed-unitary Kraus channels remain unchanged.</p><pre><code class="language-julia-repl hljs">julia&gt; using Random
+
+julia&gt; c = push!(Circuit(), GateH(), 1:3);
+
+julia&gt; push!(c, Depolarizing1(0.5), 1:3);
+
+julia&gt; push!(c, AmplitudeDamping(0.5), 1:3)
+3-qubit circuit with 9 instructions:
+├── H @ q[1]
+├── H @ q[2]
+├── H @ q[3]
+├── Depolarizing(1,0.5) @ q[1]
+├── Depolarizing(1,0.5) @ q[2]
+├── Depolarizing(1,0.5) @ q[3]
+├── AmplitudeDamping(0.5) @ q[1]
+├── AmplitudeDamping(0.5) @ q[2]
+└── AmplitudeDamping(0.5) @ q[3]
+
+julia&gt; rng = MersenneTwister(42);
+
+julia&gt; sample_mixedunitaries(c; rng=rng, ids=true)
+3-qubit circuit with 9 instructions:
+├── H @ q[1]
+├── H @ q[2]
+├── H @ q[3]
+├── Y @ q[1]
+├── ID @ q[2]
+├── ID @ q[3]
+├── AmplitudeDamping(0.5) @ q[1]
+├── AmplitudeDamping(0.5) @ q[2]
+└── AmplitudeDamping(0.5) @ q[3]</code></pre><p>By default identities are not included.</p><pre><code class="language-julia-repl hljs">julia&gt; rng = MersenneTwister(42);
+
+julia&gt; sample_mixedunitaries(c; rng=rng)
+3-qubit circuit with 7 instructions:
+├── H @ q[1]
+├── H @ q[2]
+├── H @ q[3]
+├── Y @ q[1]
+├── AmplitudeDamping(0.5) @ q[1]
+├── AmplitudeDamping(0.5) @ q[2]
+└── AmplitudeDamping(0.5) @ q[3]</code></pre><p>Different calls to the function generate different results.</p><pre><code class="language-julia-repl hljs">julia&gt; sample_mixedunitaries(c; rng=rng)
+3-qubit circuit with 6 instructions:
+├── H @ q[1]
+├── H @ q[2]
+├── H @ q[3]
+├── AmplitudeDamping(0.5) @ q[1]
+├── AmplitudeDamping(0.5) @ q[2]
+└── AmplitudeDamping(0.5) @ q[3]
+
+julia&gt; sample_mixedunitaries(c; rng=rng)
+3-qubit circuit with 6 instructions:
+├── H @ q[1]
+├── H @ q[2]
+├── H @ q[3]
+├── AmplitudeDamping(0.5) @ q[1]
+├── AmplitudeDamping(0.5) @ q[2]
+└── AmplitudeDamping(0.5) @ q[3]</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/samplenoise.jl#L18-L122">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.ProjectiveNoiseX"><a class="docstring-binding" href="#MimiqCircuitsBase.ProjectiveNoiseX"><code>MimiqCircuitsBase.ProjectiveNoiseX</code></a> — <span class="docstring-category">Type</span></summary><section><div><pre><code class="language-julia hljs">ProjectiveNoiseX()</code></pre><p>Single qubit projection noise onto a X Pauli basis.</p><p>This channel is defined by the Kraus operators</p><p class="math-container">\[E_1 = |-\rangle \langle-|, \quad E_2 = |+\rangle \langle+|,\]</p><p>Where <span>$\ket{+}$</span> and <span>$\ket{-}$</span> are the eigenstates of Pauli <code>X</code>.</p><p>See also <a href="#MimiqCircuitsBase.ProjectiveNoise"><code>ProjectiveNoise</code></a>, <a href="#MimiqCircuitsBase.ProjectiveNoiseY"><code>ProjectiveNoiseY</code></a>, or <a href="#MimiqCircuitsBase.ProjectiveNoiseZ"><code>ProjectiveNoiseZ</code></a>.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/operations/noisechannels/standard/projectivenoise.jl#L18-L32">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.ProjectiveNoiseY"><a class="docstring-binding" href="#MimiqCircuitsBase.ProjectiveNoiseY"><code>MimiqCircuitsBase.ProjectiveNoiseY</code></a> — <span class="docstring-category">Type</span></summary><section><div><pre><code class="language-julia hljs">ProjectiveNoiseY()</code></pre><p>Single qubit projection noise onto a Y Pauli basis.</p><p>This channel is defined by the Kraus operators</p><p class="math-container">\[E_1 = |Y0\rangle \langle Y0|, \quad E_2 = |Y1\rangle \langle Y1|,\]</p><p>Where <span>$\ket{Y0}$</span> and <span>$\ket{Y1}$</span> are the eigenstates of Pauli <code>Y</code>.</p><p>See also <a href="#MimiqCircuitsBase.ProjectiveNoise"><code>ProjectiveNoise</code></a>, <a href="#MimiqCircuitsBase.ProjectiveNoiseX"><code>ProjectiveNoiseX</code></a>, or <a href="#MimiqCircuitsBase.ProjectiveNoiseZ"><code>ProjectiveNoiseZ</code></a>.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/operations/noisechannels/standard/projectivenoise.jl#L41-L55">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.ProjectiveNoiseZ"><a class="docstring-binding" href="#MimiqCircuitsBase.ProjectiveNoiseZ"><code>MimiqCircuitsBase.ProjectiveNoiseZ</code></a> — <span class="docstring-category">Type</span></summary><section><div><pre><code class="language-julia hljs">ProjectiveNoiseZ()</code></pre><p>Single qubit projection noise onto a Z Pauli basis.</p><p>This channel is defined by the Kraus operators</p><p class="math-container">\[E_1 = |0\rangle \langle Z0|, \quad E_2 = |1\rangle \langle Z1|,\]</p><p>Where <span>$\ket{0}$</span> and <span>$\ket{1}$</span> are the eigenstates of Pauli <code>Z</code>.</p><p>See also <a href="#MimiqCircuitsBase.ProjectiveNoise"><code>ProjectiveNoise</code></a>, <a href="#MimiqCircuitsBase.ProjectiveNoiseX"><code>ProjectiveNoiseX</code></a>, or <a href="#MimiqCircuitsBase.ProjectiveNoiseY"><code>ProjectiveNoiseY</code></a>.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/operations/noisechannels/standard/projectivenoise.jl#L64-L78">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.ProjectiveNoise"><a class="docstring-binding" href="#MimiqCircuitsBase.ProjectiveNoise"><code>MimiqCircuitsBase.ProjectiveNoise</code></a> — <span class="docstring-category">Function</span></summary><section><div><pre><code class="language-julia hljs">ProjectiveNoise(basis)</code></pre><p>Single qubit projection noise onto a Pauli basis.</p><p>This channel is defined by the Kraus operators</p><p class="math-container">\[E_1 = |\alpha\rangle \langle\alpha|, \quad E_2 = |\beta\rangle \langle\beta|,\]</p><p>where the states <span>$|\alpha\rangle$</span> and <span>$|\beta\rangle$</span> are the +1 and -1 eigenstates of a Pauli operator. Specifically, they correspond to <span>$\{ |0\langle, |1\langle \}$</span> (<span>$Z$</span> basis), <span>$\{ |+\langle, |-\langle \}$</span> (<span>$X$</span> basis), or <span>$\{ |y+\langle, |y-\langle \}$</span> (<code>Y</code> basis).</p><p>This operation is similar to measuring in the corresponding basis (<span>$X$</span>, <span>$Y$</span>, or <span>$Z$</span>), except that the outcome of the measurement is not stored, i.e. there&#39;s loss of information.</p><p><strong>Arguments</strong></p><ul><li><code>basis</code>: Symbol, String or Char that selects the Pauli basis, <code>&quot;X&quot;</code>, <code>&quot;Y&quot;</code>, or <code>&quot;Z&quot;</code>.</li></ul><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; push!(Circuit(), ProjectiveNoise(&quot;Z&quot;), 1)
+1-qubit circuit with 1 instruction:
+└── ProjectiveNoiseZ @ q[1]</code></pre><p>The Kraus matrices are given by:</p><pre><code class="language-julia-repl hljs">julia&gt; krausmatrices(ProjectiveNoise(&quot;X&quot;))
+2-element Vector{Matrix{Float64}}:
+ [0.5 0.5; 0.5 0.5]
+ [0.5 -0.5; -0.5 0.5]
+
+julia&gt; krausmatrices(ProjectiveNoise(&quot;Y&quot;))
+2-element Vector{Matrix{ComplexF64}}:
+ [0.5 + 0.0im 0.0 - 0.5im; 0.0 + 0.5im 0.5 + 0.0im]
+ [0.5 + 0.0im 0.0 + 0.5im; 0.0 - 0.5im 0.5 + 0.0im]
+
+julia&gt; krausmatrices(ProjectiveNoise(&quot;Z&quot;))
+2-element Vector{Matrix{Int64}}:
+ [1 0; 0 0]
+ [0 0; 0 1]</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/operations/noisechannels/standard/projectivenoise.jl#L87-L137">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.Kraus"><a class="docstring-binding" href="#MimiqCircuitsBase.Kraus"><code>MimiqCircuitsBase.Kraus</code></a> — <span class="docstring-category">Type</span></summary><section><div><pre><code class="language-julia hljs">Kraus(E)</code></pre><p>Custom <span>$N$</span> qubit Kraus channel specified by a list of Kraus operators.</p><p>A Kraus channel is defined by</p><p class="math-container">\[\mathcal{E}(\rho) = \sum_k E_k \rho E_k^\dagger,\]</p><p>where <span>$E_k$</span> are Kraus operators that need to fulfill <span>$\sum_k E_k^\dagger E_k = I$</span>.</p><p>If the Kraus operators are all proportional to unitaries, use <a href="#MimiqCircuitsBase.MixedUnitary"><code>MixedUnitary</code></a> instead.</p><p>The Kraus matrices are defined in the computational basis in the usual textbook order (the first qubit corresponds to the left-most qubit). For 1 qubit we have <span>$|0\rangle$</span>, <span>$|1\rangle$</span>. For 2 qubits we have <span>$|00\rangle$</span>, <span>$|01\rangle$</span>, <span>$|10\rangle$</span>, <span>$|11\rangle$</span>. See also <a href="../other/#MimiqCircuitsBase.GateCustom"><code>GateCustom</code></a>.</p><div class="admonition is-info" id="Note-281967d7d170c7bf"><header class="admonition-header">Note<a class="admonition-anchor" href="#Note-281967d7d170c7bf" title="Permalink"></a></header><div class="admonition-body"><p>Currently only 1 and 2-qubit custom Kraus channels are supported.</p></div></div><p>See also <a href="#MimiqCircuitsBase.MixedUnitary"><code>MixedUnitary</code></a>, <a href="#MimiqCircuitsBase.AbstractKrausChannel"><code>AbstractKrausChannel</code></a>.</p><p><strong>Arguments</strong></p><ul><li><code>E</code>: Vector of <span>$2^N \times 2^N$</span> complex matrices or <span>$N$</span> qubit operators. Both can be mixed.</li></ul><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; push!(Circuit(), Kraus([[1 0; 0 sqrt(0.9)], [0 sqrt(0.1); 0 0]]), 1)
+1-qubit circuit with 1 instruction:
+└── Kraus(Operator([1.0 0.0; 0.0 0.948683]), Operator([0.0 0.316228; 0.0 0.0])) @ q[1]
+
+julia&gt; push!(Circuit(), Kraus([Projector0(), Projector1()]), 1)
+1-qubit circuit with 1 instruction:
+└── Kraus(Projector0(1), Projector1(1)) @ q[1]
+
+julia&gt; push!(Circuit(), Kraus([[1 0; 0 0], Projector1()]), 1)
+1-qubit circuit with 1 instruction:
+└── Kraus(Operator([1.0 0.0; 0.0 0.0]), Projector1(1)) @ q[1]
+
+julia&gt; @variables x
+1-element Vector{Symbolics.Num}:
+ x
+
+julia&gt; g = Kraus([Projector0(), Projector1(x)])
+Kraus(Projector0(1), Projector1(x))
+
+julia&gt; evaluate(g,Dict(x=&gt;1))
+Kraus(Projector0(1), Projector1(1))
+
+julia&gt; g = Kraus([[1 0; 0 sqrt(0.9)], [0 sqrt(0.1); 0 x]])
+Kraus(Operator([1.0 0.0; 0.0 0.948683]), Operator(Real[0 0.316228; 0 x]))
+
+julia&gt; evaluate(g,Dict(x=&gt;0))
+Kraus(Operator([1.0 0.0; 0.0 0.948683]), Operator(Real[0 0.316228; 0 0]))</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/operations/noisechannels/kraus.jl#L18-L80">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.AbstractKrausChannel"><a class="docstring-binding" href="#MimiqCircuitsBase.AbstractKrausChannel"><code>MimiqCircuitsBase.AbstractKrausChannel</code></a> — <span class="docstring-category">Type</span></summary><section><div><pre><code class="language-julia hljs">AbstractKrausChannel{N} &lt;: Operation{N,0,0}</code></pre><p>Supertype for all the <span>$N$</span>-qubit Kraus channels.</p><p>A Kraus channel is a quantum operation on a density matrix <span>$\rho$</span> of the form</p><p class="math-container">\[\mathcal{E}(\rho) = \sum_k E_k \rho E_k^\dagger,\]</p><p>where <span>$E_k$</span> are Kraus operators that need to fulfill <span>$\sum_k E_k^\dagger E_k \leq I$</span>.</p><p><strong>Special properties:</strong></p><ul><li><p><a href="../../internals/#MimiqCircuitsBase.isCPTP-Union{Tuple{Type{T}}, Tuple{T}} where T&lt;:AbstractKrausChannel"><code>isCPTP</code></a>: A Kraus channel a completely positive and trace preserving (CPTP) operation when <span>$\sum_k E_k^\dagger E_k = I$</span>. Currently, all noise channels are CPTP.</p></li><li><p><a href="#MimiqCircuitsBase.ismixedunitary-Union{Tuple{Type{T}}, Tuple{T}} where T&lt;:AbstractKrausChannel"><code>ismixedunitary</code></a>: A Kraus channel is called a mixed unitary channel when the Kraus operators <span>$E_k$</span> are each proportional to a unitary matrix <span>$U_k$</span>, i.e. when <span>$\mathcal{E}(\rho) = \sum_k p_k U_k \rho U_k^\dagger$</span> with some probabilities <span>$0\leq p_k \leq 1$</span> that add up to 1 and <span>$U_k^\dagger U_k = I$</span>.</p></li></ul><p>See also <a href="#MimiqCircuitsBase.krausmatrices-Tuple{AbstractKrausChannel}"><code>krausmatrices</code></a>, <a href="#MimiqCircuitsBase.unitarymatrices-Tuple{AbstractKrausChannel}"><code>unitarymatrices</code></a>, <a href="#MimiqCircuitsBase.probabilities-Tuple{AbstractKrausChannel}"><code>probabilities</code></a>.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/operations/krauschannel.jl#L18-L43">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.cumprobabilities-Tuple{AbstractKrausChannel}"><a class="docstring-binding" href="#MimiqCircuitsBase.cumprobabilities-Tuple{AbstractKrausChannel}"><code>MimiqCircuitsBase.cumprobabilities</code></a> — <span class="docstring-category">Method</span></summary><section><div><pre><code class="language-julia hljs">cumprobabilities(mixedunitarychannel)</code></pre><p>Cumulative sum of probabilities of a mixed unitary Kraus channel.</p><p>A mixed unitary channel is written as <span>$\sum_k p_k U_k \rho U_k^\dagger$</span>, where <span>$p_k$</span> are the probabilities.</p><p>An error is returned for Kraus channels with <code>ismixedunitary(krauschannel)==false</code>.</p><div class="admonition is-info" id="Note-f60639d98830af68"><header class="admonition-header">Note<a class="admonition-anchor" href="#Note-f60639d98830af68" title="Permalink"></a></header><div class="admonition-body"><p>if the Kraus channel is parametric, the cumprobabilities are wrapped in a <code>Symbolics.Num</code> object. To manipulate expressions use the <code>Symbolics</code> package.</p></div></div><p>See also <a href="#MimiqCircuitsBase.probabilities-Tuple{AbstractKrausChannel}"><code>probabilities</code></a>, <a href="#MimiqCircuitsBase.ismixedunitary-Union{Tuple{Type{T}}, Tuple{T}} where T&lt;:AbstractKrausChannel"><code>ismixedunitary</code></a>.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; cumprobabilities(Depolarizing1(0.1))
+4-element Vector{Symbolics.Num}:
+                0.9
+ 0.9333333333333333
+ 0.9666666666666667
+                1.0</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/operations/krauschannel.jl#L143-L170">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.ismixedunitary-Union{Tuple{Type{T}}, Tuple{T}} where T&lt;:AbstractKrausChannel"><a class="docstring-binding" href="#MimiqCircuitsBase.ismixedunitary-Union{Tuple{Type{T}}, Tuple{T}} where T&lt;:AbstractKrausChannel"><code>MimiqCircuitsBase.ismixedunitary</code></a> — <span class="docstring-category">Method</span></summary><section><div><pre><code class="language-julia hljs">ismixedunitary(krauschannel)</code></pre><p>Whether the quantum operation is a mixed unitary channel.</p><p>This is the case when all the Kraus operators <span>$E_k$</span> are proportional to a unitary <span>$U_k$</span>, i.e. <span>$\mathcal{E}(\rho) = \sum_k p_k U_k \rho U_k^\dagger$</span> with some probabilities <span>$0\leq p_k \leq 1$</span> that add up to 1 and <span>$U_k^\dagger U_k = I$</span>.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; ismixedunitary(PauliX(0.1))
+true
+
+julia&gt; ismixedunitary(AmplitudeDamping(0.1))
+false</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/operations/krauschannel.jl#L60-L78">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.krausmatrices-Tuple{AbstractKrausChannel}"><a class="docstring-binding" href="#MimiqCircuitsBase.krausmatrices-Tuple{AbstractKrausChannel}"><code>MimiqCircuitsBase.krausmatrices</code></a> — <span class="docstring-category">Method</span></summary><section><div><pre><code class="language-julia hljs">krausmatrices(krauschannel)</code></pre><p>Kraus matrices associated to the given Kraus channel.</p><p>A mixed unitary channel is written as <span>$\sum_k p_k U_k \rho U_k^\dagger$</span>, where <span>$U_k$</span> are the unitary matrices returned by this function.</p><div class="admonition is-info" id="Note-d09b21de27965384"><header class="admonition-header">Note<a class="admonition-anchor" href="#Note-d09b21de27965384" title="Permalink"></a></header><div class="admonition-body"><p>if the Kraus channel is parametric, the matrix elements are wrapped in a <code>Symbolics.Num</code> object. To manipulate expressions use the <code>Symbolics</code> package.</p></div></div><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; krausmatrices(AmplitudeDamping(0.1))
+2-element Vector{Matrix{Float64}}:
+ [1.0 0.0; 0.0 0.9486832980505138]
+ [0.0 0.31622776601683794; 0.0 0.0]</code></pre><p>For mixed unitary channels the Kraus matrices are the unitary matrices times the square root of the probabilities.</p><pre><code class="language-julia-repl hljs">julia&gt; krausmatrices(PauliX(0.2))
+2-element Vector{Matrix{Symbolics.Num}}:
+ [sqrt(0.8) 0; 0 sqrt(0.8)]
+ [0 sqrt(0.2); sqrt(0.2) 0]</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/operations/krauschannel.jl#L201-L232">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.krausoperators-Tuple{AbstractKrausChannel}"><a class="docstring-binding" href="#MimiqCircuitsBase.krausoperators-Tuple{AbstractKrausChannel}"><code>MimiqCircuitsBase.krausoperators</code></a> — <span class="docstring-category">Method</span></summary><section><div><pre><code class="language-julia hljs">krausoperators(kraus)</code></pre><p>Kraus operators associated to the given Kraus channel.</p><p>See also <a href="#MimiqCircuitsBase.krausmatrices-Tuple{AbstractKrausChannel}"><code>krausmatrices</code></a>.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; krausoperators(PauliX(0.2))
+2-element Vector{Operator{1}}:
+ Operator(Real[0.8944271909999159 0; 0 0.8944271909999159])
+ Operator(Real[0 0.4472135954999579; 0.4472135954999579 0])
+
+julia&gt; krausoperators(AmplitudeDamping(0.1))
+2-element Vector{AbstractOperator{1}}:
+ D(1, sqrt(0.9))
+ SigmaMinus(sqrt(0.1))</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/operations/krauschannel.jl#L269-L289">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.probabilities-Tuple{AbstractKrausChannel}"><a class="docstring-binding" href="#MimiqCircuitsBase.probabilities-Tuple{AbstractKrausChannel}"><code>MimiqCircuitsBase.probabilities</code></a> — <span class="docstring-category">Method</span></summary><section><div><pre><code class="language-julia hljs">probabilities(mixedunitarychannel)</code></pre><p>Probabilities of each Kraus operator for mixed unitary Kraus channels.</p><p>A mixed unitary channel is written as <span>$\sum_k p_k U_k \rho U_k^\dagger$</span>, where <span>$p_k$</span> are the probabilities.</p><p>An error is returned for Kraus channels with <code>ismixedunitary(krauschannel)==false</code>.</p><div class="admonition is-info" id="Note-7aa8330fddd24bc2"><header class="admonition-header">Note<a class="admonition-anchor" href="#Note-7aa8330fddd24bc2" title="Permalink"></a></header><div class="admonition-body"><p>if the Kraus channel is parametric, the probabilities are wrapped in a <code>Symbolics.Num</code> object. To manipulate expressions use the <code>Symbolics</code> package.</p></div></div><p>See also <a href="#MimiqCircuitsBase.ismixedunitary-Union{Tuple{Type{T}}, Tuple{T}} where T&lt;:AbstractKrausChannel"><code>ismixedunitary</code></a>, <a href="#MimiqCircuitsBase.unitarymatrices-Tuple{AbstractKrausChannel}"><code>unitarymatrices</code></a>, and <a href="#MimiqCircuitsBase.krausmatrices-Tuple{AbstractKrausChannel}"><code>krausmatrices</code></a>.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; probabilities(PauliX(0.1))
+2-element Vector{Symbolics.Num}:
+ 0.9
+ 0.1</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/operations/krauschannel.jl#L87-L112">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.squaredkrausoperators-Tuple{AbstractKrausChannel}"><a class="docstring-binding" href="#MimiqCircuitsBase.squaredkrausoperators-Tuple{AbstractKrausChannel}"><code>MimiqCircuitsBase.squaredkrausoperators</code></a> — <span class="docstring-category">Method</span></summary><section><div><pre><code class="language-julia hljs">squaredkrausoperators(kraus)</code></pre><p>Square of of Kraus operators (<span>$O^\dagger O$</span>) associated to the given Kraus channel.</p><p>See also <a href="#MimiqCircuitsBase.krausoperators-Tuple{AbstractKrausChannel}"><code>krausoperators</code></a>.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; squaredkrausoperators(AmplitudeDamping(0.1))
+2-element Vector{AbstractOperator{1}}:
+ D(abs2(1), abs2(sqrt(0.9)))
+ P₁(abs2(sqrt(0.1)))</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/operations/krauschannel.jl#L300-L315">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.unitarygates-Tuple{AbstractKrausChannel}"><a class="docstring-binding" href="#MimiqCircuitsBase.unitarygates-Tuple{AbstractKrausChannel}"><code>MimiqCircuitsBase.unitarygates</code></a> — <span class="docstring-category">Method</span></summary><section><div><pre><code class="language-julia hljs">unitarygates(krauschannel)</code></pre><p>Unitary gates associated to the given mixed unitary Kraus channel.</p><p>A mixed unitary channel is written as <span>$\sum_k p_k U_k \rho U_k^\dagger$</span>, where <span>$U_k$</span> are the unitary operators returned by this function.</p><p>An error is returned for Kraus channels with <code>ismixedunitary(krauschannel)==false</code>.</p><p>See also <a href="#MimiqCircuitsBase.ismixedunitary-Union{Tuple{Type{T}}, Tuple{T}} where T&lt;:AbstractKrausChannel"><code>ismixedunitary</code></a>, <a href="#MimiqCircuitsBase.unitarymatrices-Tuple{AbstractKrausChannel}"><code>unitarymatrices</code></a>, and <a href="#MimiqCircuitsBase.krausmatrices-Tuple{AbstractKrausChannel}"><code>krausmatrices</code></a>.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; unitarygates(PauliNoise([0.9,0.1],[&quot;II&quot;,&quot;XX&quot;]))
+2-element Vector{PauliString{2}}:
+ II
+ XX</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/operations/krauschannel.jl#L380-L400">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.unitarymatrices-Tuple{AbstractKrausChannel}"><a class="docstring-binding" href="#MimiqCircuitsBase.unitarymatrices-Tuple{AbstractKrausChannel}"><code>MimiqCircuitsBase.unitarymatrices</code></a> — <span class="docstring-category">Method</span></summary><section><div><pre><code class="language-julia hljs">unitarymatrices(mixedunitarychannel)</code></pre><p>Unitary matrices associated to the given mixed unitary Kraus channel.</p><p>A mixed unitary channel is written as <span>$\sum_k p_k U_k \rho U_k^\dagger$</span>, where <span>$U_k$</span> are the unitary matrices.</p><p>An error is returned for Kraus channels with <code>ismixedunitary(krauschannel)==false</code>.</p><div class="admonition is-info" id="Note-d09b21de27965384"><header class="admonition-header">Note<a class="admonition-anchor" href="#Note-d09b21de27965384" title="Permalink"></a></header><div class="admonition-body"><p>if the Kraus channel is parametric, the matrix elements are wrapped in a <code>Symbolics.Num</code> object. To manipulate expressions use the <code>Symbolics</code> package.</p></div></div><p>See also <a href="#MimiqCircuitsBase.ismixedunitary-Union{Tuple{Type{T}}, Tuple{T}} where T&lt;:AbstractKrausChannel"><code>ismixedunitary</code></a>, <a href="#MimiqCircuitsBase.probabilities-Tuple{AbstractKrausChannel}"><code>probabilities</code></a>, and <a href="#MimiqCircuitsBase.krausmatrices-Tuple{AbstractKrausChannel}"><code>krausmatrices</code></a>.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; unitarymatrices(PauliX(0.2))
+2-element Vector{Matrix}:
+ [1.0 -0.0; 0.0 1.0]
+ [0 1; 1 0]</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/operations/krauschannel.jl#L318-L343">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.unwrappedcumprobabilities-Tuple{AbstractKrausChannel}"><a class="docstring-binding" href="#MimiqCircuitsBase.unwrappedcumprobabilities-Tuple{AbstractKrausChannel}"><code>MimiqCircuitsBase.unwrappedcumprobabilities</code></a> — <span class="docstring-category">Method</span></summary><section><div><pre><code class="language-julia hljs">unwrappedcumprobabilities(mixedunitarychannel)</code></pre><p>Cumulative sum of probabilities associated to the specified mixed unitary Kraus channel without the <code>Symbolics.Num</code> wrapper.</p><div class="admonition is-info" id="Note-d5b8f3f5cfba3c27"><header class="admonition-header">Note<a class="admonition-anchor" href="#Note-d5b8f3f5cfba3c27" title="Permalink"></a></header><div class="admonition-body"><p>If any of the noise channel&#39;s parameters is symbolic, an error is thrown.</p></div></div><p>See <a href="#MimiqCircuitsBase.cumprobabilities-Tuple{AbstractKrausChannel}"><code>cumprobabilities</code></a> for more information.</p><pre><code class="language-julia-repl hljs">julia&gt; unwrappedcumprobabilities(Depolarizing1(0.1))
+4-element Vector{Float64}:
+ 0.9
+ 0.9333333333333333
+ 0.9666666666666667
+ 1.0</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/operations/krauschannel.jl#L179-L198">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.unwrappedkrausmatrices-Tuple{AbstractKrausChannel}"><a class="docstring-binding" href="#MimiqCircuitsBase.unwrappedkrausmatrices-Tuple{AbstractKrausChannel}"><code>MimiqCircuitsBase.unwrappedkrausmatrices</code></a> — <span class="docstring-category">Method</span></summary><section><div><pre><code class="language-julia hljs">unwrappedkrausmatrices(krauschannel)</code></pre><p>Returns the Kraus matrices associated to the specified Kraus channel without the <code>Symbolics.Num</code> wrapper.</p><div class="admonition is-info" id="Note-d5b8f3f5cfba3c27"><header class="admonition-header">Note<a class="admonition-anchor" href="#Note-d5b8f3f5cfba3c27" title="Permalink"></a></header><div class="admonition-body"><p>If any of the noise channel&#39;s parameters is symbolic, an error is thrown.</p></div></div><p>See <a href="#MimiqCircuitsBase.krausmatrices-Tuple{AbstractKrausChannel}"><code>krausmatrices</code></a> for more information.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; unwrappedkrausmatrices(AmplitudeDamping(0.1))
+2-element Vector{Matrix{ComplexF64}}:
+ [1.0 + 0.0im 0.0 + 0.0im; 0.0 + 0.0im 0.9486832980505138 + 0.0im]
+ [0.0 + 0.0im 0.31622776601683794 + 0.0im; 0.0 + 0.0im 0.0 + 0.0im]</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/operations/krauschannel.jl#L245-L264">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.unwrappedprobabilities-Tuple{AbstractKrausChannel}"><a class="docstring-binding" href="#MimiqCircuitsBase.unwrappedprobabilities-Tuple{AbstractKrausChannel}"><code>MimiqCircuitsBase.unwrappedprobabilities</code></a> — <span class="docstring-category">Method</span></summary><section><div><pre><code class="language-julia hljs">unwrappedprobabilities(mixedunitarychannel)</code></pre><p>Probabilities associated to the specified mixed unitary Kraus channel without the <code>Symbolics.Num</code> wrapper.</p><div class="admonition is-info" id="Note-d5b8f3f5cfba3c27"><header class="admonition-header">Note<a class="admonition-anchor" href="#Note-d5b8f3f5cfba3c27" title="Permalink"></a></header><div class="admonition-body"><p>If any of the noise channel&#39;s parameters is symbolic, an error is thrown.</p></div></div><p>See <a href="#MimiqCircuitsBase.probabilities-Tuple{AbstractKrausChannel}"><code>probabilities</code></a> for more information.</p><pre><code class="language-julia-repl hljs">julia&gt; unwrappedprobabilities(PauliX(0.1))
+2-element Vector{Float64}:
+ 0.9
+ 0.1</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/operations/krauschannel.jl#L123-L140">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.unwrappedunitarymatrices-Tuple{AbstractKrausChannel}"><a class="docstring-binding" href="#MimiqCircuitsBase.unwrappedunitarymatrices-Tuple{AbstractKrausChannel}"><code>MimiqCircuitsBase.unwrappedunitarymatrices</code></a> — <span class="docstring-category">Method</span></summary><section><div><pre><code class="language-julia hljs">unwrappedunitarymatrices(krauschannel)</code></pre><p>Returns the unitary Kraus matrices associated to the mixed unitary Kraus channel without the <code>Symbolics.Num</code> wrapper.</p><div class="admonition is-info" id="Note-d5b8f3f5cfba3c27"><header class="admonition-header">Note<a class="admonition-anchor" href="#Note-d5b8f3f5cfba3c27" title="Permalink"></a></header><div class="admonition-body"><p>If any of the noise channel&#39;s parameters is symbolic, an error is thrown.</p></div></div><p>See <a href="#MimiqCircuitsBase.unitarymatrices-Tuple{AbstractKrausChannel}"><code>unitarymatrices</code></a> for more information.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; unwrappedunitarymatrices(PauliX(0.2))
+2-element Vector{Matrix}:
+ [1.0 -0.0; 0.0 1.0]
+ [0 1; 1 0]</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/operations/krauschannel.jl#L356-L375">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.Amplitude"><a class="docstring-binding" href="#MimiqCircuitsBase.Amplitude"><code>MimiqCircuitsBase.Amplitude</code></a> — <span class="docstring-category">Type</span></summary><section><div><pre><code class="language-julia hljs">Amplitude(bs::BitString)</code></pre><p>Operation to get amplitude of a state vector element.</p><p>The operation gets the quantum state&#39;s amplitude (which is a complex number) corresponding to the state defined by the  bitstring <code>bs</code> in the computational basis and stores it in a z-register.</p><p>See <a href="../../../manual/special_topics/#BitString"><code>BitString</code></a>.</p><p><strong>Examples</strong></p><p>When defining a circuit, only the z-register to store the result needs to be specified.</p><pre><code class="language-julia-repl hljs">julia&gt; Amplitude(BitString(&quot;001&quot;))
+Amplitude(bs&quot;001&quot;)
+
+julia&gt; c = push!(Circuit(),Amplitude(BitString(&quot;001&quot;)), 1)
+1-vars circuit with 1 instruction:
+└── Amplitude(bs&quot;001&quot;) @ z[1]
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/operations/amplitude.jl#L18-L42">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.DiagonalOp"><a class="docstring-binding" href="#MimiqCircuitsBase.DiagonalOp"><code>MimiqCircuitsBase.DiagonalOp</code></a> — <span class="docstring-category">Type</span></summary><section><div><pre><code class="language-julia hljs">DiagonalOp(a,b)</code></pre><p>One-qubit diagonal operator.</p><p>The corresponding matrix</p><p class="math-container">\[\begin{pmatrix}
+    a &amp; 0\\
+    0 &amp; b
+\end{pmatrix}\]</p><p>is parametrized by complex numbers <code>a</code> and <code>b</code>.</p><p>See also <a href="../other/#MimiqCircuitsBase.Operator"><code>Operator</code></a>, <a href="../operators/#MimiqCircuitsBase.Projector0"><code>Projector0</code></a>, <a href="../operators/#MimiqCircuitsBase.Projector1"><code>Projector1</code></a>.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; DiagonalOp(1,0.5)
+D(1, 0.5)
+
+julia&gt; push!(Circuit(), ExpectationValue(DiagonalOp(1,0.5)), 1, 2)
+1-qubit, 2-vars circuit with 1 instruction:
+└── ⟨D(1,0.5)⟩ @ q[1], z[2]</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/operations/operators/diagonals.jl#L18-L44">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.AmplitudeDamping"><a class="docstring-binding" href="#MimiqCircuitsBase.AmplitudeDamping"><code>MimiqCircuitsBase.AmplitudeDamping</code></a> — <span class="docstring-category">Type</span></summary><section><div><pre><code class="language-julia hljs">AmplitudeDamping(γ)</code></pre><p>One-qubit amplitude damping noise channel.</p><p>This channel is defined by the Kraus operators</p><p class="math-container">\[E_1 =
+\begin{pmatrix}
+    1 &amp; 0 \\
+    0 &amp; \sqrt{1-\gamma}
+\end{pmatrix}
+,\quad
+E_2 =
+\begin{pmatrix}
+    0 &amp; \sqrt{\gamma} \\
+    0 &amp; 0
+\end{pmatrix},\]</p><p>where <span>$\gamma \in [0,1]$</span>.</p><p>Physically, it corresponds to an energy gain/loss process, such as spontaneous emission.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; push!(Circuit(), AmplitudeDamping(0.1), 1)
+1-qubit circuit with 1 instruction:
+└── AmplitudeDamping(0.1) @ q[1]</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/operations/noisechannels/standard/ampdamping.jl#L18-L50">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.GeneralizedAmplitudeDamping"><a class="docstring-binding" href="#MimiqCircuitsBase.GeneralizedAmplitudeDamping"><code>MimiqCircuitsBase.GeneralizedAmplitudeDamping</code></a> — <span class="docstring-category">Type</span></summary><section><div><pre><code class="language-julia hljs">GeneralizedAmplitudeDamping(p,γ)</code></pre><p>One-qubit generalized amplitude damping noise channel.</p><p>This channel is defined by the Kraus operators</p><p class="math-container">\[E_1 =
+\sqrt{p}
+\begin{pmatrix}
+    1 &amp; 0 \\
+    0 &amp; \sqrt{1-\gamma}
+\end{pmatrix}
+,\quad
+E_2 =
+\sqrt{p}
+\begin{pmatrix}
+    0 &amp; \sqrt{\gamma} \\
+    0 &amp; 0
+\end{pmatrix}
+,\quad
+E_3 =
+\sqrt{1-p}
+\begin{pmatrix}
+    \sqrt{1-\gamma} &amp; 0 \\
+    0 &amp; 1
+\end{pmatrix}
+,\quad
+E_4 =
+\sqrt{1-p}
+\begin{pmatrix}
+    0 &amp; 0 \\
+    \sqrt{\gamma} &amp; 0
+\end{pmatrix},\]</p><p>where <span>$\gamma, p \in [0,1]$</span>.</p><p>Physically, it corresponds to a combination of spontaneous emission and spontaneous absorption with probabilities <span>$p$</span> and <span>$1-p$</span>, respectively.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; push!(Circuit(), GeneralizedAmplitudeDamping(0.1, 0.3), 1)
+1-qubit circuit with 1 instruction:
+└── GeneralizedAmplitudeDamping(0.1,0.3) @ q[1]</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/operations/noisechannels/standard/ampdamping.jl#L90-L139">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.PhaseAmplitudeDamping"><a class="docstring-binding" href="#MimiqCircuitsBase.PhaseAmplitudeDamping"><code>MimiqCircuitsBase.PhaseAmplitudeDamping</code></a> — <span class="docstring-category">Type</span></summary><section><div><pre><code class="language-julia hljs">PhaseAmplitudeDamping(p,γ,β)</code></pre><p>One-qubit phase amplitude damping noise channel.</p><p>This channel is defined by:</p><p class="math-container">\[\mathcal{E}(\rho) =
+\begin{pmatrix}
+    (1-\gamma)\rho_{00}+\gamma p &amp; (1-2\beta)\sqrt{1-\gamma}\rho_{01} \\
+    (1-2\beta)\sqrt{1-\gamma}\rho_{10} &amp; (1-\gamma)\rho_{11} + (1-p)\gamma
+\end{pmatrix}\]</p><p>Here, <span>$p, \gamma, \beta \in [0,1]$</span>.</p><p>This channel is equivalent to a <code>GeneralizedAmplitudeDamping(p,γ)</code> channel (see <a href="#MimiqCircuitsBase.GeneralizedAmplitudeDamping"><code>GeneralizedAmplitudeDamping</code></a>), followed by a <code>PauliZ(β)</code> channel (see <a href="#MimiqCircuitsBase.PauliZ"><code>PauliZ</code></a>).</p><p>Use <a href="#MimiqCircuitsBase.krausmatrices-Tuple{AbstractKrausChannel}"><code>krausmatrices</code></a> to see a Kraus matrix representation of the channel.</p><p>See also <a href="#MimiqCircuitsBase.AmplitudeDamping"><code>AmplitudeDamping</code></a>, <a href="#MimiqCircuitsBase.GeneralizedAmplitudeDamping"><code>GeneralizedAmplitudeDamping</code></a>, and <a href="#MimiqCircuitsBase.ThermalNoise"><code>ThermalNoise</code></a>.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; push!(Circuit(), PhaseAmplitudeDamping(0.1, 0.2, 0.3), 1)
+1-qubit circuit with 1 instruction:
+└── PhaseAmplitudeDamping(0.1,0.2,0.3) @ q[1]</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/operations/noisechannels/standard/phaseampdamping.jl#L18-L52">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.ThermalNoise"><a class="docstring-binding" href="#MimiqCircuitsBase.ThermalNoise"><code>MimiqCircuitsBase.ThermalNoise</code></a> — <span class="docstring-category">Type</span></summary><section><div><pre><code class="language-julia hljs">ThermalNoise(T₁, T₂, t, nₑ)</code></pre><p>One-qubit thermal noise channel.</p><p>The thermal noise channel is equivalent to the <a href="#MimiqCircuitsBase.PhaseAmplitudeDamping"><code>PhaseAmplitudeDamping</code></a> channel, but it is parametrized instead as</p><p class="math-container">\[\mathcal{E}(\rho) =
+\begin{pmatrix}
+    e^{-\Gamma_1 t}\rho_{00}+(1-n_e)(1-e^{-\Gamma_1 t}) &amp; e^{-\Gamma_2 t}\rho_{01} \\
+    e^{-\Gamma_2 t}\rho_{10} &amp; e^{-\Gamma_1 t}\rho_{11} + n_e(1-e^{-\Gamma_1 t})
+\end{pmatrix}\]</p><p>where <span>$\Gamma_1=1/T_1$</span> and <span>$\Gamma_2=1/T_2$</span>, and the parameters must fulfill <span>$T_1 \geq 0$</span>, <span>$T_2 \leq 2 T_1$</span>, <span>$t \geq 0$</span>, and <span>$0 \leq n_e \leq 1$</span>.</p><p>These parameters can be related to the ones used to define the <a href="#MimiqCircuitsBase.PhaseAmplitudeDamping"><code>PhaseAmplitudeDamping</code></a> channel through <span>$p = 1-n_e$</span>, <span>$\gamma = 1-e^{-\Gamma_1 t}$</span>, and <span>$\beta = \frac{1}{2}(1-e^{-(\Gamma_2-\Gamma_1/2)t})$</span>.</p><p>See also <a href="#MimiqCircuitsBase.PhaseAmplitudeDamping"><code>PhaseAmplitudeDamping</code></a>, <a href="#MimiqCircuitsBase.AmplitudeDamping"><code>AmplitudeDamping</code></a>, and <a href="#MimiqCircuitsBase.GeneralizedAmplitudeDamping"><code>GeneralizedAmplitudeDamping</code></a>.</p><p><strong>Arguments</strong></p><ul><li><code>T₁</code>: Longitudinal relaxation rate.</li><li><code>T₂</code>: Transversal relaxation rate.</li><li><code>t</code>: Time duration of gate.</li><li><code>nₑ</code>: Excitation fraction when in thermal equilibrium with the environment.</li></ul><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; push!(Circuit(), ThermalNoise(0.5, 0.6, 1.2, 0.3), 1)
+1-qubit circuit with 1 instruction:
+└── ThermalNoise(0.5,0.6,1.2,0.3) @ q[1]</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/operations/noisechannels/standard/phaseampdamping.jl#L119-L159">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.Depolarizing"><a class="docstring-binding" href="#MimiqCircuitsBase.Depolarizing"><code>MimiqCircuitsBase.Depolarizing</code></a> — <span class="docstring-category">Type</span></summary><section><div><pre><code class="language-julia hljs">Depolarizing(N,p)</code></pre><p><span>$N$</span> qubit depolarizing noise channel.</p><p>The Kraus operators for the depolarizing channel are given by</p><p class="math-container">\[E_1 = \sqrt{1-p} I_N, \quad E_i = \sqrt{p/(4^N-1)} P_i\]</p><p>where <span>$p\in [0,1]$</span> is a probability, and <span>$P_i` is an$</span>N<span>$-qubit Pauli string operator, i.e. a tensor product of one-qubit Pauli operators (see [`Paulistring`](@ref)). There is exactly one Kraus operator$</span>E<em>{i&gt;1}<span>$for each distinct combination of Pauli operators$</span>P</em>i<span>$, except for the$</span>N<span>$-qubit identity$</span>I_N = I\otimes I \otimes I \otimes...``</p><p>For example, for one qubit we have 3 operators <span>$P_i \in \{X,Y,Z\}$</span>, and for two qubits we have 15 operators <span>$P_i \in \{ I\otimes X, I\otimes Y, I\otimes Z, X\otimes I, Y\otimes I, Z\otimes I, X\otimes X, X\otimes Y, X\otimes Z, Y\otimes X, Y\otimes Y, Y\otimes Z, Z\otimes X, Z\otimes Y, Z\otimes Z \}$</span>. Use <a href="#MimiqCircuitsBase.unitarygates-Tuple{AbstractKrausChannel}"><code>unitarygates</code></a> to see this.</p><p>This channel is a mixed unitary channel, see <a href="#MimiqCircuitsBase.ismixedunitary-Union{Tuple{Type{T}}, Tuple{T}} where T&lt;:AbstractKrausChannel"><code>ismixedunitary</code></a>, and is a special case of <a href="#MimiqCircuitsBase.PauliNoise"><code>PauliNoise</code></a>.</p><p>See also <a href="../generalized/#MimiqCircuitsBase.PauliString"><code>PauliString</code></a> and <a href="#MimiqCircuitsBase.PauliNoise"><code>PauliNoise</code></a>.</p><p><strong>Arguments</strong></p><ul><li><code>N</code>: Number of qubits.</li><li><code>p</code>: Probability of error, i.e. of not applying identity.</li></ul><p><strong>Examples</strong></p><p>Depolarizing channels can be defined for any <span>$N$</span>:</p><pre><code class="language-julia-repl hljs">julia&gt; push!(Circuit(), Depolarizing(1, 0.1), 1)
+1-qubit circuit with 1 instruction:
+└── Depolarizing(1,0.1) @ q[1]
+
+julia&gt; push!(Circuit(), Depolarizing(5, 0.1), 1, 2, 3, 4, 5)
+5-qubit circuit with 1 instruction:
+└── Depolarizing(5,0.1) @ q[1:5]</code></pre><p>For one and two qubits you can use the shorthand notation:</p><pre><code class="language-julia-repl hljs">julia&gt; push!(Circuit(), Depolarizing1(0.1), 1)
+1-qubit circuit with 1 instruction:
+└── Depolarizing(1,0.1) @ q[1]
+
+julia&gt; push!(Circuit(), Depolarizing2(0.1), 1, 2)
+2-qubit circuit with 1 instruction:
+└── Depolarizing(2,0.1) @ q[1:2]</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/operations/noisechannels/standard/depolarizing.jl#L18-L77">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.Depolarizing1"><a class="docstring-binding" href="#MimiqCircuitsBase.Depolarizing1"><code>MimiqCircuitsBase.Depolarizing1</code></a> — <span class="docstring-category">Type</span></summary><section><div><pre><code class="language-julia hljs">Depolarizing1(p) Doc TODO</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/operations/noisechannels/standard/depolarizing.jl#L136-L138">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.Depolarizing2"><a class="docstring-binding" href="#MimiqCircuitsBase.Depolarizing2"><code>MimiqCircuitsBase.Depolarizing2</code></a> — <span class="docstring-category">Type</span></summary><section><div><pre><code class="language-julia hljs">Depolarizing2(p) Doc TODO</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/operations/noisechannels/standard/depolarizing.jl#L140-L142">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.PauliNoise"><a class="docstring-binding" href="#MimiqCircuitsBase.PauliNoise"><code>MimiqCircuitsBase.PauliNoise</code></a> — <span class="docstring-category">Type</span></summary><section><div><pre><code class="language-julia hljs">PauliNoise(p, paulistrings)</code></pre><p><span>$N$</span> qubit Pauli noise channel specified by a list of probabilities and Pauli gates.</p><p>A Pauli channel is defined by</p><p class="math-container">\[\mathcal{E}(\rho) = \sum_k p_k P_k \rho P_k,\]</p><p>where <span>$0 \leq p_k \leq 1$</span> and <span>$P_k$</span> are Pauli string operators, defined as tensor products of one-qubit Pauli operators (see <a href="../generalized/#MimiqCircuitsBase.PauliString"><code>PauliString</code></a>) The probabilities must fulfill <span>$\sum_k p_k = 1$</span>.</p><p>This channel is a mixed unitary channel, see <a href="#MimiqCircuitsBase.ismixedunitary-Union{Tuple{Type{T}}, Tuple{T}} where T&lt;:AbstractKrausChannel"><code>ismixedunitary</code></a>.</p><p>See also <a href="#MimiqCircuitsBase.Depolarizing"><code>Depolarizing</code></a>, <a href="#MimiqCircuitsBase.PauliX"><code>PauliX</code></a>, <a href="#MimiqCircuitsBase.PauliY"><code>PauliY</code></a>, <a href="#MimiqCircuitsBase.PauliZ"><code>PauliZ</code></a>, which are special cases of PauliNoise.</p><p><strong>Arguments</strong></p><ul><li><code>p</code>: Vector of probabilities that must add up to 1.</li><li><code>paulistrings</code>: Vector of strings, each one of length <span>$N$</span> and with each character being either <code>&quot;I&quot;</code>, <code>&quot;X&quot;</code>, <code>&quot;Y&quot;</code>, or <code>&quot;Z&quot;</code>. The number of qubits is equal to <span>$N$</span>.</li></ul><p>The vectors <code>p</code> and <code>paulistrings</code> must have the same length.</p><p><strong>Examples</strong></p><p>PauliNoise channels can be defined for any number of qubits, and for any number of Pauli strings.</p><pre><code class="language-julia-repl hljs">julia&gt; push!(Circuit(), PauliNoise([0.8, 0.1, 0.1], [&quot;I&quot;,&quot;X&quot;,&quot;Y&quot;]), 1)
+1-qubit circuit with 1 instruction:
+└── PauliNoise(...) @ q[1]
+
+julia&gt; push!(Circuit(), PauliNoise([0.9, 0.1], [&quot;XY&quot;,&quot;II&quot;]), 1, 2)
+2-qubit circuit with 1 instruction:
+└── PauliNoise(...) @ q[1:2]
+
+julia&gt; push!(Circuit(), PauliNoise([0.5, 0.2, 0.2, 0.1], [&quot;IXIX&quot;,&quot;XYXY&quot;,&quot;ZZZZ&quot;,&quot;IXYZ&quot;]), 1, 2, 3, 4)
+4-qubit circuit with 1 instruction:
+└── PauliNoise(...) @ q[1:4]</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/operations/noisechannels/standard/pauli.jl#L18-L65">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.PauliX"><a class="docstring-binding" href="#MimiqCircuitsBase.PauliX"><code>MimiqCircuitsBase.PauliX</code></a> — <span class="docstring-category">Type</span></summary><section><div><pre><code class="language-julia hljs">PauliX(p)</code></pre><p>One-qubit Pauli X noise channel (bit flip error).</p><p>This channel is defined by the Kraus operators</p><p class="math-container">\[E_1 = \sqrt{1-p}\,I, \quad E_2 = \sqrt{p}\,X,\]</p><p>where <span>$0 \leq p \leq 1$</span>.</p><p>This channel is a mixed unitary channel, see <a href="#MimiqCircuitsBase.ismixedunitary-Union{Tuple{Type{T}}, Tuple{T}} where T&lt;:AbstractKrausChannel"><code>ismixedunitary</code></a>, and is a special case of <a href="#MimiqCircuitsBase.PauliNoise"><code>PauliNoise</code></a>.</p><p><code>PauliX(p)</code> is the same as <code>PauliNoise([1-p,p],[&quot;I&quot;,&quot;X&quot;])</code>.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; push!(Circuit(), PauliX(0.1), 1)
+1-qubit circuit with 1 instruction:
+└── PauliX(0.1) @ q[1]</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/operations/noisechannels/standard/pauli.jl#L161-L186">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.PauliY"><a class="docstring-binding" href="#MimiqCircuitsBase.PauliY"><code>MimiqCircuitsBase.PauliY</code></a> — <span class="docstring-category">Type</span></summary><section><div><pre><code class="language-julia hljs">PauliY(p)</code></pre><p>One-qubit Pauli Y noise channel (bit-phase flip error).</p><p>This channel is determined by the Kraus operators</p><p class="math-container">\[E_1 = \\sqrt{1-p}\,I, \\quad E_2 = \sqrt{p}\,Y,\]</p><p>where <span>$0\\leq p \\leq 1$</span>.</p><p>This channel is a mixed unitary channel, see <a href="#MimiqCircuitsBase.ismixedunitary-Union{Tuple{Type{T}}, Tuple{T}} where T&lt;:AbstractKrausChannel"><code>ismixedunitary</code></a>, and is a special case of <a href="#MimiqCircuitsBase.PauliNoise"><code>PauliNoise</code></a>.</p><p><code>PauliY(p)</code> is the same as <code>PauliNoise([1-p,p],[&quot;I&quot;,&quot;Y&quot;])</code>.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; push!(Circuit(), PauliY(0.1), 1)
+1-qubit circuit with 1 instruction:
+└── PauliY(0.1) @ q[1]</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/operations/noisechannels/standard/pauli.jl#L222-L247">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.PauliZ"><a class="docstring-binding" href="#MimiqCircuitsBase.PauliZ"><code>MimiqCircuitsBase.PauliZ</code></a> — <span class="docstring-category">Type</span></summary><section><div><pre><code class="language-julia hljs">PauliZ(p)</code></pre><p>One-qubit Pauli Z noise channel (phase flip error).</p><p>This channel is determined by the Kraus operators</p><p class="math-container">\[E_1 = \sqrt{1-p}\,I, \quad E_2 = \sqrt{p}\,Z,\]</p><p>where <span>$0 \leq p \leq 1$</span>.</p><p>This channel is a mixed unitary channel, see <a href="#MimiqCircuitsBase.ismixedunitary-Union{Tuple{Type{T}}, Tuple{T}} where T&lt;:AbstractKrausChannel"><code>ismixedunitary</code></a>, and is a special case of <a href="#MimiqCircuitsBase.PauliNoise"><code>PauliNoise</code></a>.</p><p><code>PauliZ(p)</code> is the same as <code>PauliNoise([1-p,p],[&quot;I&quot;,&quot;Z&quot;])</code>.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; push!(Circuit(), PauliZ(0.1), 1)
+1-qubit circuit with 1 instruction:
+└── PauliZ(0.1) @ q[1]</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/operations/noisechannels/standard/pauli.jl#L282-L307">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.MixedUnitary"><a class="docstring-binding" href="#MimiqCircuitsBase.MixedUnitary"><code>MimiqCircuitsBase.MixedUnitary</code></a> — <span class="docstring-category">Type</span></summary><section><div><pre><code class="language-julia hljs">MixedUnitary(p,U)</code></pre><p>Custom <span>$N$</span> qubit mixed unitary channel specified by a list of unitary gates and a list of probabilities that add up to 1.</p><p>A mixed unitary noise channel is defined by</p><p class="math-container">\[\mathcal{E}(\rho) = \sum_k p_k U_k \rho U_k^\dagger,\]</p><p>where <span>$0\leq p_k \leq 1$</span> and <span>$U_k$</span> are unitary matrices. The probabilities must fulfill <span>$\sum_k p_k = 1$</span>.</p><p>If your Kraus matrices are not all proportional to unitaries, use <a href="#MimiqCircuitsBase.Kraus"><code>Kraus</code></a> instead.</p><p>The Kraus matrices are defined in the computational basis in the usual textbook order (the first qubit corresponds to the left-most qubit). For 1 qubit we have <span>$|0\rangle$</span>, <span>$|1\rangle$</span>. For 2 qubits we have <span>$|00\rangle$</span>, <span>$|01\rangle$</span>, <span>$|10\rangle$</span>, <span>$|11\rangle$</span>. See also <a href="../other/#MimiqCircuitsBase.GateCustom"><code>GateCustom</code></a>.</p><div class="admonition is-info" id="Note-aed6f13783951973"><header class="admonition-header">Note<a class="admonition-anchor" href="#Note-aed6f13783951973" title="Permalink"></a></header><div class="admonition-body"><p>Currently only 1 and 2-qubit custom MixedUnitary channels are supported.</p></div></div><p>See also <a href="#MimiqCircuitsBase.Kraus"><code>Kraus</code></a>, <a href="#MimiqCircuitsBase.ismixedunitary-Union{Tuple{Type{T}}, Tuple{T}} where T&lt;:AbstractKrausChannel"><code>ismixedunitary</code></a>, <a href="#MimiqCircuitsBase.AbstractKrausChannel"><code>AbstractKrausChannel</code></a>, and <a href="../operations/#MimiqCircuitsBase.RescaledGate"><code>RescaledGate</code></a>.</p><p><strong>Arguments</strong></p><ul><li><code>p</code>: Vector of probabilities, must be positive real numbers and add up to 1.</li><li><code>U</code>: Vector of either complex-valued <span>$2^N \times 2^N$</span> matrices or unitary gates acting on <span>$N$</span> qubits. Both can be mixed.</li></ul><p>The length of the vectors <code>p</code> and <code>U</code> must be equal.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; push!(Circuit(), MixedUnitary([0.9, 0.1], [[1 0; 0 1], [0 1; 1 0]]), 1)
+1-qubit circuit with 1 instruction:
+└── MixedUnitary((0.9,Custom([1.0 0.0; 0.0 1.0])),(0.1,Custom([0.0 1.0; 1.0 0.0]))) @ q[1]
+
+julia&gt; push!(Circuit(), MixedUnitary([0.8, 0.2], [GateID(), GateRX(0.2)]), 1)
+1-qubit circuit with 1 instruction:
+└── MixedUnitary((0.8,ID),(0.2,RX(0.2))) @ q[1]
+
+julia&gt; push!(Circuit(), MixedUnitary([0.8, 0.2], [[1 0; 0 1], GateRX(0.2)]), 1)
+1-qubit circuit with 1 instruction:
+└── MixedUnitary((0.8,Custom([1.0 0.0; 0.0 1.0])),(0.2,RX(0.2))) @ q[1]
+
+julia&gt; @variables x
+1-element Vector{Symbolics.Num}:
+ x
+
+julia&gt; g= MixedUnitary([0.9, x], [[1 0; 0 1], [0 1; 1 0]])
+MixedUnitary((0.9, Custom([1.0 0.0; 0.0 1.0])), (x, Custom([0.0 1.0; 1.0 0.0])))
+
+julia&gt; evaluate(g,Dict(x=&gt;.1))
+MixedUnitary((0.9, Custom([1.0 0.0; 0.0 1.0])), (0.1, Custom([0.0 1.0; 1.0 0.0])))
+
+julia&gt; g= MixedUnitary([0.9, 0.1], [[1 0; 0 1], [0 1; 1 x]])
+ERROR: MimiqCircuitsBase.UndefinedValue(x)
+Stacktrace:
+  [1] unwrapvalue(g::Symbolics.Num)
+    @ MimiqCircuitsBase ~/QPerfect/Code/MimiqCircuitsBase.jl/src/utils.jl:159
+  [2] _broadcast_getindex_evalf
+    @ ./broadcast.jl:699 [inlined]
+  [3] _broadcast_getindex
+    @ ./broadcast.jl:672 [inlined]
+  [4] _getindex
+    @ ./broadcast.jl:620 [inlined]
+  [5] getindex
+    @ ./broadcast.jl:616 [inlined]
+  [6] copyto_nonleaf!(dest::Matrix{Int64}, bc::Base.Broadcast.Broadcasted{Base.Broadcast.DefaultArrayStyle{2}, Tuple{Base.OneTo{Int64}, Base.OneTo{Int64}}, typeof(MimiqCircuitsBase.unwrapvalue), Tuple{Base.Broadcast.Extruded{Matrix{Symbolics.Num}, Tuple{Bool, Bool}, Tuple{Int64, Int64}}}}, iter::CartesianIndices{2, Tuple{Base.OneTo{Int64}, Base.OneTo{Int64}}}, state::CartesianIndex{2}, count::Int64)
+    @ Base.Broadcast ./broadcast.jl:1104
+  [7] copy
+    @ ./broadcast.jl:941 [inlined]
+  [8] materialize
+    @ ./broadcast.jl:894 [inlined]
+  [9] GateCustom{1}(U::Matrix{Symbolics.Num})
+    @ MimiqCircuitsBase ~/QPerfect/Code/MimiqCircuitsBase.jl/src/operations/gates/custom.jl:106
+ [10] GateCustom(U::Matrix{Symbolics.Num})
+    @ MimiqCircuitsBase ~/QPerfect/Code/MimiqCircuitsBase.jl/src/operations/gates/custom.jl:123
+ [11] #MixedUnitary##2
+    @ ~/QPerfect/Code/MimiqCircuitsBase.jl/src/operations/noisechannels/mixedunitary.jl:205 [inlined]
+ [12] iterate
+    @ ./generator.jl:48 [inlined]
+ [13] collect_to!(dest::Vector{GateCustom{1}}, itr::Base.Generator{Vector{Matrix{Symbolics.Num}}, MimiqCircuitsBase.var&quot;#MixedUnitary##2#MixedUnitary##3&quot;}, offs::Int64, st::Int64)
+    @ Base ./array.jl:848
+ [14] collect_to_with_first!(dest::Vector{GateCustom{1}}, v1::GateCustom{1}, itr::Base.Generator{Vector{Matrix{Symbolics.Num}}, MimiqCircuitsBase.var&quot;#MixedUnitary##2#MixedUnitary##3&quot;}, st::Int64)
+    @ Base ./array.jl:826
+ [15] _collect(c::Vector{Matrix{Symbolics.Num}}, itr::Base.Generator{Vector{Matrix{Symbolics.Num}}, MimiqCircuitsBase.var&quot;#MixedUnitary##2#MixedUnitary##3&quot;}, ::Base.EltypeUnknown, isz::Base.HasShape{1})
+    @ Base ./array.jl:820
+ [16] collect_similar
+    @ ./array.jl:732 [inlined]
+ [17] map
+    @ ./abstractarray.jl:3372 [inlined]
+ [18] MixedUnitary(p::Vector{Float64}, U::Vector{Matrix{Symbolics.Num}})
+    @ MimiqCircuitsBase ~/QPerfect/Code/MimiqCircuitsBase.jl/src/operations/noisechannels/mixedunitary.jl:201
+ [19] top-level scope
+    @ none:1
+
+julia&gt; evaluate(g,Dict(x=&gt;0))
+ERROR: ArgumentError: Probabilities should sum to 1. Instead they are 0.9
+Stacktrace:
+ [1] MixedUnitary{1}(p::Vector{Symbolics.Num}, U::Vector{GateCustom{1}})
+   @ MimiqCircuitsBase ~/QPerfect/Code/MimiqCircuitsBase.jl/src/operations/noisechannels/mixedunitary.jl:160
+ [2] MixedUnitary(p::Vector{Symbolics.Num}, U::Vector{GateCustom{1}})
+   @ MimiqCircuitsBase ~/QPerfect/Code/MimiqCircuitsBase.jl/src/operations/noisechannels/mixedunitary.jl:193
+ [3] evaluate(m::MixedUnitary{1}, d::Dict{Symbolics.Num, Int64})
+   @ MimiqCircuitsBase ~/QPerfect/Code/MimiqCircuitsBase.jl/src/operations/noisechannels/mixedunitary.jl:180
+ [4] top-level scope
+   @ none:1</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/operations/noisechannels/mixedunitary.jl#L18-L134">source</a></section></details></article><article><details class="docstring" open="true"><summary id="MimiqCircuitsBase.ReadoutErr"><a class="docstring-binding" href="#MimiqCircuitsBase.ReadoutErr"><code>MimiqCircuitsBase.ReadoutErr</code></a> — <span class="docstring-category">Type</span></summary><section><div><pre><code class="language-julia hljs">ReadoutErr(p0, p1)
+ReadoutErr(confusionmatrix)</code></pre><p>Represents a classical readout error applied immediately after a measurement.  Can be initialized either from a 2×2 confusion matrix or from the error probabilities <span>$p0$</span> and <span>$p1$</span>.</p><p>The error is defined by a 2×2 <em>confusion matrix</em>:</p><p class="math-container">\[\begin{pmatrix}{cc}
+    P(\text{report} 0 | \text{true} 0) &amp; P(\text{report} 1 | \text{true} 0)=P_0\\
+    P(\text{report} 0 | \text{true} 1) = P_1 &amp; P(\text{report} 1 | {true} 1)
+\end{pmatrix}\]</p><p>Each row corresponds to the <em>true quantum outcome</em> (0 in the first row, 1 in the second row) while each column corresponds to the <em>reported classical outcome</em> after noise. Each entry at position <span>$(i,j)$</span> gives the probability of reporting <span>$j$</span><code>when the true outcome was</code><code>i</code>`.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuitsBase.jl/blob/v0.21.1/src/operations/redouterr.jl#L19-L40">source</a></section></details></article></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../other/">« Other Operations</a><a class="docs-footer-nextpage" href="../operators/">Operators »</a><div class="flexbox-break"></div><p class="footer-message">Copyright 2021-2026 QPerfect. All rights reserved.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.17.0 on <span class="colophon-date" title="Saturday 21 March 2026 11:21">Saturday 21 March 2026</span>. Using Julia version 1.12.5.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
