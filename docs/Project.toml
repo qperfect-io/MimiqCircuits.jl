@@ -1,5 +1,7 @@
 [deps]
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+DocumenterCitations = "daee34ce-89f3-4625-b898-19384cb65244"
+Graphs = "86223c79-3864-5bf0-83f7-82e725a168b6"
 ImageShow = "4e3cecfd-b093-5904-9786-8bbb286a6a31"
 JSON3 = "0f8b85d8-7281-11e9-16c2-39a750bddbf1"
 MimiqCircuits = "281e006c-9395-434b-8b58-3065901f9db3"

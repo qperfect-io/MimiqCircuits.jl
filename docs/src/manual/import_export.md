@@ -8,7 +8,7 @@ In particular, MIMIQ allows to import circuits in well-known languages such as O
 
 ### Export ProtoBuf files from MIMIQ
 
-After building a circuit in MIMIQ you can export it into a ProtoBuf format using the [saveproto](@ref) function. You need to give it two arguments, the name of the file to create (`.pb` format) and the circuit to save.
+After building a circuit in MIMIQ you can export it into a ProtoBuf format using the [`saveproto`](@ref) function. You need to give it two arguments, the name of the file to create (`.pb` format) and the circuit to save.
 
 ```julia
 saveproto("my_circuit.pb", circuit)
@@ -31,7 +31,7 @@ saveproto("my_results.pb", results)
 
 ### Import ProtoBuf file to MIMIQ
 
-MIMIQ allows you to import ProtoBuf files using the [loadproto](@ref) function.
+MIMIQ allows you to import ProtoBuf files using the [`loadproto`](@ref) function.
 With this function you can get previously saved circuit or get previous simulation results.
 You need to give this function the name of the file to parse and the type of object to parse.
 
@@ -44,9 +44,9 @@ results = loadproto("my_results.pb", QCSResults)
 ```
 
 !!! details
-    Alternatively to import results you can also use the [loadresults](@ref) function.
+    Alternatively to import results you can also use the [`loadresults`](@ref) function.
 
-The circuit imported with [loadproto](@ref) can be manipulated like any other circuit on MIMIQ to add or insert gates, see [circuit](circuits.md) page.
+The circuit imported with [`loadproto`](@ref) can be manipulated like any other circuit on MIMIQ to add or insert gates, see [circuit](circuits.md) page.
 
 ## OpenQASM
 
@@ -163,7 +163,9 @@ The remote MIMIQ services can readily process and execute Stim files as follows:
 job = submit(conn, "my_stim_circuit.stim")
 ```
 
-!!! warning
-    The support of Stim is still in progress and some of the most specific Stim features are not supported. For instance, detectors will be completely ignored by MIMIQ at exectution time.
+MIMIQ reads the gates of Stim 1.16 and their aliases, including Pauli product measurements (`MPP`), Pauli product rotations (`SPP`), classical feedback such as `CX rec[-1] 0`, which becomes an [`IfStatement`](@ref), and the Pauli noise channels. Detectors, observables, coordinates and `TICK` are read as annotations; they do not change the simulation. Clifford gates that MIMIQ has no gate for, such as `C_XYZ`, are replaced by sequences of MIMIQ Clifford gates equal to them up to a global phase. `REPEAT` blocks are unrolled.
+
+!!! note
+    MIMIQ refuses a Stim file that uses `OBSERVABLE_INCLUDE` with Pauli targets, `DETECTOR` without targets, or a measurement record as the target of a gate. A record as the control of `CX`, `CY`, `CZ`, `XCZ` or `YCZ` is supported.
 
 The results of the simulation can be accessed as usual on MIMIQ, see [remote execution](remote_execution.md) page.

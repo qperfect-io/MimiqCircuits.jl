@@ -5,7 +5,6 @@ Modules = [MimiqCircuitsBase]
 Private = false
 Pages = [
     "operations/operators/projectors.jl",
-    "operations/expectationvalue.jl",
     "operations/operators/sigmas.jl",
     "operations/gates/delay.jl",
     "operations/entanglement.jl",

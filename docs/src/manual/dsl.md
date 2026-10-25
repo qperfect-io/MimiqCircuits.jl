@@ -1,5 +1,9 @@
 # Circuit DSL
 
+```@meta
+DocTestSetup = :(using MimiqCircuits)
+```
+
 MIMIQ provides a convenient Domain Specific Language (DSL) for defining circuits, blocks, and custom gate declarations. This DSL allows for a more concise and readable syntax compared to the standard `push!` or `insert!` methods.
 
 ## Creating Circuits
@@ -26,7 +30,7 @@ The instructions are added using the special macro `@on`.
 
 ### Examples
 
-```jldoctests
+```jldoctest
 julia> c = @circuit begin
            @on GateH() q=1
            @on GateCX() q=(1, 2)
@@ -42,12 +46,14 @@ The [`@block`](@ref) macro works similarly to `@circuit` but returns a [`Block`]
 
 ### Example
 
-```jldoctests
+```jldoctest; filter = r"block \w+ with" => "block with"
 julia> b = @block begin
            @on GateX() q=1
            @on GateZ() q=1
        end
-Block
+1-qubit block 1w2cgz12uzc95 with 2 instructions:
+├── X @ q[1]
+└── Z @ q[1]
 ```
 
 ## Gate Declarations
@@ -66,16 +72,20 @@ end
 
 defining a custom ansatz:
 
-```jldoctests
+```jldoctest gatedecl
 julia> @gatedecl MyAnsatz(θ) begin
            @on GateX() q=1
            @on GateRX(θ) q=2
            @on GateCX() q=(1, 2)
        end
-MyAnsatz
+gate MyAnsatz(θ) =
+├── X @ q[1]
+├── RX(θ) @ q[2]
+└── CX @ q[1], q[2]
 
 julia> @variables λ
-(λ,)
+1-element Vector{Symbolics.Num}:
+ λ
 
 julia> g = MyAnsatz(λ)
 MyAnsatz(λ)
@@ -83,11 +93,12 @@ MyAnsatz(λ)
 
 You can then use this custom gate in a circuit:
 
-```jldoctests
-julia> c = Circuit()
+```jldoctest gatedecl
+julia> c = Circuit();
+
 julia> push!(c, g, 1, 2)
-2-qubit circuit with 1 instructions:
-└── MyAnsatz(λ) @ q[1], q[2]
+2-qubit circuit with 1 instruction:
+└── MyAnsatz(λ) @ q[1:2]
 ```
 
 ## The `@on` Syntax

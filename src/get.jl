@@ -15,6 +15,21 @@
 # limitations under the License.
 #
 
+"""
+    QCSError(msg)
+
+Error reported by the remote executor for a single circuit of a job.
+
+[`getresults`](@ref) returns a `QCSError` in place of the [`QCSResults`](@ref)
+of each circuit that failed to run, so the results of the other circuits in
+the same job stay available. It is returned, not thrown: check for it with
+`result isa QCSError`, and read the reason from `result.msg`. Use `throw` to
+turn it into an exception.
+
+A job that fails as a whole raises an error from [`getresults`](@ref) instead.
+
+See also [`getresults`](@ref), [`getresult`](@ref).
+"""
 struct QCSError <: Exception
     msg::String
 end
@@ -58,6 +73,24 @@ end
 getinput(conn, ex::String) = getinput(conn, Execution(ex))
 
 """
+    _errorreason(infos)
+
+Return the reason a remote job errored, or `nothing` if the server gave none.
+
+The MIMIQ cloud reports it in `errorMessage`, Quantum Hive in a `messages` list.
+"""
+function _errorreason(infos)
+    msg = get(infos, "errorMessage", nothing)
+
+    if isnothing(msg) || isempty(msg)
+        messages = get(infos, "messages", nothing)
+        msg = isnothing(messages) ? "" : join((m["message"] for m in messages), ", ")
+    end
+
+    return isempty(msg) ? nothing : msg
+end
+
+"""
     getresults(connection, execution[; interval=1])
 
 Block until the given execution is finished and return the results.
@@ -77,12 +110,11 @@ function getresults(conn, ex::Execution; interval=1)
     infos = MimiqLink.requestinfo(conn, ex)
 
     if infos["status"] == "ERROR"
-        if haskey(infos, "errorMessage")
-            msg = infos["errorMessage"]
-            error("Remote job errored: $msg")
-        else
+        msg = _errorreason(infos)
+        if isnothing(msg)
             error("Remote job errored. If the error persists, please contact support.")
         end
+        error("Remote job errored: $msg")
     elseif infos["status"] == "CANCELED"
         error("Remote job canceled.")
     end

@@ -177,7 +177,7 @@ draw(circuit)
 
 ### Insert
 
-You can also insert an operation at a given index in the circuit using the [insert!](@ref) function:
+You can also insert an operation at a given index in the circuit using the [`insert!`](@ref) function:
 
 ```@example circuits
 circuit = Circuit()
@@ -192,7 +192,7 @@ This will insert [`GateY`](@ref) applied on qubit ```1``` at the second position
 
 ### Append
 
-To append one circuit to another you can use the [append!](@ref) function:
+To append one circuit to another you can use the [`append!`](@ref) function:
 
 ```@example circuits
 # Build a first circuit
@@ -224,6 +224,97 @@ Information such as the [`depth`](@ref) and the width ([`numqubits`](@ref)) can 
 ```@example circuits
 depth(circuit), numqubits(circuit)
 ```
+
+## Dependency graph
+
+A circuit is an ordered list of instructions, but most of that order is not
+required: two instructions that act on different qubits, bits and Z-register
+variables can be swapped without changing the result. The dependency graph
+keeps only the order that matters. It is a directed acyclic graph (DAG) with one
+vertex per instruction, numbered by the instruction's position in the circuit.
+An edge from `i` to `j` means that instruction `j` is the next one after `i` to
+use one of the qubits, bits or Z-register variables of `i`, so `i` has to run
+before `j`.
+
+`graph(circuit)` returns this DAG as a `SimpleDiGraph` from
+[Graphs.jl](https://github.com/JuliaGraphs/Graphs.jl). Load `Graphs` to inspect
+it:
+
+```@example dag
+using MimiqCircuits
+using Graphs
+
+c = Circuit()
+push!(c, GateH(), 1)        # 1
+push!(c, GateH(), 2)        # 2
+push!(c, GateCX(), 1, 2)    # 3: uses qubits 1 and 2, so it depends on 1 and 2
+push!(c, GateX(), 3)        # 4: qubit 3 is not used elsewhere, no edges
+push!(c, Measure(), 1, 1)   # 5: qubit 1 comes from 3
+push!(c, Measure(), 2, 1)   # 6: qubit 2 comes from 3, bit 1 from 5
+
+g = graph(c)
+collect(edges(g))
+```
+
+Each edge links an instruction only to the previous user of each of its
+targets, so there is no edge `1 => 5` even though `5` also has to run after `1`:
+that order follows from the path `1 => 3 => 5`. Instruction 6 depends on 5
+through the classical bit they both write.
+
+The graph functions of Graphs.jl also accept the circuit itself, for example to
+find which instructions an instruction waits for and which wait for it:
+
+```@example dag
+inneighbors(c, 3), outneighbors(c, 3)
+```
+
+Observables of the whole state, [`Amplitude`](@ref), [`BondDim`](@ref),
+[`SchmidtRank`](@ref) and [`VonNeumannEntropy`](@ref), are treated as acting on
+every qubit, since their value depends on all earlier gates, not only on the
+qubits they list. They follow every earlier instruction and precede every later
+one.
+
+### Traversing the graph
+
+Any topological order of the DAG runs the circuit correctly: each instruction
+comes after all the instructions it depends on.
+[`topological_sort_by_bfs`](@ref) returns such an order as a vector of
+instruction indices. It starts from the instructions with no dependencies and
+proceeds layer by layer:
+
+```@example dag
+# 4 moves before 3: it does not depend on anything
+topological_sort_by_bfs(g)
+```
+
+To iterate over the instructions themselves in a topological order, use
+[`traverse_by_bfs`](@ref) for the same layer-by-layer order, or
+[`traverse_by_dfs`](@ref) for a depth-first order, which follows each chain of
+dependent instructions as far as possible before starting the next one:
+
+```@example dag
+# breadth-first: H, H and X first, then CX, then the measurements
+Circuit(collect(traverse_by_bfs(c)))
+```
+
+```@example dag
+# depth-first: a different order that still respects every dependency
+Circuit(collect(traverse_by_dfs(c)))
+```
+
+`traverse_by_bfs` and `traverse_by_dfs` return a [`BreadthFirstIterator`](@ref)
+and a [`DepthFirstIterator`](@ref). Both compute the order once, when they are
+created, and then hand out the instructions one at a time, so they also work
+in a `for` loop and report their `length`:
+
+```@example dag
+for inst in traverse_by_bfs(c)
+    println(inst)
+end
+```
+
+The graph is built when it is first requested and cached in the circuit. Adding
+or removing instructions invalidates the cache, and the next call rebuilds it.
 
 ## Decompose
 

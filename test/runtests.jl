@@ -24,6 +24,25 @@ using MimiqCircuitsBase
         @test isdefined(MimiqCircuits, :execute)
         @test isdefined(MimiqCircuits, :optimize)
         @test isdefined(MimiqCircuits, :MimiqConnection)
+        @test isdefined(MimiqCircuits, :QhiveConnection)
+    end
+
+    @testset "error reason" begin
+        # The MIMIQ cloud and Quantum Hive report a failed job differently.
+        @test MimiqCircuits._errorreason(Dict("errorMessage" => "boom")) == "boom"
+        @test MimiqCircuits._errorreason(
+            Dict("messages" => [Dict("message" => "boom"), Dict("message" => "bang")]),
+        ) == "boom, bang"
+        @test isnothing(MimiqCircuits._errorreason(Dict("status" => "ERROR")))
+        @test isnothing(MimiqCircuits._errorreason(Dict("messages" => [])))
+    end
+
+    @testset "time limit" begin
+        # Only the MIMIQ cloud reports per-user limits; every other connection,
+        # such as Quantum Hive, gets the default.
+        @test MimiqCircuits._gettimelimit(nothing) == MimiqCircuits.DEFAULT_TIME_LIMIT
+        @test hasmethod(MimiqCircuits._gettimelimit, Tuple{QhiveConnection})
+        @test hasmethod(MimiqCircuits._gettimelimit, Tuple{PlanqkConnection})
     end
 
     @testset "wire format" begin

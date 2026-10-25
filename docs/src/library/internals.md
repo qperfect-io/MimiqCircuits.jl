@@ -14,3 +14,7 @@ Public  = false
 Modules = [MimiqLink]
 Public  = false
 ```
+
+```@docs
+MimiqCircuitsBase._GridSynth
+```

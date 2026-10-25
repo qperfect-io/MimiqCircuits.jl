@@ -7,9 +7,8 @@ realistic near-term hardware behavior, especially in workflows where missing
 qubits should change the later circuit execution.
 
 In the Julia API, loss can be represented directly in a circuit. You can insert
-stochastic loss events, mark a qubit as lost deterministically, reload it later,
-write its loss status into classical bits, and rewrite partially affected
-instructions with a [`LossModel`](@ref).
+loss events, reload a lost qubit, write its loss status into classical bits, and
+rewrite partially affected instructions with a [`LossModel`](@ref).
 
 Loss can also be part of a custom Kraus channel. A [`Kraus`](@ref) channel
 becomes loss-aware when one or more branches are tagged with
@@ -18,54 +17,63 @@ branches that lose a qubit.
 
 ## Summary of Loss Functionality
 
-**Loss operations:** [`LossErr`](@ref), [`QubitLoss`](@ref),
-[`QubitReload`](@ref), [`CheckLoss`](@ref), [`MeasureCheckLoss`](@ref).
+**Loss operations:** [`Loss`](@ref), [`Reload`](@ref), [`Check`](@ref),
+[`MeasureCheck`](@ref).
 
-**Loss processing:** [`sample_losses`](@ref) with [`LossModel`](@ref).
+**Loss processing:** [`sample_losses`](@ref) draws the random loss events,
+[`lower_losses`](@ref) rewrites loss into primitives, and
+[`resolve_losses`](@ref) does both and is the usual entry point. Use
+[`sample_loss_scenario`](@ref) to force a specific set of loss sites.
 
 **Loss-model rules:** [`DropRule`](@ref), [`ReplaceRule`](@ref),
-[`DecorateRule`](@ref), [`CustomRule`](@ref).
+[`DecorateRule`](@ref), [`CustomRule`](@ref), applied to one instruction by
+[`lossmodel_rewrite`](@ref).
+
+**Loss markers:** [`Lost`](@ref) and [`Reloaded`](@ref) are passive annotations
+that record where loss landed in a resolved circuit.
 
 **Loss-aware Kraus:** [`LossyOperator`](@ref) branches inside [`Kraus`](@ref),
 inspected with [`hasloss`](@ref), [`lossoperators`](@ref),
-[`survivaloperators`](@ref), and [`losseffect`](@ref).
+[`survivaloperators`](@ref), and [`losseffect`](@ref). The lost qubits of a
+branch are given by [`lossyqubits`](@ref) and [`lossytargets`](@ref).
+
+**Lossy mixed unitaries:** [`MixedUnitary`](@ref) branches marked with the
+`lossy` keyword, detected with [`haslossybranch`](@ref).
 
 ## Loss operations
 
-Loss in MIMIQ is represented explicitly in the circuit. You can add operations that mark a qubit as lost, sample stochastic loss events, reload a lost qubit, or query whether a qubit is still present.
+Loss in MIMIQ is represented explicitly in the circuit. You can add operations
+that mark a qubit as lost, reload a lost qubit, or query whether a qubit is still
+present.
 
-### Loss error
+### Losing a qubit
 
-[`LossErr`](@ref) represents a probabilistic loss event. At that point in the circuit, the qubit is lost with probability `p`.
+[`Loss`](@ref) represents a loss event: at that point in the circuit the qubit is
+lost with probability `p`. `Loss()` is `Loss(1.0)`, a certain loss.
 
 ```@example loss
 using MimiqCircuits
 
 c = Circuit()
-push!(c, LossErr(0.1), 1)
+push!(c, Loss(0.1), 1)
 ```
 
-The loss probability can also be symbolic, but it must be numeric before calling [`sample_losses`](@ref).
+The probability may also be symbolic, but it must be numeric before the loss is
+resolved.
 
-### Deterministic loss
-
-[`QubitLoss`](@ref) marks a qubit as lost unconditionally.
-
-```@example loss
-c = Circuit()
-push!(c, QubitLoss(), 2)
-```
-
-Once a qubit is lost, subsequent operations touching that qubit are ignored by [`sample_losses`](@ref) until the qubit is reloaded.
+Once a qubit is lost, later instructions touching that qubit are dropped while
+resolving, until the qubit is reloaded.
 
 ### Reloading a lost qubit
 
-[`QubitReload`](@ref) marks a lost qubit as present again. At the point where it is applied, the qubit is reset to ``|0\rangle``.
+[`Reload`](@ref) makes a qubit available again. It always re-initialises the
+qubit to ``|0\rangle``, whether or not it was lost, so later operations can use
+it.
 
 ```@example loss
 c = Circuit()
-push!(c, QubitLoss(), 1)
-push!(c, QubitReload(), 1)
+push!(c, Loss(), 1)
+push!(c, Reload(), 1)
 push!(c, GateX(), 1)
 ```
 
@@ -73,32 +81,40 @@ push!(c, GateX(), 1)
 
 MIMIQ provides two operations to query the loss status of a qubit.
 
-[`CheckLoss`](@ref) writes one classical bit:
+[`Check`](@ref) writes one classical bit:
 
 - `1` if the qubit is present
 - `0` if the qubit is lost
 
-It does not measure the quantum state.
+It does not touch the quantum state.
 
 ```@example loss
 c = Circuit()
-push!(c, CheckLoss(), 1, 1)
+push!(c, Check(), 1, 1)
 ```
 
-[`MeasureCheckLoss`](@ref) both measures the qubit and reports whether it is present.
+[`MeasureCheck`](@ref) measures the qubit if it is present and reports whether it
+is still present.
 
 ```@example loss
 c = Circuit()
-push!(c, MeasureCheckLoss(), 1, 1, 2)
+push!(c, MeasureCheck(), 1, 1, 2)
 ```
 
-The first classical bit stores the measurement result, and the second classical bit stores the loss status.
+The first classical bit stores the measurement result (`0` if the qubit is lost),
+and the second classical bit stores the loss status.
 
-## Sampling loss events
+## Resolving loss
 
-To process loss operations in a circuit, use [`sample_losses`](@ref). This function walks through the circuit, samples the stochastic [`LossErr`](@ref) events, tracks which qubits are lost, and rewrites the circuit accordingly.
+A circuit that contains loss operations is not yet runnable: the random events
+must be drawn and every loss operation rewritten into ordinary primitives.
+[`resolve_losses`](@ref) does this in one step. It first draws each
+[`Loss`](@ref), then lowers the result into `Reset`, `Measure`, `SetBit0` and
+`SetBit1`, plus passive [`Lost`](@ref) and [`Reloaded`](@ref) markers. The
+returned circuit contains no loss operations.
 
-The `rng` argument is a random number generator. It is only used to make the random loss samples reproducible. You can omit it if you do not need the same random result every time.
+The `rng` keyword is a random number generator, used only to make the random
+loss samples reproducible. Omit it if you do not need the same result every time.
 
 ```@example loss
 using Random
@@ -106,29 +122,50 @@ using Random
 rng = MersenneTwister(42)
 
 c = Circuit()
-push!(c, LossErr(0.2), 1)
+push!(c, Loss(0.2), 1)
 push!(c, GateH(), 1)
-push!(c, CheckLoss(), 1, 1)
+push!(c, Check(), 1, 1)
 
-csampled = sample_losses(c; rng=rng)
+resolve_losses(c; rng=rng)
 ```
 
-The basic behavior is:
+The basic behavior while resolving is:
 
-- [`LossErr`](@ref) may emit a [`QubitLoss`](@ref)
-- [`QubitLoss`](@ref) marks a qubit as lost
-- [`QubitReload`](@ref) makes the qubit available again
-- [`CheckLoss`](@ref) and [`MeasureCheckLoss`](@ref) are always kept
-- Instructions acting only on lost qubits are dropped
+- [`Loss`](@ref) is drawn; a loss that fires emits a [`Lost`](@ref) marker
+- [`Reload`](@ref) becomes a `Reset` plus a [`Reloaded`](@ref) marker
+- [`Check`](@ref) and [`MeasureCheck`](@ref) become `SetBit0` or `SetBit1` (and
+  a `Measure` for a `MeasureCheck` on a present qubit)
+- a `Measure` on a lost qubit becomes `SetBit0`, so a lost qubit reads 0
+- instructions acting only on lost qubits are dropped
 
-If an instruction acts on some lost qubits but not all of them, then [`sample_losses`](@ref) consults a [`LossModel`](@ref).
+If an instruction touches some lost qubits but not all of them, resolving
+consults a [`LossModel`](@ref).
+
+If you need the two halves separately, [`sample_losses`](@ref) returns a circuit
+with the random events drawn but the loss bookkeeping still present, and
+[`lower_losses`](@ref) lowers an already-sampled circuit into primitives.
+
+### Forcing a loss scenario
+
+To study a specific outcome, [`sample_loss_scenario`](@ref) forces the chosen
+[`Loss`](@ref) sites, counted in circuit order, to fire, and resolves the others
+as not lost.
+
+```@example loss
+c = Circuit()
+push!(c, Loss(0.2), 1)
+push!(c, GateCX(), 1, 2)
+push!(c, Loss(0.4), 2)
+
+sample_loss_scenario(c, 2)
+```
 
 ## Loss models
 
 ### Why Loss Models Exist
 
-A [`LossModel`](@ref) is the user-defined policy used by
-[`sample_losses`](@ref) when an instruction is only partially affected by loss.
+A [`LossModel`](@ref) is the user-defined policy used while resolving loss
+when an instruction is only partially affected.
 This happens, for example, when a two-qubit gate is scheduled but one of its
 qubits has already been lost while the other one is still present.
 
@@ -145,7 +182,7 @@ simulation workflow has a more specific response to partial loss.
 
 ### When rules are used
 
-During [`sample_losses`](@ref), MIMIQ tracks which qubits are currently lost and rewrites the circuit as follows:
+While resolving, MIMIQ tracks which qubits are currently lost and rewrites the circuit as follows:
 
 - If an instruction touches no lost qubits, it is kept unchanged.
 - If an instruction touches only lost qubits, it is dropped.
@@ -174,23 +211,23 @@ Use [`ReplaceRule`](@ref) when the original instruction should be removed and re
 
 ```@example loss
 c = Circuit()
-push!(c, QubitLoss(), 2)
+push!(c, Loss(), 2)
 push!(c, GateCX(), 1, 2)
 
 model = LossModel()
 add_replace!(model, GateCX() => Depolarizing1(0.2))
 
-sample_losses(c; lossmodel=model)
+resolve_losses(c; lossmodel=model)
 ```
 
 If the lost qubit is the control instead, the same rule keeps the replacement on the surviving target qubit.
 
 ```@example loss
 c = Circuit()
-push!(c, QubitLoss(), 1)
+push!(c, Loss(), 1)
 push!(c, GateCX(), 1, 2)
 
-sample_losses(c; lossmodel=model)
+resolve_losses(c; lossmodel=model)
 ```
 
 ### Drop rules
@@ -213,7 +250,7 @@ model = LossModel([
 
 ### Decorating a partially lost gate
 
-[`DecorateRule`](@ref) adds another operation before or after the matched instruction. In a loss model, generated instructions touching lost qubits are filtered out, so if the original gate still touches a lost qubit it is removed and only surviving decorations remain.
+[`DecorateRule`](@ref) adds another operation before or after the matched instruction. While resolving, generated instructions touching lost qubits are filtered out, so if the original gate still touches a lost qubit it is removed and only surviving decorations remain.
 
 ```@example loss
 model = LossModel()
@@ -226,11 +263,11 @@ Use decoration when your model says that the attempted operation still causes a 
 
 Use [`CustomRule`](@ref) when the rewrite depends on more than the operation type. The generator receives the matched instruction and the current loss map. It may return `nothing` to drop the instruction, one [`Instruction`](@ref), or a vector of instructions.
 
-In Julia, the custom generator should also accept the keyword `rng`. This is the same random number generator used by [`sample_losses`](@ref). Include it even if the rule does not need randomness.
+In Julia, the custom generator should also accept the keyword `rng`. This is the same random number generator passed to [`resolve_losses`](@ref). Include it even if the rule does not need randomness.
 
 ```@example loss
 c = Circuit()
-push!(c, QubitLoss(), 2)
+push!(c, Loss(), 2)
 push!(c, GateCX(), 1, 2)
 
 model = LossModel([
@@ -244,8 +281,34 @@ model = LossModel([
     ),
 ])
 
-sample_losses(c; lossmodel=model)
+resolve_losses(c; lossmodel=model)
 ```
+
+### Applying a model to one instruction
+
+[`lossmodel_rewrite`](@ref) applies a model to a single instruction, given a
+dictionary that says which qubits are lost. It returns the instructions that
+replace it, after removing those that touch a lost qubit. This is the step
+[`lower_losses`](@ref) performs for each partially lost instruction, and is
+useful to check what a model does before resolving a whole circuit.
+
+```@example loss
+model = LossModel()
+add_replace!(model, GateCX() => Depolarizing1(0.2))
+
+# qubit 2 is lost, qubit 1 is present
+lossmodel_rewrite(Instruction(GateCX(), 1, 2), Dict(1 => false, 2 => true), model; rng=nothing)
+```
+
+An empty vector means that the instruction is dropped, as happens when no rule
+matches:
+
+```@example loss
+lossmodel_rewrite(Instruction(GateCX(), 1, 2), Dict(2 => true), LossModel(); rng=nothing)
+```
+
+The `rng` keyword is required, and is passed on to the generator of a
+[`CustomRule`](@ref).
 
 For most workflows, prefer [`DropRule`](@ref), [`ReplaceRule`](@ref), or [`DecorateRule`](@ref) because those rules are simpler to inspect and serialize. [`CustomRule`](@ref) is the escape hatch for policies that cannot be expressed with the built-in rule types.
 
@@ -279,5 +342,41 @@ losseffect(k)
 ```
 
 [`losseffect`](@ref) returns the operator describing the total loss probability carried by the lossy branches.
+
+A [`LossyOperator`](@ref) records which of its qubits are lost when its branch is selected. [`lossyqubits`](@ref) returns them in the operator's own `1:N` numbering, and [`lossytargets`](@ref) translates them to the qubits of the instruction the operator is applied to:
+
+```@example loss
+# a 2-qubit branch that loses its second qubit
+op = LossyOperator(zeros(4, 4), 2)
+
+lossyqubits(op)
+```
+
+```@example loss
+# applied to qubits 3 and 7, the branch loses qubit 7
+lossytargets(op, (3, 7))
+```
+
+### Lossy mixed unitaries
+
+A [`MixedUnitary`](@ref) channel can also lose qubits. The `lossy` keyword lists, for each branch, the qubits it loses; an empty list keeps the branch lossless. [`haslossybranch`](@ref) tells whether any branch loses qubits.
+
+```@example loss
+# with probability 0.1, apply X and lose the qubit
+mu = MixedUnitary([0.9, 0.1], [GateID(), GateX()]; lossy=[Int[], [1]])
+
+haslossybranch(mu)
+```
+
+When [`sample_mixedunitaries`](@ref) draws a lossy branch, it adds a [`Loss`](@ref) on the lost qubits after the branch's gate, which [`resolve_losses`](@ref) then processes as usual.
+
+```@example loss
+c = Circuit()
+push!(c, mu, 1)
+push!(c, GateH(), 1)
+
+# with this seed the lossy branch is drawn
+sample_mixedunitaries(c; rng=MersenneTwister(17))
+```
 
 If you only need the general Kraus formalism, see the [Kraus operators](noise.md#kraus-operators) section.

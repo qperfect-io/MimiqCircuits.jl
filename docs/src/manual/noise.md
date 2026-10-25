@@ -25,9 +25,10 @@ Specialized noise channels:
 * [`PhaseAmplitudeDamping`](@ref)
 * [`ThermalNoise`](@ref)
 * [`ProjectiveNoise`](@ref)
+* [`ProjectiveNoiseX`](@ref), [`ProjectiveNoiseY`](@ref), [`ProjectiveNoiseZ`](@ref) (what `ProjectiveNoise("X")`, `ProjectiveNoise("Y")` and `ProjectiveNoise("Z")` return)
 
 Note that the [`Reset`](@ref) type operations can also be thought of as noisy operations.
-Coherent noise can be added by using any of the supported gates ([MimiqCircuitsBase.GATES](@ref)).
+Coherent noise can be added by using any of the supported gates ([`MimiqCircuitsBase.GATES`](@ref)).
 
 Noise channels come with the following methods:
 
@@ -219,7 +220,7 @@ The `add_noise` function becomes particularly useful in big circuits with lots o
 
 ## Running a noisy circuit
 
-Circuits with noise can be run with the same [`execute`](@ref) function as used for circuits without noise, see [simulation](simulation.md) and [cloud execution](remote_execution.md) pages.
+Circuits with noise can be run with the same [`submit`](@ref) function as used for circuits without noise, see [simulation](simulation.md) and [cloud execution](remote_execution.md) pages.
 Recall that currently noisy simulations will be run using [quantum trajectories](#evolution-with-noise).
 In this case, when running a circuit with noise for `n` samples the circuit will internally be run once for every sample.
 In every run, a different set of random Kraus operators will be selected based on the corresponding probabilities.
@@ -241,128 +242,246 @@ This function is internally called when executing a circuit, but can also be use
 
 ## Noise Models
 
-In addition to adding noise directly to the circuit, MIMIQ provides a **Noise Model** framework. A [`NoiseModel`](@ref) is a collection of noise rules that define how noise should be applied to a circuit. This allows you to define a noise profile once and apply it to multiple circuits, or to define more complex rules that depend on the instruction properties (e.g. operation pattern, qubits, idle time).
+Adding noise instruction by instruction ties the noise to one circuit. A
+[`NoiseModel`](@ref) describes the noise of a device once, as a list of rules,
+and can then be applied to any number of circuits. Each rule says which
+instructions it matches (an operation, possibly restricted to some qubits, a
+measurement, an idle period) and which noise to insert.
 
 ### Building a Noise Model
 
-A noise model is essentially a container for rules. You can create an empty noise model and add rules to it.
+Start from an empty model, optionally with a name, and add rules with the
+helper functions:
 
-```julia
-model = NoiseModel(name="My Noise Model")
+- [`add_operation_noise!`](@ref) for noise attached to gates, measurements and resets,
+- [`add_readout_noise!`](@ref) for classical readout errors on measurements,
+- [`add_idle_noise!`](@ref) for noise on qubits that wait during a [`Delay`](@ref).
+
+Each helper picks the right rule type for its arguments and returns the model.
+
+```@example noisemodel
+using MimiqCircuits # hide
+model = NoiseModel(name="toy device")
 ```
 
-The recommended way to add rules is using the helper functions:
+#### Operation noise
 
-- [`add_operation_noise!`](@ref)
-- [`add_readout_noise!`](@ref)
-- [`add_idle_noise!`](@ref)
+[`add_operation_noise!`](@ref) takes an operation and the noise to insert next
+to every matching instruction. The noise must act on as many qubits as the
+operation.
 
-#### Operation-Instance Noise
-
-Use `add_operation_noise!` to add noise to specific operations. You can specify:
-- The operation instance (or a symbolic operation pattern)
-- The noise channel
-- Optional: specific qubits (exact list or set of qubits)
-
-```julia
-# Add noise to all Hadamard gates
+```@example noisemodel
+# Every Hadamard gate is followed by a depolarizing channel.
 add_operation_noise!(model, GateH(), Depolarizing1(0.001))
 
-# Add noise to CX gates only on qubits [1, 2]
-add_operation_noise!(model, GateCX(), Depolarizing2(0.01), qubits=[1, 2], exact=true)
+# CX gates get stronger noise when the control is qubit 1 and the target
+# qubit 2, in this order (`exact=true`).
+add_operation_noise!(model, GateCX(), Depolarizing2(0.01); qubits=[1, 2], exact=true)
 
-# Add noise to any CX gate acting on qubits in the set {1, 2, 3}
-add_operation_noise!(model, GateCX(), Depolarizing2(0.005), qubits=[1, 2, 3], exact=false)
-
-# Add measurement noise before each measurement
-add_operation_noise!(model, Measure(), PauliX(0.02); before=true)
+# Any other CX gate whose qubits all lie in {1, 2, 3} gets weaker noise.
+add_operation_noise!(model, GateCX(), Depolarizing2(0.005); qubits=[1, 2, 3])
 ```
 
-#### Readout Noise
+A concrete operation such as `GateRX(π/2)` matches only that exact operation.
+An operation with symbolic parameters matches every operation of the same
+type, and the parameters of the matched gate are substituted into the noise.
+This gives noise that depends on the rotation angle:
 
-Use `add_readout_noise!` to add noise to measurements.
+```@example noisemodel
+@variables θ
+angle_model = NoiseModel()
+add_operation_noise!(angle_model, GateRX(θ), Depolarizing1(θ / π))
 
-```julia
-# Global readout error
+c = push!(Circuit(), GateRX(0.5), 1)
+apply_noise_model(c, angle_model)
+```
+
+The keyword `before=true` inserts the noise before the operation instead of
+after it, and `replace=true` substitutes the operation with the noise. The two
+cannot be combined. The operation can be a gate, a measurement, a reset, or a
+[`Block`](@ref), [`Repeat`](@ref), [`IfStatement`](@ref) or
+[`WhileStatement`](@ref); other operations, such as [`Barrier`](@ref), raise
+an `ArgumentError`.
+
+#### Readout noise
+
+[`add_readout_noise!`](@ref) attaches a [`ReadoutErr`](@ref) to the classical
+bits written by a measurement. It matches every measurement operation
+([`Measure`](@ref), [`MeasureReset`](@ref), …).
+
+```@example noisemodel
+# Readout error on every measurement.
 add_readout_noise!(model, ReadoutErr(0.01, 0.02))
 
-# Readout error only on qubit 1
-add_readout_noise!(model, ReadoutErr(0.05, 0.05), qubits=[1])
+# A worse readout error when measuring qubit 1.
+add_readout_noise!(model, ReadoutErr(0.05, 0.05); qubits=[1])
 ```
 
-#### Idle Noise
+With `qubits` the rule matches measurements whose qubits all lie in the given
+set; add `exact=true` to match only that exact sequence of qubits.
 
-Use `add_idle_noise!` to add noise to idle qubits (during `Delay` operations).
+#### Idle noise
 
-```julia
-# Constant idle noise
-add_idle_noise!(model, AmplitudeDamping(0.0001))
+[`add_idle_noise!`](@ref) replaces every [`Delay`](@ref) instruction with a
+noise channel on the same qubits. The noise can be constant, or a relation
+`t => channel(t)` where `t` is a symbolic variable that takes the duration of
+the delay:
 
-# Time-dependent idle noise (using symbolic variable t)
+```@example noisemodel
 @variables t
-add_idle_noise!(model, t => AmplitudeDamping(t / 1000.0))
+# Amplitude damping that grows with the idle time.
+add_idle_noise!(model, t => AmplitudeDamping(t / 1000))
+```
+
+Pass `qubits` to restrict idle noise to some qubits.
+
+Idle noise only acts where the circuit has explicit `Delay` instructions; it
+does not detect qubits that are idle between gates.
+
+### Inspecting a Noise Model
+
+[`describe`](@ref) prints the rules in the order they are tried, with their
+priorities:
+
+```@example noisemodel
+describe(model)
 ```
 
 ### Applying a Noise Model
 
-Once you have defined a noise model, you can apply it to a circuit using [`apply_noise_model`](@ref). This will return a *new* circuit with the noise instructions inserted.
+[`apply_noise_model`](@ref) returns a new circuit with the noise inserted, and
+[`apply_noise_model!`](@ref) modifies the circuit in place.
 
-```julia
-noisy_circuit = apply_noise_model(circuit, model)
+```@example noisemodel
+c = Circuit()
+push!(c, GateH(), 1:3)
+push!(c, GateCX(), 1, 2)   # exact rule on (1, 2)
+push!(c, GateCX(), 2, 3)   # set rule on {1, 2, 3}
+push!(c, GateCX(), 3, 4)   # no rule matches: qubit 4 is outside the set
+push!(c, Delay(50), 4)     # idle noise with t = 50
+push!(c, Measure(), 1:2, 1:2)
+
+noisy = apply_noise_model(c, model)
 ```
+
+The rules also reach inside [`Block`](@ref), [`GateCall`](@ref),
+[`Parallel`](@ref), [`Repeat`](@ref), [`IfStatement`](@ref) and
+[`WhileStatement`](@ref) operations when no rule matches the wrapper itself.
+
+Instead of applying the model yourself, you can pass it to [`submit`](@ref)
+as third argument, `submit(conn, circuit, model)`, and it is applied to each
+circuit before upload.
+
+### Rule priority
+
+**Each instruction receives the noise of at most one rule.** The rules of a
+model are kept sorted by priority, and for every instruction they are tried in
+that order; the first rule that matches is applied and the others are skipped.
+A lower number means a higher priority, so more specific rules win over
+general ones:
+
+| Rule | Priority |
+|:-----|:---------|
+| [`CustomNoiseRule`](@ref) | `priority_val` keyword, default 0 |
+| [`ExactOperationInstanceQubitNoise`](@ref) | 40 |
+| [`ExactQubitReadoutNoise`](@ref) | 50 |
+| [`SetOperationInstanceQubitNoise`](@ref) | 60 |
+| [`SetQubitReadoutNoise`](@ref) | 70 |
+| [`OperationInstanceNoise`](@ref) | 80 |
+| [`GlobalReadoutNoise`](@ref) | 90 |
+| [`SetIdleQubitNoise`](@ref) | 190 |
+| [`IdleNoise`](@ref) | 200 |
+
+Rules with the same priority keep the order in which they were added.
+
+In the example above, the CX on qubits (1, 2) matches both CX rules and only
+gets the exact one, and the measurement of qubit 1 gets the per-qubit readout
+error instead of the global one.
+
+Because measurements are matched by both operation rules and readout rules,
+operation noise on [`Measure`](@ref) takes precedence over global readout
+noise:
+
+```@example noisemodel
+both = NoiseModel()
+add_operation_noise!(both, Measure(), PauliX(0.02); before=true)
+add_readout_noise!(both, ReadoutErr(0.01, 0.02))
+
+# Only the PauliX channel is inserted: the readout rule is never reached.
+apply_noise_model(push!(Circuit(), Measure(), 1, 1), both)
+```
+
+To get both effects on the same measurement, use a single
+[`CustomNoiseRule`](@ref) or add one of the two directly to the circuit.
 
 ### Adding Rules Directly
 
-While helper functions are convenient, you can also add rules directly to the model using [`add_rule!`](@ref). This gives you full control over the rule parameters.
+The helper functions build rule objects for you. You can also construct a rule
+and add it with [`add_rule!`](@ref), or pass a vector of rules to the
+[`NoiseModel`](@ref) constructor. `add_rule!` keeps the rules sorted by
+priority.
 
-```julia
-add_rule!(model, GlobalReadoutNoise(ReadoutErr(0.01, 0.01)))
+```@example noisemodel
+direct = NoiseModel([
+    OperationInstanceNoise(GateH(), AmplitudeDamping(0.01)),
+    GlobalReadoutNoise(ReadoutErr(0.01, 0.01)),
+])
+add_rule!(direct, SetIdleQubitNoise(AmplitudeDamping(0.001), [1, 2]))
 ```
 
-#### Available Rules
+The available rules are:
 
-Here is a list of the available noise rules. Each rule matches a specific condition in the circuit.
+| Rule | Matches | Helper |
+|:-----|:--------|:-------|
+| [`OperationInstanceNoise`](@ref) | every instance of an operation | `add_operation_noise!` |
+| [`SetOperationInstanceQubitNoise`](@ref) | an operation whose qubits all lie in a set | `add_operation_noise!(...; qubits)` |
+| [`ExactOperationInstanceQubitNoise`](@ref) | an operation on an exact sequence of qubits | `add_operation_noise!(...; qubits, exact=true)` |
+| [`GlobalReadoutNoise`](@ref) | every measurement | `add_readout_noise!` |
+| [`SetQubitReadoutNoise`](@ref) | a measurement whose qubits all lie in a set | `add_readout_noise!(...; qubits)` |
+| [`ExactQubitReadoutNoise`](@ref) | a measurement on an exact sequence of qubits | `add_readout_noise!(...; qubits, exact=true)` |
+| [`IdleNoise`](@ref) | every `Delay` | `add_idle_noise!` |
+| [`SetIdleQubitNoise`](@ref) | a `Delay` whose qubits all lie in a set | `add_idle_noise!(...; qubits)` |
+| [`CustomNoiseRule`](@ref) | whatever its matcher function accepts | none |
 
-**Readout Noise**
+The operation rules also accept a compact `operation => noise` form, e.g.
+`OperationInstanceNoise(GateRX(θ) => Depolarizing1(θ / π))`.
 
-- [`GlobalReadoutNoise`](@ref): Applies noise to *all* measurements.
-- [`SetQubitReadoutNoise`](@ref): Applies noise to measurements on any qubit in a given set.
-- [`ExactQubitReadoutNoise`](@ref): Applies noise to measurements on a specific sequence of qubits (sensitive to order).
+#### Custom rules
 
-**Operation-instance Noise**
+A [`CustomNoiseRule`](@ref) takes two functions: a matcher that receives an
+[`Instruction`](@ref) and returns whether the rule applies, and a generator
+that receives the same instruction and returns the noise instruction to
+insert. It accepts `before` and `replace` like the operation rules, and its
+priority is set with `priority_val` (default 0, tried before every built-in
+rule).
 
-- [`OperationInstanceNoise`](@ref): Applies noise to all instances of a specific operation pattern.
-- [`SetOperationInstanceQubitNoise`](@ref): Applies noise to operations acting on qubits within a given set.
-- [`ExactOperationInstanceQubitNoise`](@ref): Applies noise to operations acting on a specific sequence of qubits.
-
-**Idle Noise**
-
-- [`IdleNoise`](@ref): Applies noise to idle qubits during `Delay` instructions.
-- [`SetIdleQubitNoise`](@ref): Applies idle noise only to specific qubits.
-
-**Custom Rules**
-
-- [`CustomNoiseRule`](@ref): User-defined rule with custom matching and noise generation logic. Has the highest priority by default. Supports the `replace` option to substitute the original instruction with the noise operation.
-
-```julia
-# Custom rule with user-defined matching and generation functions
-rule = CustomNoiseRule(
-    inst -> getoperation(inst) isa GateH,
-    inst -> Instruction(AmplitudeDamping(0.01), getqubits(inst)...);
-    priority_val=0,  # highest priority (default)
-    replace=false
+```@example noisemodel
+# Depolarizing noise on every two-qubit gate, whatever its type.
+two_qubit = CustomNoiseRule(
+    inst -> getoperation(inst) isa AbstractGate && numqubits(getoperation(inst)) == 2,
+    inst -> Instruction(Depolarizing2(0.02), getqubits(inst)...),
 )
-add_rule!(model, rule)
+
+custom = NoiseModel(two_qubit)
+
+c = Circuit()
+push!(c, GateCX(), 1, 2)
+push!(c, GateCZ(), 2, 3)
+apply_noise_model(c, custom)
 ```
+
+Custom rules hold Julia functions, so they cannot be saved with
+[`saveproto`](@ref).
 
 ### Saving and Loading
 
-Noise models can be saved to and loaded from disk using the protobuf format. This is useful for sharing noise models between Julia and Python, or for persistence.
+Noise models can be saved to and loaded from disk in the protobuf format with
+[`saveproto`](@ref) and [`loadproto`](@ref).
 
-```julia
-# Save to a file
-saveproto(model, "noise_model.pb")
+```@example noisemodel
+fname = joinpath(mktempdir(), "noise_model.pb")
+saveproto(fname, model)
 
-# Load from a file
-loaded_model = loadproto("noise_model.pb", NoiseModel)
+loaded = loadproto(fname, NoiseModel)
+describe(loaded)
 ```

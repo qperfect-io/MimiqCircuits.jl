@@ -93,7 +93,7 @@ function _gettimelimit(conn::MimiqConnection)
     return DEFAULT_TIME_LIMIT
 end
 
-_gettimelimit(::PlanqkConnection) = DEFAULT_TIME_LIMIT
+_gettimelimit(_) = DEFAULT_TIME_LIMIT
 
 iscircuitsjob(basenames) = CIRCUITS_MANIFEST in basenames
 

@@ -14,7 +14,8 @@ Private = false
 Pages   = [
     "gate.jl",
     "operations/gates/standard/sy.jl",
-    "operations/pairmeasure.jl"
+    "operations/pairmeasure.jl",
+    "operations/measurepauli.jl",
 ]
 ```
 
@@ -29,16 +30,9 @@ Pages   = [
     "operations/power.jl",
     "operations/parallel.jl",
     "operations/ifstatement.jl",
+    "operations/whilestatement.jl",
     "operations/repeat.jl",
 ]
-```
-
-## Decompositions
-
-```@autodocs
-Modules = [MimiqCircuitsBase]
-Private = false
-Pages   = ["decompose.jl"]
 ```
 
 ## Classical operations
@@ -47,6 +41,7 @@ Pages   = ["decompose.jl"]
 Modules = [MimiqCircuitsBase]
 Private = false
 Pages = [
+    "operations/classical/abstract.jl",
     "operations/classical/not.jl",
     "operations/classical/xor.jl",
     "operations/classical/or.jl",

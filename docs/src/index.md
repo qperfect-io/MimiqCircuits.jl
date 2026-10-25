@@ -8,10 +8,10 @@ Welcome to the documentation for **MimiqCircuits.jl**, the Julia interface for t
 
 ## Quick Links
 
-- **[Getting Started](quick_start/)**: Installation guide and a high-level overview of the library's capabilities.
-- **[Core Concepts](manual/circuits/)**: Learn about Circuits, Hamiltonians, and the fundamental building blocks.
-- **[Operations](manual/unitary_gates/)**: Explore the vast library of quantum gates, noise models, and measurements.
-- **[Simulation](manual/simulation/)**: Run exact local simulations or submit large-scale jobs to the QPerfect cloud.
+- **[Getting Started](quick_start.md)**: Installation guide and a high-level overview of the library's capabilities.
+- **[Core Concepts](manual/circuits.md)**: Learn about Circuits, Hamiltonians, and the fundamental building blocks.
+- **[Operations](manual/unitary_gates.md)**: Explore the vast library of quantum gates, noise models, and measurements.
+- **[Simulation](manual/simulation.md)**: Run exact local simulations or submit large-scale jobs to the QPerfect cloud.
 
 ## Features
 

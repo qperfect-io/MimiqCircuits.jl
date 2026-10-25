@@ -79,6 +79,34 @@ conn = connect("john.doe@example.com", "password")
 !!! warning
     Passing your email and password directly stores them as plain text in your script. Prefer browser login or token-based login for better security.
 
+These calls connect to the main MIMIQ server, [`QPERFECT_CLOUD`](@ref). Pass `url` to connect to another instance, e.g. `connect(; url=QPERFECT_DEV)`.
+
+A connection keeps its access credentials fresh in the background. Close it with `close(conn)` when you are done.
+
+### Connection types
+
+[`connect`](@ref) returns a connection object, which is passed as first argument to [`submit`](@ref), [`getresults`](@ref) and the job management functions below. All connection types are subtypes of [`AbstractConnection`](@ref) and work the same way with these functions.
+
+- [`MimiqConnection`](@ref): the MIMIQ cloud service. This is what the calls above return.
+- [`QhiveConnection`](@ref): the Quantum Hive services, which authenticate through their own identity provider. Select it by passing the type as first argument to `connect`.
+- [`PlanqkConnection`](@ref): access through the [PlanQK](https://platform.planqk.de) platform, authenticated with a PlanQK consumer key and secret.
+
+```julia
+# Quantum Hive: browser login, refresh token, or credentials
+conn = connect(QhiveConnection)
+conn = connect(QhiveConnection, "my_refresh_token")
+conn = connect(QhiveConnection, "john.doe@example.com", "password")
+
+# PlanQK: explicit service URL and consumer credentials...
+conn = connect(PlanqkConnection, "https://planqk.example/api", "consumer_key", "consumer_secret")
+
+# ...or read from the PLANQK_API, PLANQK_CONSUMER_KEY and PLANQK_CONSUMER_SECRET
+# environment variables (a `.env` file in the current directory is also read)
+conn = connect(PlanqkConnection)
+```
+
+The keyword arguments of the Quantum Hive methods (service URL, identity provider, realm and client) are listed in the docstring of [`connect`](@ref).
+
 ### Tokens
 
 Instead of using your credentials every time you connect to the MIMIQ services, you can authenticate once and save a token. This token can be saved to a JSON file and reused across different sessions, making it a secure and efficient way to manage authentication.
@@ -139,7 +167,8 @@ You can submit one or multiple circuits for execution using the [`submit`](@ref)
   - **streaming**: Whether to use the streaming simulator (default: `false`).
   - **seed**: Seed for random number generator.
   - **reorderqubits_seed**: Independent seed for the qubit reordering RNG (default: `nothing`, uses main seed). See [Simulation Parameters](simulation_parameters.md).
-  - **noisemodel**: A [`NoiseModel`](@ref) object to be applied to the circuit(s) before execution. This allows for noisy simulations locally before sending to the remote.
+
+A [`NoiseModel`](@ref) can be passed as third positional argument, `submit(connection, circuits, noisemodel; kwargs...)`. It is applied to every circuit before upload, see [Noise Models](@ref). This works only for [`Circuit`](@ref) objects, not for file paths.
 
 **Return type: Jobs**:
 
@@ -196,7 +225,7 @@ To learn more about Protobuf and how to save/load results, check out the [import
 
 You can download results from your Julia session using two functions: [`getresult`](@ref) and [`getresults`](@ref).
 
-The only difference between the two is that `getresults` retrieves the results of *all* the circuits sent in a job, whereas `getresult` only returns the result of the first circuit making it a more lightweight version. This is useful if you want to peek at the results before all circuits of a given job have finished. (If only one circuit was sent then there's no difference.)
+`getresults` returns the results of *all* the circuits sent in a job, in the order they were submitted. `getresult` returns only the first one, and is convenient when a single circuit was sent. Both wait for the whole job to finish and download all its results.
 
 They are both called in a similar way as `getresults(connection, execution; kwargs...)`.
 
@@ -209,8 +238,17 @@ They are both called in a similar way as `getresults(connection, execution; kwar
 !!! warning
     Both `getresults` and `getresult` block further code execution until the job requested has finished. If you want to check the status of the job before attempting to retrieve results, we recommend using [`isjobdone`](@ref), see [job management](#useful-job-management-features) section.
 
-!!! note
-    `getresult` internally calls `getresults` but only returns the first result if multiple results are retrieved.
+If the whole job fails or is canceled, `getresults` throws an error with the reason given by the server. When a batch completes but some of its circuits failed, the entries of those circuits are `QCSError` objects holding the error message in their `msg` field, and the others are [`QCSResults`](@ref). Check the type before using an entry:
+
+```julia
+for (i, r) in enumerate(getresults(conn, job_batch))
+    if r isa QCSError
+        println("circuit $i failed: ", r.msg)
+    else
+        println("circuit $i: ", length(r.cstates), " samples")
+    end
+end
+```
 
 **Example:**
 
@@ -246,45 +284,16 @@ res_batch = getresults(conn, job_batch)
 
 ### Format of Results
 
-When you retrieve jobs results, you will get back a [`QCSResults`](@ref) object (when using `getresult`) or a `Vector{QCSResults}` (when using `getresults`). Each `QCSResults` object contains information about job executed. You can get an overview by printing it:
+Each circuit's result is a [`QCSResults`](@ref) object. Printing it shows a summary: the simulator name and version, the time spent in each stage, the fidelity estimate, the most frequent samples, and the number of executions, amplitudes and samples. Its fields hold the full data:
 
-```plaintext
-QCSResults:
-├── simulator: MIMIQ-StateVector 0.14.1
-├── timings:
-│    ├── total time: 0.00036376400000000004s
-│    ├── compression time: 4.792e-06s
-│    ├── apply time: 2.2727e-05s
-│    └── parse time: 8.9539e-05s
-├── fidelity estimate: 1
-├── average multi-qubit gate error estimate: 0
-├── creg (most sampled):
-│    ├── bs"0011" => 136
-│    ├── bs"0101" => 135
-│    ├── bs"0111" => 134
-│    ├── bs"0010" => 129
-│    └── bs"0100" => 117
-├── 1 executions
-├── 0 amplitudes
-└── 1000 samples
-```
+- **simulator**, **version**: the simulator that ran the circuit.
+- **fidelities**, **avggateerrors**: fidelity and average multi-qubit gate error estimates, one per execution.
+- **cstates**: the classical register of each sample, as [`BitString`](@ref)s.
+- **zstates**: the Z-register of each execution.
+- **amplitudes**: the amplitudes requested with the `bitstrings` keyword.
+- **timings**: the time in seconds spent in each stage, with the whole run under `"total"`.
 
-The [`QCSResults`](@ref) object has different fields that you can access:
-
-**Key fields:**
-
-- **simulator** (`String`): Name of the simulator used, e.g., `MIMIQ-StateVector`.
-- **version** (`String`): Version of the simulator used, e.g. `0.14.1`.
-- **fidelities** (`Vector{Float64}`): Fidelity estimates for each of the circuits executed (between 0 and 1).
-- **avggateerrors** (`Vector{Float64}`): Average multiqubit gate errors. This value represents the average fidelity that multi-qubit gates would need to have in a real quantum computer in order to yield the same fidelity as the MIMIQ simulation.
-- **cstates** (`Vector{BitString}`): Vector with the sampled values of the classical registers, i.e. of measurements. See [circuit](circuits.md) and [non-unitary operations](non_unitary_ops.md) pages.
-- **zstates** (`Vector{ComplexF64}`): Vector with the values of the Z-registers, i.e. of expectation values, entanglement measures, etc. See [circuit](circuits.md) and [statistical operations](statistical_ops.md) pages.
-- **amplitudes** (`Dict{BitString, ComplexF64}`): Number of amplitudes retrieved.
-- **timings** (`Dict{String, Float64}`): Time taken for different stages of the execution. You can access:
-  - **"total"** (`Float64`): The entire time elapsed during execution.
-  - **"parse"** (`Float64`): Time taken to parse the circuit.
-  - **"compression"** (`Float64`): Time to convert the circuit to an efficient execution format.
-  - **"apply"** (`Float64`): Time to apply all operations. It also includes the time to allocate the initial state.
+The [Analyzing Results](results.md) page describes each field and shows how to compute counts, probabilities and plots from them.
 
 !!! note
     To understand how MIMIQ samples measurements into the classical register, check the [simulation](simulation.md) page.
@@ -332,7 +341,7 @@ With the output of [`getresults`](@ref) it works the same way, except you have t
 
 ### Plotting results
 
-You can visualize the results of your circuit execution using the `Plots` package. The example below shows how to plot the results from executing a single circuit.
+You can visualize the results of your circuit execution using the `Plots` package. The example below shows how to plot the results from executing a single circuit. See [Plotting](@ref) for the available options.
 
 **Example**:
 

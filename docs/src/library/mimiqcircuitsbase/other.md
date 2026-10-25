@@ -5,7 +5,7 @@
 ```@autodocs
 Modules = [MimiqCircuitsBase]
 Private = false
-Pages   = ["custom.jl", "operations/operator.jl"]
+Pages   = ["custom.jl", "operations/gates/customdiagonal.jl", "operations/operator.jl"]
 ```
 
 ## Gate definitions
@@ -21,7 +21,7 @@ Pages   = ["gatedecl.jl", "operations/block.jl"]
 ```@autodocs
 Modules = [MimiqCircuitsBase]
 Private = false
-Pages   = ["reset.jl"]
+Pages   = ["reset.jl", "operations/magic.jl"]
 ```
 
 ## No-ops
@@ -56,4 +56,20 @@ Pages = ["classical.jl", "setbits.jl"]
 Modules = [MimiqCircuitsBase]
 Private = false
 Pages   = ["optimization.jl"]
+```
+
+## Parameter sweeps
+
+```@autodocs
+Modules = [MimiqCircuitsBase]
+Private = false
+Pages   = ["src/sweep.jl"]
+```
+
+## Circuit testing
+
+```@autodocs
+Modules = [MimiqCircuitsBase]
+Private = false
+Pages   = ["circuittester.jl"]
 ```

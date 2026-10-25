@@ -39,9 +39,8 @@ This method uploads one or more `OptimizationExperiment`s to the server and laun
 * `force::Bool`: force dimension parameters (default: false)
 * `history::Bool`: whether to return the full optimization history (default: false)
 """
-
 function optimize(
-    conn::MimiqConnection,
+    conn,
     exs::Union{OptimizationExperiment, Vector{<:OptimizationExperiment}};
     label::AbstractString="julia_$(_pkgversion(@__MODULE__))",
     algorithm::String=DEFAULT_ALGORITHM,

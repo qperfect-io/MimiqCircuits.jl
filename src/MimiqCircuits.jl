@@ -43,7 +43,8 @@ import Pkg
     QPERFECT_CLOUD,
     QPERFECT_DEV,
     MimiqConnection,
-    PlanqkConnection
+    PlanqkConnection,
+    QhiveConnection
 
 export submit
 export execute

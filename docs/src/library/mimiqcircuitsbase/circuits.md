@@ -6,8 +6,9 @@ Private = false
 Pages   = [
     "instruction.jl",
     "circuit.jl",
-    "circuit_extras.jl",
     "circuit_macro.jl",
+    "dsl.jl",
+    "graph_iterators.jl",
     "circuit/push.jl",
     "circuit/insert.jl",
     "circuit/emplace.jl",

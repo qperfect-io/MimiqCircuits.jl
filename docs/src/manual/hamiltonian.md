@@ -13,7 +13,7 @@ This workflow allows you to:
 
 ---
 
-## Hamiltonian
+## Hamiltonians as Pauli sums
 
 In quantum computing, Hamiltonians play a central role in algorithms such as the Variational Quantum Eigensolver (VQE),
 Quantum Phase Estimation, and the Quantum Approximate Optimization Algorithm (QAOA). They are used to encode the energy landscape of

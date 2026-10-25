@@ -67,7 +67,7 @@ There are different categories of gates depending on the number of targets, para
 
 ### Single-qubit gates
 
-List of single-qubit gates: [`GateID`](@ref), [`GateX`](@ref), [`GateY`](@ref), [`GateZ`](@ref), [`GateH`](@ref), [`GateS`](@ref), [`GateSDG`](@ref), [`GateT`](@ref), [`GateTDG`](@ref), [`GateSX`](@ref), [`GateSXDG`](@ref). [`GateSY`](@ref), [`GateSYDG`](@ref).
+List of single-qubit gates: [`GateID`](@ref), [`GateX`](@ref), [`GateY`](@ref), [`GateZ`](@ref), [`GateH`](@ref), [`GateS`](@ref), [`GateSDG`](@ref), [`GateT`](@ref), [`GateTDG`](@ref), [`GateSX`](@ref), [`GateSXDG`](@ref), [`GateSY`](@ref), [`GateSYDG`](@ref), [`GateHXY`](@ref), [`GateHXZ`](@ref), [`GateHYZ`](@ref).
 
 For single-qubit gates you don't need to give any argument to the gate constructor (ex: `GateX()`).
 You only need to give the index of the target qubit when adding it to your circuit with the [`push!`](@ref) function.
@@ -76,6 +76,12 @@ You only need to give the index of the target qubit when adding it to your circu
 using MimiqCircuits # hide
 circuit = Circuit() # hide
 push!(circuit, GateX(), 1)
+```
+
+[`GateHXY`](@ref), [`GateHXZ`](@ref) and [`GateHYZ`](@ref) are Hadamard-like gates that exchange two Pauli axes: for example ``\mathrm{HXY} = (X + Y)/\sqrt{2}`` swaps ``X`` and ``Y``. [`GateHXZ`](@ref) is the same gate as [`GateH`](@ref).
+
+```@example unitary
+matrix(GateHYZ())
 ```
 
 ### Single-qubit parametric gates
@@ -92,7 +98,7 @@ push!(circuit, GateRX(pi/2), 1)
 
 ### Two qubit gates
 
-List of two qubits gates: [`GateCX`](@ref), [`GateCY`](@ref), [`GateCZ`](@ref), [`GateCH`](@ref), [`GateSWAP`](@ref), [`GateISWAP`](@ref), [`GateCS`](@ref), [`GateCSDG`](@ref), [`GateCSX`](@ref), [`GateCSXDG`](@ref), [`GateECR`](@ref), [`GateDCX`](@ref).
+List of two qubits gates: [`GateCX`](@ref), [`GateCY`](@ref), [`GateCZ`](@ref), [`GateCH`](@ref), [`GateSWAP`](@ref), [`GateISWAP`](@ref), [`GateISWAPDG`](@ref), [`GateCS`](@ref), [`GateCSDG`](@ref), [`GateCSX`](@ref), [`GateCSXDG`](@ref), [`GateECR`](@ref), [`GateDCX`](@ref).
 
 Two-qubit gates can be instantiated without any arguments just like single-qubit gates (ex: `GateCX()`).
 You will need to give the index of both qubits to the [`push!`](@ref) function to add it to the circuit.
@@ -147,7 +153,7 @@ More about generalized gates on [special operations](special_ops.md).
 
 ## Custom Gates
 
-If you need to use a specific unitary gate that is not provided by MIMIQ, you can use [GateCustom](@ref) to create your own unitary gate.
+If you need to use a specific unitary gate that is not provided by MIMIQ, you can use [`GateCustom`](@ref) to create your own unitary gate.
 
 > [!TIP]
 > **Definining gates with the DSL**
@@ -176,6 +182,37 @@ custom_gate = GateCustom(custom_matrix)
 # Add the gate to the circuit 
 push!(circuit, custom_gate, 1, 2)
 ```
+
+### Diagonal gates
+
+For a gate that is diagonal in the computational basis, [`GateCustomDiagonal`](@ref) stores only the ``2^N`` diagonal entries instead of the full ``2^N \times 2^N`` matrix. The entries follow the same ordering as [`GateCustom`](@ref), and each of them must have modulus 1. It can act on any number of qubits.
+
+```@example unitary
+circuit = Circuit() # hide
+# diag(1, i, -1, -i) on two qubits
+diag_gate = GateCustomDiagonal([1, im, -1, -im])
+push!(circuit, diag_gate, 1, 2)
+```
+
+[`diagonal`](@ref) returns the stored entries:
+
+```@example unitary
+diagonal(diag_gate)
+```
+
+## Rescaled gates
+
+A [`RescaledGate`](@ref) is a gate multiplied by a scalar between 0 and 1. It is not unitary, so it cannot be added to a circuit; it serves as an operator, for example as a branch of a [`Kraus`](@ref) channel or inside an [`ExpectationValue`](@ref). [`rescale`](@ref) builds one from a gate, or multiplies the scale of an existing one.
+
+```@example unitary
+r = rescale(GateX(), 0.5)
+```
+
+```@example unitary
+matrix(r)
+```
+
+See [operators](non_unitary_ops.md#Operators) for more on operators.
 
 ## Composition: Control, Power, Inverse, Parallel
 

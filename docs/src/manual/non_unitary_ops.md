@@ -14,7 +14,7 @@ Contrary to [unitary gates](unitary_gates.md), non-unitary operations based on m
     To learn more about this head to the [simulation](simulation.md#understanding-sampling) page.
 
 !!! note
-    Some features of unitary gates are not available for non-unitary operations, for instance, [matrix](@ref), [inverse](@ref), [power](@ref), [control](@ref), [parallel](@ref).
+    Some features of unitary gates are not available for non-unitary operations, for instance, [`matrix`](@ref), [`inverse`](@ref), [`power`](@ref), [`control`](@ref), [`parallel`](@ref).
 
 ## Measure
 
@@ -32,7 +32,7 @@ It is common to measure in the Z basis (``P_0=\ket{0}\bra{0}`` and ``P_1=\ket{1}
 
 ### How to use measurements
 
-Available measurement operations: [`Measure`](@ref), [`MeasureX`](@ref), [`MeasureY`](@ref), [`MeasureZ`](@ref), [`MeasureXX`](@ref), [`MeasureYY`](@ref), [`MeasureZZ`](@ref).
+Available measurement operations: [`Measure`](@ref), [`MeasureX`](@ref), [`MeasureY`](@ref), [`MeasureZ`](@ref), [`MeasureXX`](@ref), [`MeasureYY`](@ref), [`MeasureZZ`](@ref), [`MeasurePauli`](@ref).
 
 With MIMIQ you can measure the qubits at any point in the circuit (not only at the end of the circuit) using one of the measurement operations ([`Measure`](@ref)...). You can add it to the circuit like gates using [`push!`](@ref), but you will need to precise both the index for the quantum register (qubit to measure) and classical register (where to store the result):
 
@@ -48,6 +48,12 @@ You can also use iterators to Measure multiple qubits at once, as for gates:
 
 ```@example non_unitary
 push!(Circuit(), Measure(), 1:10, 1:10)
+```
+
+[`MeasurePauli`](@ref) measures a multi-qubit Pauli product observable, such as ``X_1 Z_3``, and writes a single outcome bit (`0` for eigenvalue ``+1``, `1` for ``-1``). It targets one qubit per character of the Pauli string; qubits marked `I` are not measured:
+
+```@example non_unitary
+push!(Circuit(), MeasurePauli("XIZ"), 1, 2, 3, 1)
 ```
 
 !!! note
@@ -72,6 +78,12 @@ Note that a reset operation can be technically seen as noise and is described by
 ```@example non_unitary
 krausoperators(Reset())
 ``` 
+
+[`PrepareStateT`](@ref) works like a reset, but leaves the qubit in the magic state ``T\ket{+}`` instead of ``\ket{0}``. It is used for magic-state injection in [Pauli-based computation](compilation/pauli_based.md), and decomposes into [`Reset`](@ref), [`GateH`](@ref) and [`GateT`](@ref):
+
+```@example non_unitary
+decompose_step(PrepareStateT())
+```
 
 ## Measure-Reset
 
@@ -153,7 +165,7 @@ Methods available: [`matrix`](@ref).
 
 ### How to use operators
 
-Operators cannot be applied to a state directly (it cannot be added to a circuit using [push!](@ref)), because that would correspond to an unphysical transformation. However, they can be used within other operations such as [`ExpectationValue`](@ref) or to create custom noise models with [`Kraus`](@ref), see [noise](noise.md) and [statistical operations](statistical_ops.md) pages.
+Operators cannot be applied to a state directly (it cannot be added to a circuit using [`push!`](@ref)), because that would correspond to an unphysical transformation. However, they can be used within other operations such as [`ExpectationValue`](@ref) or to create custom noise models with [`Kraus`](@ref), see [noise](noise.md) and [statistical operations](statistical_ops.md) pages.
 
 Operators can be used to compute expectation values as follows (see also [`ExpectationValue`](@ref)):
 

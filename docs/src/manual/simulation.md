@@ -41,7 +41,7 @@ Moreover, the performance of MPS, especially the bond dimension required, also d
 
 - **Gate ordering:** In nature, the order of transversal gates, or gates that commute with each other, does not play a role. However, for MPS it can change the performance. The reason is that in a simulation we typicall apply gates, even transversal ones, sequentially. During the application of the gates, the entanglement of the intermediate state can depend on the order in which the gates are applied. Thus, experimenting with different gate orderings can lead to better performance, typically because of lower bond dimensions.
 
-You can access the bond dimensions of the state during execution through [BondDim](@ref), see also page on [entanglement](statistical_ops.md). This can be helpful to understand the effect of different optimizations.
+You can access the bond dimensions of the state during execution through [`BondDim`](@ref), see also page on [entanglement](statistical_ops.md). This can be helpful to understand the effect of different optimizations.
 
 
 ## Fidelity and Error estimates

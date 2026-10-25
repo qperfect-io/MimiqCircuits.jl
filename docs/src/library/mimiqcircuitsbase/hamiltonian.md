@@ -1,4 +1,4 @@
-# Hamiltonian
+# Hamiltonians
 
 ```@autodocs
 Modules = [MimiqCircuitsBase]

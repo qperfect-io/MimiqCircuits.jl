@@ -5,11 +5,21 @@ stages:
 
 variables:
   JULIA_PKG_USE_CLI_GIT: "true"
+  # Precompiling SymbolicUtils needs more memory than the K8S runner's
+  # default pod limit, and the kernel kills the job.
+  KUBERNETES_MEMORY_REQUEST: "4Gi"
+  KUBERNETES_MEMORY_LIMIT: "8Gi"
 
 default:
-  image: julia:1
+  # Julia 1.13 crashes while loading MimiqCircuitsBase's precompiled cache
+  # (UndefRefError in Compiler/reinfer.jl); pinned until that is fixed.
+  image: julia:1.12
 
 .setup_julia: &setup_julia
+  # The alpine runners have too little memory for Julia and cannot be given
+  # more per job, so Julia jobs go to the K8S runner, which reads the
+  # KUBERNETES_MEMORY_* variables above.
+  tags: [kubernetes, linux]
   before_script:
     - apt-get update -qq && apt-get install -y -qq git openssh-client
     # Trust GitLab's host key so any path that still resorts to SSH

@@ -10,7 +10,6 @@ Pages = [
     "operations/noisechannels/standard/projectivenoise.jl",
     "operations/noisechannels/kraus.jl",
     "operations/krauschannel.jl",
-    "operations/amplitude.jl",
     "operations/operators/diagonals.jl",
     "operations/noisechannels/standard/ampdamping.jl",
     "operations/noisechannels/standard/phaseampdamping.jl",

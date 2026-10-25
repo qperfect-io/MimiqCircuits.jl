@@ -1,4 +1,5 @@
 using Documenter
+using DocumenterCitations
 using Dates
 
 using MimiqCircuits
@@ -25,6 +26,7 @@ end
 if !haskey(ENV, "MIMIQOUTPUTFORMAT") || ENV["MIMIQOUTPUTFORMAT"] == "HTML"
     format = Documenter.HTML(
         collapselevel=1,
+        repolink="https://github.com/qperfect-io/MimiqCircuits.jl",
         prettyurls=get(ENV, "CI", nothing) == "true",
         footer="Copyright 2021-$(year(now())) QPerfect. All rights reserved.",
         assets=String[],
@@ -51,17 +53,20 @@ pages = Any[
         "Operations" => [
             "Unitary Gates" => "manual/unitary_gates.md",
             "Non-unitary Operations" => "manual/non_unitary_ops.md",
+            "Classical Operations" => "manual/classical_ops.md",
             "Noise" => "manual/noise.md",
             "Loss" => "manual/loss.md",
             "Symbolic Operations" => "manual/symbolic_ops.md",
             "Statistical Operations" => "manual/statistical_ops.md",
             "Z-register operation" => "manual/zops.md",
             "Special Operations" => "manual/special_ops.md",
+            "Annotations" => "manual/annotations.md",
         ],
         "Simulation & Execution" => [
             "Simulating Circuits" => "manual/simulation.md",
             "Simulation Parameters" => "manual/simulation_parameters.md",
             "Cloud Execution" => "manual/remote_execution.md",
+            "Analyzing Results" => "manual/results.md",
         ],
         "Advanced Topics" => [
             "Import & Export Circuits" => "manual/import_export.md",
@@ -70,6 +75,7 @@ pages = Any[
             "Compilation & Optimization" => [
                 "Simplifications" => "manual/compilation/simplifications.md",
                 "Rewrites and Decompositions" => "manual/compilation/decompositions.md",
+                "Pauli-based Computation" => "manual/compilation/pauli_based.md",
                 "Custom Decompositions" => "manual/compilation/custom_decompositions.md",
             ],
         ],
@@ -91,6 +97,7 @@ pages = Any[
             "library/mimiqcircuitsbase/generalized.md",
             "library/mimiqcircuitsbase/other.md",
             "library/mimiqcircuitsbase/noise.md",
+            "library/mimiqcircuitsbase/loss.md",
             "library/mimiqcircuitsbase/operators.md",
             "library/mimiqcircuitsbase/zops.md",
             "library/mimiqcircuitsbase/bitstrings.md",
@@ -102,18 +109,31 @@ pages = Any[
         "Internals" => "library/internals.md",
         "Function Index" => "library/function_index.md",
     ],
+    "References" => "references.md",
 ]
+
+# MimiqCircuitsBase docstrings cite entries from its own bibliography.
+bib = CitationBibliography(pkgdir(MimiqCircuitsBase, "docs", "src", "references.bib"))
+
+# Docstrings from the dependencies link to their public repositories at the
+# installed version, since a registry install is not a git checkout.
+remotes = Dict(
+    pkgdir(m) => (Remotes.GitHub("qperfect-io", "$(m).jl"), "v$(pkgversion(m))") for
+    m in (MimiqCircuitsBase, MimiqLink)
+)
 
 makedocs(;
     sitename="MimiqCircuits.jl",
     authors="QPerfect",
     repo="https://github.com/qperfect-io/MimiqCircuits.jl/blob/{commit}{path}#{line}",
     modules=[MimiqCircuits, MimiqLink, MimiqCircuitsBase],
+    remotes=remotes,
     format=format,
     pages=pages,
     clean=true,
     checkdocs=:exports,
     warnonly=true,
+    plugins=[bib],
 )
 
 # Only deploy via Documenter on GitHub; on GitLab, CI handles artifact-based Pages

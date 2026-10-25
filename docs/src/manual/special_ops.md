@@ -10,20 +10,15 @@ For examples if you wish to apply an `H` gate followed by an `RX` gate with a sp
 
 ```@example special_op
 using MimiqCircuits # hide
-@gatedecl ansatz(rot) = begin
-    # build the equivalent circuit defining the gate
-    c = Circuit()
-    push!(c, GateH(), 1)
-    push!(c, GateRX(rot), 2)
-
-    # return the circuit
-    return c
+@gatedecl ansatz(rot) begin
+    @on GateH() q=1
+    @on GateRX(rot) q=2
 end
 ```
 
 Here, `ansatz` is the name that will be shown when printing or drawing the circuit and the variable name for the declaration. Then `ansatz(...)` is how we instantiate the gate and `(rot)` defines the gate parameters.
 
-As you can see in the code above, to generate your own gate declaration you will need to instantiate [`Instruction`](@ref)s. Instructions are instantiated using one operation followed by a list of targets needed by the operation. The order of the target follows the usual quantum register -> classical register -> Z-register order. Basically, it works the same way as [`push!`](@ref) except that no circuit is passed as an argument.
+Inside the declaration, each `@on` line adds one instruction: an operation followed by its targets, given as `q=` for qubits, `c=` for classical bits and `z=` for Z-register variables. The qubit indices are local to the gate, so `q=1` is the first qubit the gate is applied to. See the [Circuit DSL](dsl.md) page for the full syntax.
 
 After declaration you can add it to your circuit using [`push!`](@ref).
 

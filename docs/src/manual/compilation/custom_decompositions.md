@@ -1,14 +1,14 @@
 # Custom Decompositions
 
-MIMIQ allows you to define your own decomposition logic by creating custom [`DecompositionBasis`](@ref) and [`RewriteRule`](@ref) types. This is useful for targeting specific hardware gate sets, implementing novel compilation strategies, or enforcing constraints.
+MIMIQ allows you to define your own decomposition logic by creating custom [`DecompositionBasis`](@ref) and [`RewriteRule`](@ref MimiqCircuitsBase.RewriteRule) types. This is useful for targeting specific hardware gate sets, implementing novel compilation strategies, or enforcing constraints.
 
 ## Implementing a Custom Basis
 
 To define a new decomposition target, you need to:
 
 1.  Define a struct subtype of [`DecompositionBasis`](@ref).
-2.  Implement [`isterminal(basis, op)`](@ref) to specify allowed operations.
-3.  Implement [`decompose!(builder, basis, op, ...)`](@ref) to handle unsupported operations.
+2.  Implement [`isterminal(basis, op)`](@ref MimiqCircuitsBase.isterminal) to specify allowed operations.
+3.  Implement [`decompose!(builder, basis, op, ...)`](@ref decompose!) to handle unsupported operations.
 
 ### Example: The "HTCX" Basis
 
@@ -68,12 +68,12 @@ new_circuit = decompose(circuit, basis=HTCXBasis())
 
 ## Implementing Custom Rewrite Rules
 
-If you have a reusable decomposition logic (e.g., "how to decompose a Toffoli gate"), you can package it as a [`RewriteRule`](@ref). Rules are modular and can be shared across multiple bases.
+If you have a reusable decomposition logic (e.g., "how to decompose a Toffoli gate"), you can package it as a [`RewriteRule`](@ref MimiqCircuitsBase.RewriteRule). Rules are modular and can be shared across multiple bases.
 
 To create a rule:
-1.  Define a struct subtype of [`RewriteRule`](@ref).
+1.  Define a struct subtype of [`RewriteRule`](@ref MimiqCircuitsBase.RewriteRule).
 2.  Implement [`matches(rule, op)`](@ref).
-3.  Implement [`decompose_step!(builder, rule, op, ...)`](@ref).
+3.  Implement [`decompose_step!(builder, rule, op, ...)`](@ref decompose_step!).
 
 ### Example: Decomposing Swap to 3 CNOTs
 
