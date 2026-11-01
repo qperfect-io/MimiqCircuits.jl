@@ -66,10 +66,10 @@ Private = false
 Pages   = ["src/sweep.jl"]
 ```
 
-## Circuit testing
+## Circuit equivalence
 
 ```@autodocs
 Modules = [MimiqCircuitsBase]
 Private = false
-Pages   = ["circuittester.jl"]
+Pages   = ["equivalence.jl"]
 ```

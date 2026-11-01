@@ -66,18 +66,18 @@ function submit(conn, circuits::Vector, nm::NoiseModel; kwargs...)
     return submit(conn, noisy_circuits; kwargs...)
 end
 
-function submit(conn, ex::CircuitTesterExperiment; kwargs...)
+function submit(conn, ex::EquivalenceExperiment; kwargs...)
     c = build_circuit(ex)
     return submit(conn, c; kwargs...)
 end
 
 """
-    check_equivalence(conn, ex::CircuitTesterExperiment; kwargs...)
+    check_equivalence(conn, ex::EquivalenceExperiment; kwargs...)
 
-Executes the circuit tester experiment and verifies the results.
+Runs the equivalence experiment and verifies the results.
 Blocks until the execution is complete.
 """
-function check_equivalence(conn, ex::CircuitTesterExperiment; kwargs...)
+function check_equivalence(conn, ex::EquivalenceExperiment; kwargs...)
     job = submit(conn, ex; kwargs...)
     results = getresult(conn, job)
     return interpret_results(ex, results)

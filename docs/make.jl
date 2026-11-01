@@ -82,7 +82,7 @@ pages = Any[
     ],
     "Use cases"=>[
         "VQE" => "usecases/vqe.md",
-        "Circuit Tester" => "usecases/circuit_tester.md",
+        "Circuit Equivalence" => "usecases/equivalence.md",
     ],
     "API Reference"=>[
         "Outline" => "library/outline.md",

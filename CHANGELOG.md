@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.26.1] — 2026-11-01
+
+### Changed
+- Requires MimiqCircuitsBase 0.27.2.
+- `submit` and `check_equivalence` take an `EquivalenceExperiment`, the new name of `CircuitTesterExperiment` in MimiqCircuitsBase. The old name still works, with a deprecation warning.
+
+### Docs
+- The "Circuit Tester" use case is now "Circuit Equivalence", at `usecases/equivalence.md`.
+
 ## [0.26.0] — 2026-10-25
 
 This release requires MimiqCircuitsBase 0.27, and through the re-export it brings
