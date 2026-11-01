@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Public · MimiqCircuits.jl</title><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">MimiqCircuits.jl</a></span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><a class="tocitem" href="../../about/">About</a></li><li><a class="tocitem" href="../../getting_started/">Getting Started</a></li><li><a class="tocitem" href="../../basics/">Basics</a></li><li><span class="tocitem">Library</span><ul><li><a class="tocitem" href="../outline/">Contents</a></li><li class="is-active"><a class="tocitem" href>Public</a><ul class="internal"><li><a class="tocitem" href="#Modules"><span>Modules</span></a></li><li><a class="tocitem" href="#Quantum-Circuits-and-Instructions"><span>Quantum Circuits and Instructions</span></a></li><li><a class="tocitem" href="#Operations"><span>Operations</span></a></li><li><a class="tocitem" href="#Bit-States"><span>Bit States</span></a></li></ul></li><li><a class="tocitem" href="../internals/">Private</a></li><li><a class="tocitem" href="../function_index/">Function index</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Library</a></li><li class="is-active"><a href>Public</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Public</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/qperfect-io/MimiqCircuits.jl/blob/main/docs/src/library/public.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="Public-Documentation"><a class="docs-heading-anchor" href="#Public-Documentation">Public Documentation</a><a id="Public-Documentation-1"></a><a class="docs-heading-anchor-permalink" href="#Public-Documentation" title="Permalink"></a></h1><p>Documentation for <code>MimiqCircuits.jl</code>&#39;s public interface.</p><p>See the Internals section of the manual for internal package docs.</p><h2 id="Modules"><a class="docs-heading-anchor" href="#Modules">Modules</a><a id="Modules-1"></a><a class="docs-heading-anchor-permalink" href="#Modules" title="Permalink"></a></h2><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuits.execute-Tuple{Connection, Circuit}" href="#MimiqCircuits.execute-Tuple{Connection, Circuit}"><code>MimiqCircuits.execute</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia hljs">execute(connection, circuit[; kwargs...])</code></pre><p>Execute a quantum circuit on the MIMIQ remote services.</p><p>The circuit is applied to the zero state and the resulting state is measured via sampling. Optionally amplitudes corresponding to few selected bit states (or bitstrings) can be returned from the computation.</p><p><strong>Keyword Arguments</strong></p><ul><li><code>label::String</code>: mnemonic name to give to the simulation, will be visible on the <a href="https://mimiq.qperfect.io">web interface</a></li><li><code>algorithm</code>: algorithm to use by the compuation. By default <code>&quot;auto&quot;</code> will select the fastest algorithm between <code>&quot;statevector&quot;</code> or <code>&quot;mps&quot;</code>.</li><li><code>nsamples::Integer</code>: number of times to sample the circuit (default: 1000, maximum: 2^16)</li><li><code>bitstates::Vector{BitState}</code>: list of bit states to compute the amplitudes for (default: <code>BitState[]</code>)</li><li><code>timelimit</code>: number of seconds before the computation is stopped (default: 300 seconds or 5 minutes)</li><li><code>bonddim::Int64</code>: bond dimension for the MPS algorithm (default: 256, maximum: 4096)</li><li><code>seed::Int64</code>: a seed for running the simulation (default: random seed)</li></ul></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuits.jl/blob/7b48ce1aad8d256bcebd500ed0ba7b2d857d271f/src/MimiqCircuits.jl#L113-L130">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuits.getinputs-Tuple{Connection, Execution}" href="#MimiqCircuits.getinputs-Tuple{Connection, Execution}"><code>MimiqCircuits.getinputs</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia hljs">getinputs(connection, execution)</code></pre><p>Returns the circuit and parameters for the given execution.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuits.jl/blob/7b48ce1aad8d256bcebd500ed0ba7b2d857d271f/src/MimiqCircuits.jl#L210-L214">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuits.getresults-Tuple{Connection, Execution}" href="#MimiqCircuits.getresults-Tuple{Connection, Execution}"><code>MimiqCircuits.getresults</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia hljs">getresults(connection, execution; kwargs...)</code></pre><p>Block until the given execution is finished and return the results.</p><p><strong>Keyword Arguments</strong></p><ul><li><code>interval</code>: time interval in seconds to check for job completion (default: 10)</li></ul></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuits.jl/blob/7b48ce1aad8d256bcebd500ed0ba7b2d857d271f/src/MimiqCircuits.jl#L229-L237">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuits.printreport-Tuple{Results}" href="#MimiqCircuits.printreport-Tuple{Results}"><code>MimiqCircuits.printreport</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia hljs">printreport(res::MimiqCircuits.Results; kwargs...)</code></pre><p>Print a report on the MIMIQ simulation results <code>res</code></p><p><strong>Keyword Arguments</strong></p><ul><li><code>max_outcomes</code>: the maximum number of unique measurement outcomes to display (default 8)</li></ul></div><a class="docs-sourcelink" target="_blank" href="https://github.com/qperfect-io/MimiqCircuits.jl/blob/7b48ce1aad8d256bcebd500ed0ba7b2d857d271f/src/MimiqCircuits.jl#L315-L322">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqLink.MimiqLink" href="#MimiqLink.MimiqLink"><code>MimiqLink.MimiqLink</code></a> — <span class="docstring-category">Module</span></header><section><div><pre><code class="language-julia hljs">module MimiqLink end</code></pre><p>This module contains convenience tools to establish and keep up a connection to the QPerfect MIMIQ services, both remote or on premises.</p><p>It allows for three different connection modes: via login page, via token, via credentials</p><p><strong>Login Page</strong></p><p>This method will open a browser pointing to a login page. The user will be asked to insert username/email and password.</p><pre><code class="nohighlight hljs">julia&gt; using MimiqLink
+
+julia&gt; connection = MimiqLink.connect()</code></pre><p>optionally an address for the MIMIQ services can be specified</p><pre><code class="nohighlight hljs">julia&gt; connection = MimiqLink.connect(uri = &quot;http://127.0.0.1/api&quot;)</code></pre><p><strong>Token</strong></p><p>This method will allow the user to save a token file (by login via a login page), and then load it also from another julia session.</p><pre><code class="nohighlight hljs">julia&gt; using MimiqLink
+
+julia&gt; MimiqLink.savetoken(uri = &quot;http://127.0.0.1/api&quot;)</code></pre><p>this will save a token in the <code>qperfect.json</code> file in the current directory. In another julia session is then possible to do:</p><pre><code class="nohighlight hljs">julia&gt; using MimiqLink
+
+julia&gt; connection = MimiqLink.loadtoken(&quot;path/to/my/qperfect.json&quot;)</code></pre><p><strong>Credentials</strong></p><p>This method will allow users to access by directly use their own credentials.</p><p><strong>WARNING</strong> it is strongly discuraged to use this method. If files with credentials will be shared the access to the qperfect account might be compromised.</p><pre><code class="nohighlight hljs">julia&gt; using MimiqLink
+
+julia&gt; connection = MimiqLink.connect(&quot;me@mymail.com&quot;, &quot;myweakpassword&quot;)</code></pre><pre><code class="nohighlight hljs">julia&gt; MimiqLink.connect(&quot;me@mymail.com&quot;, &quot;myweakpassword&quot;; uri = &quot;http://127.0.0.1/api&quot;)</code></pre></div></section></article><h2 id="Quantum-Circuits-and-Instructions"><a class="docs-heading-anchor" href="#Quantum-Circuits-and-Instructions">Quantum Circuits and Instructions</a><a id="Quantum-Circuits-and-Instructions-1"></a><a class="docs-heading-anchor-permalink" href="#Quantum-Circuits-and-Instructions" title="Permalink"></a></h2><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.Instruction" href="#MimiqCircuitsBase.Instruction"><code>MimiqCircuitsBase.Instruction</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct Instruction{N,M,T&lt;:Operation}</code></pre><p>Element of a quantum circuit, representing a <code>N</code>-qubit gate applied to <code>N</code> targets</p><p><strong>Parameters</strong></p><ul><li><code>gate::T</code> actual gate represented</li><li><code>qtargets::NTuple{N, Int64}</code> indices specifying the quantum bits on which the instruction is applied</li><li><code>ctargets::NTuple{N, Int64}</code> indices specifying the classical bits on which the instruction is applied</li></ul></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.getbit" href="#MimiqCircuitsBase.getbit"><code>MimiqCircuitsBase.getbit</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">getbit(instruction, i)</code></pre><p>Returns the i-th target classical bit of an instruction.</p><p>See also <a href="#MimiqCircuitsBase.getbits"><code>getbits</code></a>, <a href="#MimiqCircuitsBase.getqubit"><code>getqubit</code></a>, <a href="#MimiqCircuitsBase.getqubits"><code>getqubits</code></a>,</p></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.getbits" href="#MimiqCircuitsBase.getbits"><code>MimiqCircuitsBase.getbits</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">getbits(instruction)</code></pre><p>Returns all the classical bits to which the instruction is applied.</p><p>See also <a href="#MimiqCircuitsBase.getbit"><code>getbit</code></a>, <a href="#MimiqCircuitsBase.getqubits"><code>getqubits</code></a>, <a href="#MimiqCircuitsBase.getqubit"><code>getqubit</code></a>,</p></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.getoperation-Tuple{Instruction}" href="#MimiqCircuitsBase.getoperation-Tuple{Instruction}"><code>MimiqCircuitsBase.getoperation</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia hljs">getoperation(getoperation)</code></pre><p>Returns the quantum operation associated to the given gate instruction.</p></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.getqubit" href="#MimiqCircuitsBase.getqubit"><code>MimiqCircuitsBase.getqubit</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">getqubit(instruction, i)</code></pre><p>Returns the i-th target qubit of an instruction.</p><p>See also <a href="#MimiqCircuitsBase.getqubits"><code>getqubits</code></a>, <a href="#MimiqCircuitsBase.getbit"><code>getbit</code></a>, <a href="#MimiqCircuitsBase.getbits"><code>getbits</code></a>,</p></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.getqubits" href="#MimiqCircuitsBase.getqubits"><code>MimiqCircuitsBase.getqubits</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">getqubits(instruction)</code></pre><p>Returns all the quantum bits to which the instruction is applied.</p><p>See also <a href="#MimiqCircuitsBase.getqubit"><code>getqubit</code></a>, <a href="#MimiqCircuitsBase.getbits"><code>getbits</code></a>, <a href="#MimiqCircuitsBase.getbit"><code>getbit</code></a>,</p></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.gettarget" href="#MimiqCircuitsBase.gettarget"><code>MimiqCircuitsBase.gettarget</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">gettarget(instruction, i)</code></pre><p>Returns the i-th target qubit of an instruction.</p><p>!!!warn     Deprecated in favor of <a href="#MimiqCircuitsBase.getqubit"><code>getqubit</code></a> and <a href="#MimiqCircuitsBase.getbit"><code>getbit</code></a></p></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.gettargets" href="#MimiqCircuitsBase.gettargets"><code>MimiqCircuitsBase.gettargets</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">gettargets(instruction)</code></pre><p>Returns all the quantum qubits to which the instruction is applied.</p><p>!!!warn     Deprecated in favor of <a href="#MimiqCircuitsBase.getqubits"><code>getqubits</code></a> and <a href="#MimiqCircuitsBase.getbits"><code>getbits</code></a></p></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.Circuit" href="#MimiqCircuitsBase.Circuit"><code>MimiqCircuitsBase.Circuit</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct Circuit</code></pre><p>Representation of a quantum circuit as a vector of gates applied to the qubits.</p><p><strong>Parameters</strong></p><ul><li><code>gates::Vector{Instruction}</code> vector of quantum instructions (see <a href="#MimiqCircuitsBase.Instruction"><code>Instruction</code></a>)</li></ul><p><strong>Example iteration</strong></p><pre><code class="nohighlight hljs">circuit = Circuit()
+# add gates to circuit
+
+for (; operation, targets) in circuit
+    # do something with the gate and its targets
+    # e.g.
+end</code></pre><p>(here the iteration parameters should be called <code>operation</code> and <code>targets</code> to proper destructure a <code>Instruction</code>)</p><p><strong>Gate types</strong></p><ul><li>Single qubit gates (basic): <a href="#MimiqCircuitsBase.GateX"><code>GateX</code></a>, <a href="#MimiqCircuitsBase.GateY"><code>GateY</code></a>, <a href="#MimiqCircuitsBase.GateZ"><code>GateZ</code></a>, <a href="#MimiqCircuitsBase.GateH"><code>GateH</code></a>, <a href="#MimiqCircuitsBase.GateS"><code>GateS</code></a>, <a href="#MimiqCircuitsBase.GateSDG"><code>GateSDG</code></a>, <a href="#MimiqCircuitsBase.GateT"><code>GateT</code></a>, <a href="#MimiqCircuitsBase.GateTDG"><code>GateTDG</code></a>, <a href="#MimiqCircuitsBase.GateSX"><code>GateSX</code></a>, <a href="#MimiqCircuitsBase.GateSXDG"><code>GateSXDG</code></a>, <a href="#MimiqCircuitsBase.GateID"><code>GateID</code></a></li><li>Single qubit gates (parametric): <a href="library/@ref"><code>GateRX</code></a>, <a href="library/@ref"><code>GateRY</code></a>, <a href="library/@ref"><code>GateRZ</code></a>, <a href="library/@ref"><code>GateP</code></a>, <a href="library/@ref"><code>GateR</code></a>, <a href="library/@ref"><code>GateU</code></a></li><li>Two qubit gates (basic): <a href="#MimiqCircuitsBase.GateCX"><code>GateCX</code></a>, <a href="#MimiqCircuitsBase.GateCY"><code>GateCY</code></a>, <a href="#MimiqCircuitsBase.GateCZ"><code>GateCZ</code></a>, <a href="#MimiqCircuitsBase.GateCH"><code>GateCH</code></a>, <a href="#MimiqCircuitsBase.GateSWAP"><code>GateSWAP</code></a>, <a href="#MimiqCircuitsBase.GateISWAP"><code>GateISWAP</code></a>, <a href="#MimiqCircuitsBase.GateISWAPDG"><code>GateISWAPDG</code></a></li><li>Two qubit gates (parametric): <a href="library/@ref"><code>GateCP</code></a>, <a href="library/@ref"><code>GateCRX</code></a>, <a href="library/@ref"><code>GateCRY</code></a>, <a href="library/@ref"><code>GateCRZ</code></a>, <a href="library/@ref"><code>GateCU</code></a></li><li>Custom gate (currently only for 1 and 2 qubit gates): <a href="#MimiqCircuitsBase.GateCustom"><code>GateCustom</code></a></li></ul><p><strong>Special operations</strong></p><ul><li><a href="#MimiqCircuitsBase.Barrier"><code>Barrier</code></a>, <a href="#MimiqCircuitsBase.Reset"><code>Reset</code></a>, <a href="#MimiqCircuitsBase.Measure"><code>Measure</code></a></li></ul></div></section></article><h2 id="Operations"><a class="docs-heading-anchor" href="#Operations">Operations</a><a id="Operations-1"></a><a class="docs-heading-anchor-permalink" href="#Operations" title="Permalink"></a></h2><h3 id="Gates"><a class="docs-heading-anchor" href="#Gates">Gates</a><a id="Gates-1"></a><a class="docs-heading-anchor-permalink" href="#Gates" title="Permalink"></a></h3><h4 id="Single-qubit-gates"><a class="docs-heading-anchor" href="#Single-qubit-gates">Single qubit gates</a><a id="Single-qubit-gates-1"></a><a class="docs-heading-anchor-permalink" href="#Single-qubit-gates" title="Permalink"></a></h4><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.GateH" href="#MimiqCircuitsBase.GateH"><code>MimiqCircuitsBase.GateH</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct GateH &lt;: Gate{1}</code></pre><p>Single qubit Hadamard gate.</p><p><strong>Matrix Representation</strong></p><p class="math-container">\[\operatorname H = \frac{1}{\sqrt{2}}
+\begin{pmatrix}
+    1 &amp; 1 \\
+    1 &amp; -1
+\end{pmatrix}\]</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; matrix(GateH())
+2×2 Matrix{Float64}:
+ 0.707107   0.707107
+ 0.707107  -0.707107
+
+julia&gt; push!(Circuit(), GateH(), 1)
+1-qubit circuit with 1 gates:
+└── H @ q1</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.GateID" href="#MimiqCircuitsBase.GateID"><code>MimiqCircuitsBase.GateID</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct GateID &lt;: Gate{1}</code></pre><p>Single qubit Identity gate</p><p><strong>Matrix Representation</strong></p><p class="math-container">\[\operatorname{I} =
+\begin{pmatrix}
+    1 &amp; 0 \\
+    0 &amp; 1
+\end{pmatrix}\]</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; matrix(GateID())
+2×2 Matrix{Float64}:
+ 1.0  -0.0
+ 0.0   1.0
+
+julia&gt; push!(Circuit(), GateID(), 1)
+1-qubit circuit with 1 gates:
+└── ID @ q1</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.GateS" href="#MimiqCircuitsBase.GateS"><code>MimiqCircuitsBase.GateS</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct GateS &lt;: Gate{1}</code></pre><p>Single qubit S gate (or Phase gate).</p><p>See also <a href="#MimiqCircuitsBase.GateSDG"><code>GateSDG</code></a></p><p><strong>Matrix Representation</strong></p><p class="math-container">\[\operatorname S =
+\begin{pmatrix}
+    1 &amp; 0 \\
+    0 &amp; i
+\end{pmatrix}\]</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; matrix(GateS())
+2×2 Matrix{ComplexF64}:
+ 1.0+0.0im  0.0+0.0im
+ 0.0+0.0im  0.0+1.0im
+
+julia&gt; push!(Circuit(), GateS(), 1)
+1-qubit circuit with 1 gates:
+└── S @ q1</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.GateSDG" href="#MimiqCircuitsBase.GateSDG"><code>MimiqCircuitsBase.GateSDG</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct GateSDG &lt;: Gate{1}</code></pre><p>Single qubit S-dagger gate (conjugate transpose of the S gate).</p><p>See also <a href="#MimiqCircuitsBase.GateS"><code>GateS</code></a></p><p><strong>Matrix Representation</strong></p><p class="math-container">\[\operatorname S^\dagger =
+\begin{pmatrix}
+    1 &amp; 0 \\
+    0 &amp; -i
+\end{pmatrix}\]</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; matrix(GateSDG())
+2×2 Matrix{ComplexF64}:
+ 1.0+0.0im  0.0+0.0im
+ 0.0+0.0im  0.0-1.0im
+
+julia&gt; push!(Circuit(), GateSDG(), 1)
+1-qubit circuit with 1 gates:
+└── SDG @ q1</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.GateSX" href="#MimiqCircuitsBase.GateSX"><code>MimiqCircuitsBase.GateSX</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct GateSX &lt;: Gate{1}</code></pre><p>Single qubit √X gate.</p><p>See also <a href="#MimiqCircuitsBase.GateSXDG"><code>GateSXDG</code></a>, <a href="#MimiqCircuitsBase.GateX"><code>GateX</code></a></p><p><strong>Matrix Representation</strong></p><p class="math-container">\[\sqrt{\operatorname{X}} = \frac{1}{2}
+\begin{pmatrix}
+    1+i &amp; 1-i \\
+    1-i &amp; 1+i
+\end{pmatrix}\]</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; matrix(GateSX())
+2×2 Matrix{ComplexF64}:
+ 0.5+0.5im  0.5-0.5im
+ 0.5-0.5im  0.5+0.5im
+
+julia&gt; push!(Circuit(), GateSX(), 1)
+1-qubit circuit with 1 gates:
+└── SX @ q1</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.GateSXDG" href="#MimiqCircuitsBase.GateSXDG"><code>MimiqCircuitsBase.GateSXDG</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct GateSXDG &lt;: Gate{1}</code></pre><p>Single qubit √X-dagger gate (conjugate transpose of the √X gate)</p><p>See also <a href="#MimiqCircuitsBase.GateSX"><code>GateSX</code></a>, <a href="#MimiqCircuitsBase.GateX"><code>GateX</code></a></p><p><strong>Matrix Representation</strong></p><p class="math-container">\[\sqrt{\operatorname{X}}^\dagger = \frac{1}{2}
+\begin{pmatrix}
+    1-i &amp; 1+i \\
+    1+i &amp; 1-i
+\end{pmatrix}\]</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; matrix(GateSXDG())
+2×2 Matrix{ComplexF64}:
+ 0.5-0.5im  0.5+0.5im
+ 0.5+0.5im  0.5-0.5im
+
+julia&gt; push!(Circuit(), GateSXDG(), 1)
+1-qubit circuit with 1 gates:
+└── SXDG @ q1</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.GateT" href="#MimiqCircuitsBase.GateT"><code>MimiqCircuitsBase.GateT</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct GateT &lt;: Gate{1}</code></pre><p>Single qubit T gate.</p><p>See also <a href="#MimiqCircuitsBase.GateTDG"><code>GateTDG</code></a></p><p><strong>Matrix Representation</strong></p><p class="math-container">\[\operatorname T =
+\begin{pmatrix}
+    1 &amp; 0 \\
+    0 &amp; \exp(\frac{i\pi}{4})
+\end{pmatrix}\]</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; matrix(GateT())
+2×2 Matrix{ComplexF64}:
+ 1.0+0.0im       0.0+0.0im
+ 0.0+0.0im  0.707107+0.707107im
+
+julia&gt; push!(Circuit(), GateT(), 1)
+1-qubit circuit with 1 gates:
+└── T @ q1</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.GateTDG" href="#MimiqCircuitsBase.GateTDG"><code>MimiqCircuitsBase.GateTDG</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct GateTDG &lt;: Gate{1}</code></pre><p>Single qubit T-dagger gate (conjugate transpose of the T gate).</p><p>See also <a href="#MimiqCircuitsBase.GateT"><code>GateT</code></a></p><p><strong>Matrix Representation</strong></p><p class="math-container">\[\operatorname T^\dagger =
+\begin{pmatrix}
+    1 &amp; 0 \\
+    0 &amp; \exp(\frac{-i\pi}{4})
+\end{pmatrix}\]</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; matrix(GateTDG())
+2×2 Matrix{ComplexF64}:
+ 1.0+0.0im       0.0+0.0im
+ 0.0+0.0im  0.707107-0.707107im
+
+julia&gt; push!(Circuit(), GateTDG(), 1)
+1-qubit circuit with 1 gates:
+└── TDG @ q1</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.GateX" href="#MimiqCircuitsBase.GateX"><code>MimiqCircuitsBase.GateX</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct GateX &lt;: Gate{1}</code></pre><p>Single qubit Pauli-X gate.</p><p><strong>Matrix Representation</strong></p><p class="math-container">\[\operatorname X =
+\begin{pmatrix}
+    0 &amp; 1 \\
+    1 &amp; 0
+\end{pmatrix}\]</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; matrix(GateX())
+2×2 Matrix{Float64}:
+ 0.0   1.0
+ 1.0  -0.0
+
+julia&gt; push!(Circuit(), GateX(), 1)
+1-qubit circuit with 1 gates:
+└── X @ q1</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.GateY" href="#MimiqCircuitsBase.GateY"><code>MimiqCircuitsBase.GateY</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct GateY &lt;: Gate{1}</code></pre><p>Single qubit Pauli-Y gate.</p><p><strong>Matrix Representation</strong></p><p class="math-container">\[\operatorname Y =
+\begin{pmatrix}
+    0 &amp; -i \\
+    i &amp; 0
+\end{pmatrix}\]</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; matrix(GateY())
+2×2 Matrix{ComplexF64}:
+ 0.0+0.0im  -0.0-1.0im
+ 0.0+1.0im  -0.0+0.0im
+
+julia&gt; push!(Circuit(), GateY(), 1)
+1-qubit circuit with 1 gates:
+└── Y @ q1</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.GateZ" href="#MimiqCircuitsBase.GateZ"><code>MimiqCircuitsBase.GateZ</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct GateZ &lt;: Gate{1}</code></pre><p>Single qubit Pauli-Z gate.</p><p><strong>Matrix Representation</strong></p><p class="math-container">\[\operatorname Z =
+\begin{pmatrix}
+    1 &amp; 0 \\
+    0 &amp; -1
+\end{pmatrix}\]</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; matrix(GateZ())
+2×2 Matrix{Float64}:
+ 1.0   0.0
+ 0.0  -1.0
+
+julia&gt; push!(Circuit(), GateZ(), 1)
+1-qubit circuit with 1 gates:
+└── Z @ q1</code></pre></div></section></article><h4 id="Two-qubit-gates"><a class="docs-heading-anchor" href="#Two-qubit-gates">Two-qubit gates</a><a id="Two-qubit-gates-1"></a><a class="docs-heading-anchor-permalink" href="#Two-qubit-gates" title="Permalink"></a></h4><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.GateCH" href="#MimiqCircuitsBase.GateCH"><code>MimiqCircuitsBase.GateCH</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct GateCH &lt;: Gate{2}</code></pre><p>Two qubit Controlled-Hadamard gate.</p><p><strong>Matrix Representation</strong></p><p class="math-container">\[\operatorname{CH} = \begin{pmatrix}
+    1 &amp; 0 &amp; 0 &amp; 0 \\
+    0 &amp; 1 &amp; 0 &amp; 0 \\
+    0 &amp; 0 &amp; \frac{1}{\sqrt{2}} &amp; \frac{1}{\sqrt{2}} \\
+    0 &amp; 0 &amp; \frac{1}{\sqrt{2}} &amp; -\frac{1}{\sqrt{2}}
+\end{pmatrix}\]</p><p>By convention we refer to the first qubit as the control qubit and the second qubit as the target.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; matrix(GateCH())
+4×4 Matrix{Float64}:
+ 1.0  0.0  0.0        0.0
+ 0.0  1.0  0.0        0.0
+ 0.0  0.0  0.707107   0.707107
+ 0.0  0.0  0.707107  -0.707107
+
+julia&gt; push!(Circuit(), GateCH(), 1, 2)
+2-qubit circuit with 1 gates:
+└── CH @ q1, q2</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.GateCS" href="#MimiqCircuitsBase.GateCS"><code>MimiqCircuitsBase.GateCS</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct GateCS &lt;: Gate{2}</code></pre><p>Two qubit Controlled-S gate.</p><p><strong>Matrix Representation</strong></p><p class="math-container">\[\begin{pmatrix}
+    1 &amp; 0 &amp; 0 &amp; 0 \\
+    0 &amp; 1 &amp; 0 &amp; 0 \\
+    0 &amp; 0 &amp; 1 &amp; 0 \\
+    0 &amp; 0 &amp; 0 &amp; i
+\end{pmatrix}\]</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; matrix(GateCS())
+4×4 Matrix{ComplexF64}:
+ 1.0+0.0im  0.0+0.0im  0.0+0.0im  0.0+0.0im
+ 0.0+0.0im  1.0+0.0im  0.0+0.0im  0.0+0.0im
+ 0.0+0.0im  0.0+0.0im  1.0+0.0im  0.0+0.0im
+ 0.0+0.0im  0.0+0.0im  0.0+0.0im  0.0+1.0im
+
+julia&gt; push!(Circuit(), GateCS(), 1, 2)
+2-qubit circuit with 1 gates:
+└── CS @ q1, q2</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.GateCSDG" href="#MimiqCircuitsBase.GateCSDG"><code>MimiqCircuitsBase.GateCSDG</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct GateCSDG &lt;: Gate{2}</code></pre><p>Two qubit CS-dagger gate.</p><p><strong>Matrix Representation</strong></p><p class="math-container">\[\begin{pmatrix}
+    1 &amp; 0 &amp; 0 &amp; 0 \\
+    0 &amp; 1 &amp; 0 &amp; 0 \\
+    0 &amp; 0 &amp; 1 &amp; 0 \\
+    0 &amp; 0 &amp; 0 &amp; i
+\end{pmatrix}\]</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; matrix(GateCSDG())
+4×4 Matrix{ComplexF64}:
+ 1.0+0.0im  0.0+0.0im  0.0+0.0im  0.0+0.0im
+ 0.0+0.0im  1.0+0.0im  0.0+0.0im  0.0+0.0im
+ 0.0+0.0im  0.0+0.0im  1.0+0.0im  0.0+0.0im
+ 0.0+0.0im  0.0+0.0im  0.0+0.0im  0.0-1.0im
+
+julia&gt; push!(Circuit(), GateCSDG(), 1, 2)
+2-qubit circuit with 1 gates:
+└── CSDG @ q1, q2</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.GateCSX" href="#MimiqCircuitsBase.GateCSX"><code>MimiqCircuitsBase.GateCSX</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct GateCSX &lt;: Gate{2}</code></pre><p>Two qubit Controlled-SX gate. (Control on second qubit)</p><p><strong>Matrix Representation</strong></p><p class="math-container">\[\begin{pmatrix}
+    1 &amp; 0 &amp; 0 &amp; 0 \\
+    0 &amp; \frac{1+i}{\sqrt{2}} &amp; 0 &amp; \frac{1-i}{\sqrt{2}} \\
+    0 &amp; 0 &amp; 1 &amp; 0 \\
+    0 &amp; \frac{1-i}{\sqrt{2}} &amp; 0 &amp; \frac{1+i}{\sqrt{2}}
+\end{pmatrix}\]</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; matrix(GateCSX())
+4×4 Matrix{ComplexF64}:
+ 1.0+0.0im  0.0+0.0im  0.0+0.0im  0.0+0.0im
+ 0.0+0.0im  0.5+0.5im  0.0+0.0im  0.5-0.5im
+ 0.0+0.0im  0.0+0.0im  1.0+0.0im  0.0+0.0im
+ 0.0+0.0im  0.5-0.5im  0.0+0.0im  0.5+0.5im
+
+julia&gt; push!(Circuit(), GateCSX(), 1, 2)
+2-qubit circuit with 1 gates:
+└── CSX @ q1, q2</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.GateCSXDG" href="#MimiqCircuitsBase.GateCSXDG"><code>MimiqCircuitsBase.GateCSXDG</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct GateCSXDG &lt;: Gate{2}</code></pre><p>Two qubit CSX-dagger gate. (Control on second qubit)</p><p><strong>Matrix Representation</strong></p><p class="math-container">\[\begin{pmatrix}
+    1 &amp; 0 &amp; 0 &amp; 0 \\
+    0 &amp; \frac{1-i}{\sqrt{2}} &amp; 0 &amp; \frac{1+i}{\sqrt{2}} \\
+    0 &amp; 0 &amp; 1 &amp; 0 \\
+    0 &amp; \frac{1+i}{\sqrt{2}} &amp; 0 &amp; \frac{1-i}{\sqrt{2}}
+\end{pmatrix}\]</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; matrix(GateCSXDG())
+4×4 Matrix{ComplexF64}:
+ 1.0+0.0im  0.0+0.0im  0.0+0.0im  0.0+0.0im
+ 0.0+0.0im  0.5-0.5im  0.0+0.0im  0.5+0.5im
+ 0.0+0.0im  0.0+0.0im  1.0+0.0im  0.0+0.0im
+ 0.0+0.0im  0.5+0.5im  0.0+0.0im  0.5-0.5im
+
+julia&gt; push!(Circuit(), GateCSXDG(), 1, 2)
+2-qubit circuit with 1 gates:
+└── CSXDG @ q1, q2</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.GateCX" href="#MimiqCircuitsBase.GateCX"><code>MimiqCircuitsBase.GateCX</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct GateCX &lt;: Gate{2}</code></pre><p>Two qubit Controlled-X gate (or CNOT).</p><p><strong>Matrix Representation</strong></p><p class="math-container">\[\operatorname{CX} =
+\begin{pmatrix}
+    1 &amp; 0 &amp; 0 &amp; 0 \\
+    0 &amp; 1 &amp; 0 &amp; 0 \\
+    0 &amp; 0 &amp; 0 &amp; 1 \\
+    0 &amp; 0 &amp; 1 &amp; 0
+\end{pmatrix}\]</p><p>By convention we refer to the first qubit as the control qubit and the second qubit as the target.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; matrix(GateCX())
+4×4 Matrix{Float64}:
+ 1.0  0.0  0.0   0.0
+ 0.0  1.0  0.0   0.0
+ 0.0  0.0  0.0   1.0
+ 0.0  0.0  1.0  -0.0
+
+
+julia&gt; push!(Circuit(), GateCX(), 1, 2)
+2-qubit circuit with 1 gates:
+└── CX @ q1, q2</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.GateCY" href="#MimiqCircuitsBase.GateCY"><code>MimiqCircuitsBase.GateCY</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct GateCY &lt;: Gate{2}</code></pre><p>Two qubit Controlled-Y gate.</p><p><strong>Matrix Representation</strong></p><p class="math-container">\[\operatorname{CY} = \begin{pmatrix}
+    1 &amp; 0 &amp; 0 &amp; 0 \\
+    0 &amp; 1 &amp; 0 &amp; 0 \\
+    0 &amp; 0 &amp; 0 &amp; -i \\
+    0 &amp; 0 &amp; i &amp; 0
+\end{pmatrix}\]</p><p>By convention we refer to the first qubit as the control qubit and the second qubit as the target.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; matrix(GateCY())
+4×4 Matrix{ComplexF64}:
+ 1.0+0.0im  0.0+0.0im  0.0+0.0im   0.0+0.0im
+ 0.0+0.0im  1.0+0.0im  0.0+0.0im   0.0+0.0im
+ 0.0+0.0im  0.0+0.0im  0.0+0.0im  -0.0-1.0im
+ 0.0+0.0im  0.0+0.0im  0.0+1.0im  -0.0+0.0im
+
+julia&gt; push!(Circuit(), GateCY(), 1, 2)
+2-qubit circuit with 1 gates:
+└── CY @ q1, q2</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.GateCZ" href="#MimiqCircuitsBase.GateCZ"><code>MimiqCircuitsBase.GateCZ</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct GateCZ &lt;: Gate{2}</code></pre><p>Two qubit Controlled-Z gate.</p><p><strong>Matrix Representation</strong></p><p class="math-container">\[\operatorname{CZ} = \begin{pmatrix}
+    1 &amp; 0 &amp; 0 &amp; 0 \\
+    0 &amp; 1 &amp; 0 &amp; 0 \\
+    0 &amp; 0 &amp; 1 &amp; 0 \\
+    0 &amp; 0 &amp; 0 &amp; -1
+\end{pmatrix}\]</p><p>By convention we refer to the first qubit as the control qubit and the second qubit as the target.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; matrix(GateCZ())
+4×4 Matrix{Float64}:
+ 1.0  0.0  0.0   0.0
+ 0.0  1.0  0.0   0.0
+ 0.0  0.0  1.0   0.0
+ 0.0  0.0  0.0  -1.0
+
+julia&gt; push!(Circuit(), GateCZ(), 1, 2)
+2-qubit circuit with 1 gates:
+└── CZ @ q1, q2</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.GateDCX" href="#MimiqCircuitsBase.GateDCX"><code>MimiqCircuitsBase.GateDCX</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct GateDCX &lt;: Gate{2}</code></pre><p>Two qubit double-CNOT (Control on first qubit and then second) OR DCX gate.</p><p><strong>Matrix Representation</strong></p><p class="math-container">\[\begin{pmatrix}
+    1 &amp; 0 &amp; 0 &amp; 0 \\
+    0 &amp; 0 &amp; 0 &amp; 1 \\
+    0 &amp; 1 &amp; 0 &amp; 0 \\
+    0 &amp; 0 &amp; 1 &amp; 0
+\end{pmatrix}\]</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; matrix(GateDCX())
+4×4 Matrix{Float64}:
+ 1.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  1.0
+ 0.0  1.0  0.0  0.0
+ 0.0  0.0  1.0  0.0
+
+julia&gt; push!(Circuit(), GateDCX(), 1, 2)
+2-qubit circuit with 1 gates:
+└── DCX @ q1, q2</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.GateDCXDG" href="#MimiqCircuitsBase.GateDCXDG"><code>MimiqCircuitsBase.GateDCXDG</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct GateDCXDG &lt;: Gate{2}</code></pre><p>Two qubit DCX-dagger gate.</p><p><strong>Matrix Representation</strong></p><p class="math-container">\[\begin{pmatrix}
+    1 &amp; 0 &amp; 0 &amp; 0 \\
+    0 &amp; 0 &amp; 1 &amp; 0 \\
+    0 &amp; 0 &amp; 0 &amp; 1 \\
+    0 &amp; 1 &amp; 0 &amp; 0
+\end{pmatrix}\]</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; matrix(GateDCXDG())
+4×4 Matrix{Float64}:
+ 1.0  0.0  0.0  0.0
+ 0.0  0.0  1.0  0.0
+ 0.0  0.0  0.0  1.0
+ 0.0  1.0  0.0  0.0
+
+julia&gt; push!(Circuit(), GateDCXDG(), 1, 2)
+2-qubit circuit with 1 gates:
+└── DCXDG @ q1, q2</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.GateECR" href="#MimiqCircuitsBase.GateECR"><code>MimiqCircuitsBase.GateECR</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct GateECR &lt;: Gate{2}</code></pre><p>Two qubit ECR echo gate.</p><p><strong>Matrix Representation</strong></p><p class="math-container">\[\begin{pmatrix}
+    0 &amp; \frac{1}{\sqrt{2}} \ &amp; 0 &amp; \frac{i}{\sqrt{2}} \\ 
+    \frac{1}{\sqrt{2}} &amp; 0 &amp; \frac{-i}{\\sqrt{2}} &amp; 0 \\
+    0 &amp; \frac{i}{\\sqrt{2}} &amp; 0 &amp; \frac{i}{\sqrt{2}} \\ 
+    \frac{-i}{\sqrt{2}} &amp; 0 &amp; \frac{1}{\sqrt{2}}  &amp; 0 
+\end{pmatrix}\]</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; matrix(GateCSX())
+4×4 Matrix{ComplexF64}:
+ 1.0+0.0im  0.0+0.0im  0.0+0.0im  0.0+0.0im
+ 0.0+0.0im  0.5+0.5im  0.0+0.0im  0.5-0.5im
+ 0.0+0.0im  0.0+0.0im  1.0+0.0im  0.0+0.0im
+ 0.0+0.0im  0.5-0.5im  0.0+0.0im  0.5+0.5im
+
+julia&gt; push!(Circuit(), GateCSX(), 1, 2)
+2-qubit circuit with 1 gates:
+└── CSX @ q1, q2</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.GateISWAP" href="#MimiqCircuitsBase.GateISWAP"><code>MimiqCircuitsBase.GateISWAP</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct GateISWAP &lt;: Gate{2}</code></pre><p>Two qubit ISWAP gate.</p><p>See also <a href="#MimiqCircuitsBase.GateISWAPDG"><code>GateISWAPDG</code></a>, <a href="#MimiqCircuitsBase.GateSWAP"><code>GateSWAP</code></a>.</p><p><strong>Matrix Representation</strong></p><p class="math-container">\[\operatorname{ISWAP} = \frac{1}{\sqrt{2}}
+\begin{pmatrix}
+    1 &amp; 0 &amp; 0 &amp; 0 \\
+    0 &amp; 0 &amp; i &amp; 0 \\
+    0 &amp; i &amp; 0 &amp; 0 \\
+    0 &amp; 0 &amp; 0 &amp; 1
+\end{pmatrix}\]</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; matrix(GateISWAP())
+4×4 Matrix{ComplexF64}:
+ 1.0+0.0im  0.0+0.0im  0.0+0.0im  0.0+0.0im
+ 0.0+0.0im  0.0+0.0im  0.0+1.0im  0.0+0.0im
+ 0.0+0.0im  0.0+1.0im  0.0+0.0im  0.0+0.0im
+ 0.0+0.0im  0.0+0.0im  0.0+0.0im  1.0+0.0im
+
+julia&gt; push!(Circuit(), GateISWAP(), 1, 2)
+2-qubit circuit with 1 gates:
+└── ISWAP @ q1, q2</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.GateISWAPDG" href="#MimiqCircuitsBase.GateISWAPDG"><code>MimiqCircuitsBase.GateISWAPDG</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct GateISWAPDG &lt;: Gate{2}</code></pre><p>Two qubit ISWAP-dagger gate (conjugate transpose of ISWAP)</p><p>See also <a href="#MimiqCircuitsBase.GateISWAP"><code>GateISWAP</code></a>, <a href="#MimiqCircuitsBase.GateSWAP"><code>GateSWAP</code></a></p><p><strong>Matrix Representation</strong></p><p class="math-container">\[\operatorname{ISWAP}^\dagger = \frac{1}{\sqrt{2}}
+\begin{pmatrix}
+    1 &amp; 0 &amp; 0 &amp; 0 \\
+    0 &amp; 0 &amp; -i &amp; 0 \\
+    0 &amp; -i &amp; 0 &amp; 0 \\
+    0 &amp; 0 &amp; 0 &amp; 1
+\end{pmatrix}\]</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; matrix(GateISWAPDG())
+4×4 Matrix{ComplexF64}:
+ 1.0+0.0im  0.0+0.0im  0.0+0.0im  0.0+0.0im
+ 0.0+0.0im  0.0+0.0im  0.0-1.0im  0.0+0.0im
+ 0.0+0.0im  0.0-1.0im  0.0+0.0im  0.0+0.0im
+ 0.0+0.0im  0.0+0.0im  0.0+0.0im  1.0+0.0im
+
+julia&gt; push!(Circuit(), GateISWAPDG(), 1, 2)
+2-qubit circuit with 1 gates:
+└── ISWAPDG @ q1, q2</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.GateSWAP" href="#MimiqCircuitsBase.GateSWAP"><code>MimiqCircuitsBase.GateSWAP</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct GateSWAP &lt;: Gate{2}</code></pre><p>Two qubit SWAP gate.</p><p>See also <a href="#MimiqCircuitsBase.GateISWAP"><code>GateISWAP</code></a></p><p><strong>Matrix Representation</strong></p><p class="math-container">\[\operatorname{SWAP} = \frac{1}{\sqrt{2}}
+\begin{pmatrix}
+    1 &amp; 0 &amp; 0 &amp; 0 \\
+    0 &amp; 0 &amp; 1 &amp; 0 \\
+    0 &amp; 1 &amp; 0 &amp; 0 \\
+    0 &amp; 0 &amp; 0 &amp; 1
+\end{pmatrix}\]</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; matrix(GateSWAP())
+4×4 Matrix{Float64}:
+ 1.0  0.0  0.0  0.0
+ 0.0  0.0  1.0  0.0
+ 0.0  1.0  0.0  0.0
+ 0.0  0.0  0.0  1.0
+
+julia&gt; push!(Circuit(), GateSWAP(), 1, 2)
+2-qubit circuit with 1 gates:
+└── SWAP @ q1, q2</code></pre></div></section></article><h4 id="Multi-qubit"><a class="docs-heading-anchor" href="#Multi-qubit">Multi-qubit</a><a id="Multi-qubit-1"></a><a class="docs-heading-anchor-permalink" href="#Multi-qubit" title="Permalink"></a></h4><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.GateCCX" href="#MimiqCircuitsBase.GateCCX"><code>MimiqCircuitsBase.GateCCX</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct GateCCX &lt;: Gate{3}</code></pre><p>C₂X (or C₂NOT) 3-qubits gate. Where the first two qubits are used as controls.</p></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.GateCSWAP" href="#MimiqCircuitsBase.GateCSWAP"><code>MimiqCircuitsBase.GateCSWAP</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct GateCSWAP &lt;: Gate{3} end</code></pre><p>3-qubits control SWAP gate where the first qubit is the control.</p></div></section></article><h4 id="Custom-gates"><a class="docs-heading-anchor" href="#Custom-gates">Custom gates</a><a id="Custom-gates-1"></a><a class="docs-heading-anchor-permalink" href="#Custom-gates" title="Permalink"></a></h4><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.GateCustom" href="#MimiqCircuitsBase.GateCustom"><code>MimiqCircuitsBase.GateCustom</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct GateCustom{N,T} &lt;: Gate{N}</code></pre><p><code>N</code> qubit gate specified by a <span>$2^N \times 2^N$</span> matrix with elements of type <code>T</code>.</p><p>Use this to construct your own gates based on unitary matrices. Currently only N=1,2 (M=2,4) are recognised.</p><p>MIMIQ uses textbook convention for specifying gates.</p><p>One qubit gate matrices are defined in the basis <span>$|0\rangle$</span>, <span>$|1\rangle$</span> e.g.,</p><p class="math-container">\[\operatorname{Z} =
+\begin{pmatrix}
+    1&amp;0\\
+    0&amp;-1
+\end{pmatrix}\]</p><p>Two qubit gate matrices are defined in the basis <span>$|00\rangle$</span>, <span>$|01\rangle$</span>&gt;, <span>$|10\rangle$</span>, <span>$|11\rangle$</span> where the left-most qubit is the first to appear in the target list e.g.,</p><p class="math-container">\[\operatorname{CNOT} =
+\begin{pmatrix}
+    1&amp;0&amp;0&amp;0\\
+    0&amp;1&amp;0&amp;0\\
+    0&amp;0&amp;0&amp;1\\
+    0&amp;0&amp;1&amp;0
+\end{pmatrix}\]</p><pre><code class="nohighlight hljs">julia&gt; CNOT = [1 0 0 0; 0 1 0 0; 0 0 0 1; 0 0 1 0]
+4×4 Matrix{Int64}:
+ 1  0  0  0
+ 0  1  0  0
+ 0  0  0  1
+ 0  0  1  0
+
+julia&gt; # CNOT gate with control on q1 and target on q2
+
+julia&gt; Instruction(GateCustom(CNOT), 1, 2)
+GateCustom([1 0 0 0; 0 1 0 0; 0 0 0 1; 0 0 1 0]) @ q1, q2
+
+# Examples
+</code></pre><p>jldoctest julia&gt; g = GateCustom([1 0; 0 1]) Custom([1.0 0.0; 0.0 1.0])</p><p>julia&gt; push!(Circuit(), g, 1) 1-qubit circuit with 1 gates: └── Custom([1.0 0.0; 0.0 1.0]) @ q1 ```</p></div></section></article><h3 id="Non-unitary-operations"><a class="docs-heading-anchor" href="#Non-unitary-operations">Non-unitary operations</a><a id="Non-unitary-operations-1"></a><a class="docs-heading-anchor-permalink" href="#Non-unitary-operations" title="Permalink"></a></h3><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.Reset" href="#MimiqCircuitsBase.Reset"><code>MimiqCircuitsBase.Reset</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct Reset &lt;: Operation{1}</code></pre><p>Quantum operation that resets the status of one qubit to the <span>$\ket{0}$</span> state.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; push!(Circuit(), Reset(), 1)
+2-qubit circuit with 1 gates:
+└── Reset @ q1</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.Measure" href="#MimiqCircuitsBase.Measure"><code>MimiqCircuitsBase.Measure</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct Measure &lt;: Operation{1}</code></pre><p>Single qubit measurement operation in the computational basis</p><p>This operation is non-reversible</p><p><strong>Examples</strong></p><p>Measure project the qubit state and optionally store the result of the measurement for that qubit in a classical register.</p><p>To just apply the measurement on qubit <code>1</code> and discard the result, do:</p><pre><code class="language-julia-repl hljs">julia&gt; push!(Circuit(), Measure(), 1)
+2-qubit circuit with 1 gates:
+└── Measure @ q1</code></pre><p>In order to store the result on the 2nd bit, call:</p><pre><code class="language-julia-repl hljs">julia&gt; push!(Circuit(), Measure(), 1 =&gt; 2)
+2-qubit circuit with 1 gates:
+└── Measure @ q1, c1</code></pre></div></section></article><h3 id="No-ops"><a class="docs-heading-anchor" href="#No-ops">No-ops</a><a id="No-ops-1"></a><a class="docs-heading-anchor-permalink" href="#No-ops" title="Permalink"></a></h3><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.Barrier" href="#MimiqCircuitsBase.Barrier"><code>MimiqCircuitsBase.Barrier</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct Barrier &lt;: Operation{1}</code></pre><p>A barrier is a special operation that does not affect the quantum state or the execution of a circuit, but it prevents compression or optimization operation from being applied across it.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; push!(Circuit(), Barrier(), 1)
+2-qubit circuit with 1 gates:
+└── Barrier @ q1
+
+julia&gt; push!(Circuit(), Barrier(), 1:4...)
+2-qubit circuit with 1 gates:
+└── Barrier @ q1, q2, q3, q4
+
+julia&gt; push!(Circuit(), Barrier(), 1:4)
+2-qubit circuit with 1 gates:
+├── Barrier @ q1
+├── Barrier @ q2
+├── Barrier @ q3
+└── Barrier @ q4</code></pre></div></section></article><h3 id="Composite-operations"><a class="docs-heading-anchor" href="#Composite-operations">Composite operations</a><a id="Composite-operations-1"></a><a class="docs-heading-anchor-permalink" href="#Composite-operations" title="Permalink"></a></h3><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.IfStatement" href="#MimiqCircuitsBase.IfStatement"><code>MimiqCircuitsBase.IfStatement</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct IfStatement{N,M} &lt;: Operation{N,M}</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.Control" href="#MimiqCircuitsBase.Control"><code>MimiqCircuitsBase.Control</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct Control{N,M,L,T&lt;:Operation{M,0}} &lt;: Operation{L,0} end</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.Parallel" href="#MimiqCircuitsBase.Parallel"><code>MimiqCircuitsBase.Parallel</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct Parallel{N,M,L,T&lt;:Operation{M,0}} &lt;: Operation{L,0} end</code></pre></div></section></article><h2 id="Bit-States"><a class="docs-heading-anchor" href="#Bit-States">Bit States</a><a id="Bit-States-1"></a><a class="docs-heading-anchor-permalink" href="#Bit-States" title="Permalink"></a></h2><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.BitState" href="#MimiqCircuitsBase.BitState"><code>MimiqCircuitsBase.BitState</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct BitState</code></pre><p>Representation of the quantum state of a quantum register with definite values for each qubit.</p><p><strong>Examples</strong></p><pre><code class="language-julia hljs">julia&gt; BitState(16)
+16-qubit BitState with 0 non-zero qubits:
+└── |0000000000000000⟩
+
+julia&gt; bs = BitState(16, [1,2,3,4])
+16-qubit BitState with 4 non-zero qubits:
+├── |1111000000000000⟩
+└── non-zero qubits: [1, 2, 3, 4]
+
+julia&gt; bs[10] = 1
+1
+
+julia&gt; bs
+16-qubit BitState with 5 non-zero qubits:
+├── |1111000001000000⟩
+└── non-zero qubits: [1, 2, 3, 4, 10]
+
+julia&gt; c = Circuit()
+empty circuit
+
+julia&gt; push!(c, GateX(), 8)
+8-qubit circuit with 1 gates:
+└── X @ q8
+
+julia&gt; BitState(c, [1,3,5,8])
+8-qubit BitState with 4 non-zero qubits:
+├── |10101001⟩
+└── non-zero qubits: [1, 3, 5, 8]
+
+julia&gt; bitstate_to_integer(bs)
+527
+
+julia&gt; typeof(ans)
+BigInt
+
+julia&gt; bitstate_to_integer(bs, Int64)
+527
+
+julia&gt; typeof(ans)
+Int64</code></pre><p>There are many different ways to get bit states:</p><pre><code class="language-julia hljs">julia&gt; bs = BitState(30, 2344574)
+30-qubit BitState with 13 non-zero qubits:
+├── |011111100110001111000100000000⟩
+└── non-zero qubits: [2, 3, 4, 5, 6, 7, 10, 11, 15, 16, 17, 18, 22]
+
+julia&gt; ones(BitState, 10) # or also trues(BitState, 10)
+10-qubit BitState with 10 non-zero qubits:
+├── |1111111111⟩
+└── non-zero qubits: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+julia&gt; zeros(BitState, 10) # or also falses(BitState, 10)
+10-qubit BitState with 0 non-zero qubits:
+└── |0000000000⟩
+
+julia&gt; BitState(16) do i
+           iseven(i)
+       end
+16-qubit BitState with 8 non-zero qubits:
+├── |0101010101010101⟩
+└── non-zero qubits: [2, 4, 6, 8, 10, 12, 14, 16]</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.bits-Tuple{BitState}" href="#MimiqCircuitsBase.bits-Tuple{BitState}"><code>MimiqCircuitsBase.bits</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia hljs">bits(bitstate)</code></pre><p>Get the underlying bit array of a bit state.</p></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.bitstate_to_index-Tuple{BitState}" href="#MimiqCircuitsBase.bitstate_to_index-Tuple{BitState}"><code>MimiqCircuitsBase.bitstate_to_index</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia hljs">bitstate_to_index(bitstate)</code></pre><p>Convert a bit state into the corresponding index.</p><p>This is useful for indexing, for example, a vector of states.</p></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.bitstate_to_integer-Union{Tuple{BitState}, Tuple{T}, Tuple{BitState, Type{T}}} where T" href="#MimiqCircuitsBase.bitstate_to_integer-Union{Tuple{BitState}, Tuple{T}, Tuple{BitState, Type{T}}} where T"><code>MimiqCircuitsBase.bitstate_to_integer</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia hljs">bitstate_to_integer(bitstate[, T])</code></pre><p>Convert a bit state into its corresponding integer.</p></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.nonzeros-Tuple{BitState}" href="#MimiqCircuitsBase.nonzeros-Tuple{BitState}"><code>MimiqCircuitsBase.nonzeros</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia hljs">nonzeros(bitstate)</code></pre><p>Return the indices of the non-zero qubits in a bit state.</p></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.to01-Tuple{BitState}" href="#MimiqCircuitsBase.to01-Tuple{BitState}"><code>MimiqCircuitsBase.to01</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia hljs">to01(bitstate[, endianess=:big])</code></pre><p>Converts a BitState into a string of 0 and 1 characters. Optionally endianess can be specified, which can be either <code>:big</code> or <code>:little</code>.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; to01(bs&quot;10011&quot;)
+&quot;10011&quot;
+
+julia&gt; to01(bs&quot;10011&quot;; endianess=:big)
+&quot;10011&quot;
+
+julia&gt; to01(bs&quot;10011&quot;; endianess=:little)
+&quot;11001&quot;</code></pre></div></section></article><article class="docstring"><header><a class="docstring-binding" id="MimiqCircuitsBase.@bs_str-Tuple{Any}" href="#MimiqCircuitsBase.@bs_str-Tuple{Any}"><code>MimiqCircuitsBase.@bs_str</code></a> — <span class="docstring-category">Macro</span></header><section><div><pre><code class="language-julia hljs">macro bs_str(s)</code></pre><p>Convert a string into a bit state.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; bs&quot;101011&quot;
+6-qubit BitState with 4 non-zero qubits:
+├── |101011⟩
+└── non-zero qubits: [1, 3, 5, 6]</code></pre></div></section></article></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../outline/">« Contents</a><a class="docs-footer-nextpage" href="../internals/">Private »</a><div class="flexbox-break"></div><p class="footer-message">Copyright 2021-2023 QPerfect. All rights reserved.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.25 on <span class="colophon-date" title="Thursday 3 August 2023 15:11">Thursday 3 August 2023</span>. Using Julia version 1.9.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
